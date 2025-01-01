@@ -6,9 +6,9 @@ Welcome to my journey of mastering **Programming Advices**! This repository cont
 
 ## 📚 Table of Contents
 
-1. [About This Repository](#about-this-repository)  
-2. [Progress Overview](#progress-overview)  
-3. [Acknowledgments](#acknowledgments)  
+1. [About This Repository](#-about-this-repository)  
+2. [Progress Overview](#-progress-overview)  
+3. [Acknowledgments](#-acknowledgments)  
 
 ---
 
@@ -32,5 +32,3 @@ This repository is my personal workspace for learning and applying concepts from
 
 ## ✨ Acknowledgments
 A special thanks to **Dr. Mohammed Abu-Hadhoud** for creating this valuable course. I’m also grateful for the tools and resources that help make this journey smoother.
-
-
