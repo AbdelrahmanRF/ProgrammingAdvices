@@ -16,3 +16,6 @@
 # Build directories
 Debug/
 Release/
+
+# User-specific files & directories
+Project2/
