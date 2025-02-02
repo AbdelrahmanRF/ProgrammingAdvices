@@ -33,4 +33,4 @@ This repository is my personal workspace for learning and applying concepts from
 
 ## ✨ Acknowledgments
 
-A special thanks to **Dr. Mohammed Abu-Hadhoud** for creating this valuable courses. I’m also grateful for the tools and resources that help make this journey smoother.
+A special thanks to **Dr. Mohammed Abu-Hadhoud** for creating these valuable courses. I’m also grateful for the tools and resources that help make this journey smoother.
