@@ -1,6 +1,6 @@
 # Programming Advices Course Progress
 
-Welcome to my journey of mastering **Programming Advices**! This repository contains my solutions, notes, and practice code from the course. I am currently progressing toward Course 24.
+Welcome to my journey of mastering **Programming Advices**! This repository contains my solutions, notes, and practice code from the courses. I am currently progressing toward Course 23.
 
 ---
 
@@ -14,7 +14,7 @@ Welcome to my journey of mastering **Programming Advices**! This repository cont
 
 ## 📖 About This Repository
 
-This repository is my personal workspace for learning and applying concepts from the **Programming Advices** course. I am following the course step by step and documenting my solutions as I progress.
+This repository is my personal workspace for learning and applying concepts from the **Programming Advices** courses. I am following the courses step by step and documenting my solutions as I progress.
 
 ---
 
@@ -27,10 +27,10 @@ This repository is my personal workspace for learning and applying concepts from
 | 03         | ✅ Completed   | C++ Fundamentals                       |
 | 04         | ✅ Completed   | Problem Solving #1                     |
 | 05         | ✅ Completed   | Problem Solving #2                     |
-| ...        | 🚧 In Progress | Continuing toward Course 24            |
+| ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
 
 ## ✨ Acknowledgments
 
-A special thanks to **Dr. Mohammed Abu-Hadhoud** for creating this valuable course. I’m also grateful for the tools and resources that help make this journey smoother.
+A special thanks to **Dr. Mohammed Abu-Hadhoud** for creating this valuable courses. I’m also grateful for the tools and resources that help make this journey smoother.
