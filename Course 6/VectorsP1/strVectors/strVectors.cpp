@@ -21,13 +21,13 @@ void AskAndFillEmployeesVector(vector <stEmployee>& Employees) {
 
 		Employees.push_back(Employee);
 
-		cout << "\nDo you want to add more employess ? y or n\n";
+		cout << "\nDo you want to add more employees ? y or n\n";
 		cin >> ReadMore;
 	}
 }
 
-void PrintEmplyees(vector <stEmployee>& Employees) {
-	Employees.size() > 0 ? cout << "\nEmployess vector:\n\n" : cout << "\nEmployess vector is empty\n\n";
+void PrintEmployees(vector <stEmployee>& Employees) {
+	Employees.size() > 0 ? cout << "\nEmployees vector:\n\n" : cout << "\nEmployees vector is empty\n\n";
 	for (stEmployee& Employee : Employees) {
 		cout << "Firstname: " << Employee.Firstname << endl;
 		cout << "Lastname : " << Employee.Lastname << endl;
@@ -44,7 +44,7 @@ int main()
 		{ "Ali", "Smadi", 1000 }
 	};
 
-	cout << "Employess vectore:\n\n";
+	cout << "Employees vector:\n\n";
 	for (stEmployee& Employee : vEmployees) {
 		cout << "Firstname: " << Employee.Firstname << endl;
 		cout << "Lastname : " << Employee.Lastname << endl;
@@ -54,14 +54,14 @@ int main()
 	vector <stEmployee> Employees;
 
 	AskAndFillEmployeesVector(Employees);
-	PrintEmplyees(Employees);
+	PrintEmployees(Employees);
 
 	//Employees.clear();
 
 	if (Employees.size() > 0) {
 		Employees.pop_back();
 		cout << "Employess After removing last record:";
-		PrintEmplyees(Employees);
+		PrintEmployees(Employees);
 	}
 
 }
