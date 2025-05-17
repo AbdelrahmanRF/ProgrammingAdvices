@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 using namespace std;
 
-struct strClient
-{
+const string ClientsFileName = "Clients.txt";
+
+struct strClient {
 	string AccountNumber;
 	string PinCode;
 	string Name;
@@ -11,11 +13,12 @@ struct strClient
 	double AccountBalance;
 };
 
-strClient ReadNewClient() {
+strClient ReadClient() {
 	strClient Client;
 
 	cout << "Enter Account Number? ";
-	getline(cin, Client.AccountNumber);
+	// Usage of std::ws will extract allthe whitespace character
+	getline(cin >> ws, Client.AccountNumber);
 
 	cout << "Enter PinCode? ";
 	getline(cin, Client.PinCode);
@@ -44,16 +47,42 @@ string ConvertRecordToLine(strClient Client, string Separator = "#//#") {
 	return ClientRecord;
 }
 
+void SaveStringToFile(string FileName, string Content) {
+	fstream MyFile;
+
+	MyFile.open(FileName, ios::out | ios::app);
+
+	if (MyFile.is_open()) {
+
+		MyFile << Content << endl;
+
+		MyFile.close();
+	}
+}
+
+void AddNewClient() {
+	strClient Client;
+	Client = ReadClient();
+	SaveStringToFile(ClientsFileName, ConvertRecordToLine(Client));
+}
+
+void AddClients() {
+	char AddNew = 'Y';
+
+	do {
+		system("cls");
+		cout << "Adding New Client:\n\n";
+		AddNewClient();
+		cout << "\nClient Added Successfuly, do you want to add more clients? Y/N?";
+		cin >> AddNew;
+
+	} while (toupper(AddNew) == 'Y');
+}
+
 int main()
 {
-	strClient Client;
-
-	cout << "\nPlease Enter Client Data: \n\n";
-	Client = ReadNewClient();
-
-	cout << "\n\nClient Record for Saving is: \n";
-	cout << ConvertRecordToLine(Client);
-
+	AddClients();
+	
 	return 0;
 }
 
