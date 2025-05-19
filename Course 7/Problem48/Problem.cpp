@@ -86,7 +86,7 @@ strClient ConvertLineToRecord(string Line) {
 //	cout << "------------------------------------------------------------------------------------------\n";
 //}
 
-vector<strClient> LoadCleintsDataFromFile(string FileName) {
+vector<strClient> LoadClientsDataFromFile(string FileName) {
 	fstream MyFile;
 	vector<strClient> Clients;
 
@@ -118,7 +118,7 @@ void PrintAllClientsData(vector<strClient> vClients) {
 	cout <<"\n_______________________________________________________";
 
 	cout << "_________________________________________\n" << endl;
-	cout << "| " << left << setw(15) << "Accout Number";
+	cout << "| " << left << setw(15) << "Account Number";
 	cout << "| " << left << setw(10) << "Pin Code";
 	cout << "| " << left << setw(40) << "Client Name";
 	cout << "| " << left << setw(12) << "Phone";
@@ -139,7 +139,7 @@ int main()
 {
 	/*PrintRecordsTable();*/
 
-	vector<strClient> vClients = LoadCleintsDataFromFile(ClientsFileName);
+	vector<strClient> vClients = LoadClientsDataFromFile(ClientsFileName);
 
 	PrintAllClientsData(vClients);
 
