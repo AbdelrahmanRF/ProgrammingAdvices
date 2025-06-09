@@ -28,6 +28,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 04         | ✅ Completed   | Problem Solving #1                     |
 | 05         | ✅ Completed   | Problem Solving #2                     |
 | 06         | ✅ Completed   | C++ Level 2                            |
+| 07         | ✅ Completed   | Problem Solving #3                     |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
