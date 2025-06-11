@@ -12,6 +12,8 @@
 *.sqlite
 *.vspx
 .vs/
+*.sln
+*.vcxproj*
 
 # Build directories
 Debug/
