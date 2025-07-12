@@ -20,16 +20,17 @@ This repository is my personal workspace for learning and applying concepts from
 
 ## 🚀 Progress Overview
 
-| **Course** | **Status**     | **Notes**                              |
+| **Course** | **Status**     | **Notes**                               |
 | ---------- | --------------  | -------------------------------------- |
-| 01         | ✅ Completed   | Learned about programming fundamentals |
+| 01         | ✅ Completed   | Foundations Level 1                    |
 | 02         | ✅ Completed   | Problem Solving in theory              |
-| 03         | ✅ Completed   | C++ Fundamentals                       |
+| 03         | ✅ Completed   | C++ Level 1                            |
 | 04         | ✅ Completed   | Problem Solving #1                     |
 | 05         | ✅ Completed   | Problem Solving #2                     |
 | 06         | ✅ Completed   | C++ Level 2                            |
 | 07         | ✅ Completed   | Problem Solving #3                     |
 | 08         | ✅ Completed   | Problem Solving #4                     |
+| 09         | ✅ Completed   | Foundations Level 2                    |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
