@@ -606,3 +606,148 @@ public:
 | Helps utility/logging functions      | Can expose sensitive data           |
 
 
+---
+
+## Nesting 
+*Nesting* means defining one class inside another class.
+
+### 1. Enclosure Class / Enclosing 
+
+An enclosing class is a class that contains another class inside it, called an inner class or nested class.
+
+🔍 Key Notes:
+-Outer is the enclosing class.
+-Inner is the nested (inner) class.
+-The inner class does not automatically have access to private members of the outer class (unless made friend).
+
+### 2. Nested Class / Subclass
+
+This is the inner class that is defined inside another class.
+
+### Why Use Nested Classes?
+
+-Logical grouping: The inner class is used only by the outer class.
+
+-Encapsulation: Keeps implementation details hidden and organized.
+
+-Tighter coupling: The inner class can access private members of the outer class if declared a friend or given access.
+
+---
+
+## this 
+
+### What is this in OOP?
+
+-*this* is a keyword that refers to the current object — the object on which a member function is being called.
+-It allows object methods to refer to themselves — their own properties or other methods.
+
+### ✅ Key Usages of this (OOP-agnostic)✅ Key Usages of this (OOP-agnostic)
+
+| Use Case                                  | Description                 |
+| ----------------------------------------- | --------------------------- |
+| Access instance variables                 | `this.name = "John"`        |
+| Call other instance methods               | `this.doSomething()`        |
+| Distinguish parameters from instance vars | `this.name = name;`         |
+| Pass the object as an argument            | `someFunction(this)`        |
+| Chain method calls                        | `this.setA().setB().setC()` |
+
+
+### 🔹 What is the this pointer in C++?
+
+-this is an implicit pointer available inside non-static member functions.
+
+-It points to the calling object.
+
+-Its type is a pointer to the class
+
+### Usages of this Pointer in C++
+
+| Usage                                      | Explanation                                         | Example                |
+| ------------------------------------------ | --------------------------------------------------- | ---------------------- |
+| 1. Access current object                   | Inside a member function to refer to calling object | `this->x = 5;`         |
+| 2. Return the object itself                | Used in **method chaining**                         | `return *this;`        |
+| 3. Resolve name conflicts                  | If parameter name hides a member variable           | `this->value = value;` |
+| 4. Pass current object to another function | Helpful for callbacks or comparisons                | `compare(this);`       |
+| 5. Inside operator overloading             | To return the modified object                       | `return *this;`        |
+
+### 🔸 Special Notes
+
+| Concept                     | Value                                                               |
+| --------------------------- | ------------------------------------------------------------------- |
+| `*this`                     | Dereferenced pointer to the current object                          |
+| Why pass `*this` to static? | Because static functions don't have `this`                          |
+| Static method limitations   | No access to member variables or functions unless passed explicitly |
+| Pass-by-value caution       | Copy constructor used; avoid for large/complex objects              |
+
+---
+
+## 📦 Passing Objects to Functions in OOP
+
+### Can objects be passed to functions?
+Yes. In OOP, objects behave like basic types (`int`, `string`, etc.) and can be passed to functions in different ways.
+
+| Type         | Description                                                   |
+|--------------|---------------------------------------------------------------|
+| By Value     | A **copy** of the object is passed (copy constructor is called). |
+| By Reference | The original object is passed (modifications affect the original). |
+| By Pointer   | Similar to reference but uses explicit pointer syntax.         |
+
+```cpp
+void ByValue(clsA obj) { /* Copy constructor called */ }
+void ByReference(clsA& obj) { /* Reference, no copy */ }
+void ByPointer(clsA* obj) { /* Access using obj-> */ }
+```
+
+### Temporary Objects (R-Values)
+
+Temporary (unnamed) objects can be created directly in function calls, often using constructors.
+
+```cpp
+#include <vector>
+
+int main() {
+    std::vector<clsA> v;
+    v.push_back(clsA(10)); // Temporary object
+}
+```
+
+Temporary objects are automatically destroyed after the full expression ends.
+
+### Dynamic Arrays of Objects
+
+You can allocate dynamic arrays of objects using the new keyword.
+
+```cpp
+int n = 3;
+clsA* arr = new clsA[n]; // Default constructor called for each
+
+for (int i = 0; i < n; ++i) {
+    arr[i].Print();
+}
+
+delete[] arr;
+
+```
+
+### Static Array of Objects with Parameterized Constructor
+Initialize an array of objects using constructor calls:
+
+```cpp
+clsA obj[] = { clsA(10), clsA(20), clsA(30) };
+
+for (int i = 0; i < 3; i++) {
+    obj[i].Print();
+}
+```
+
+💡 This is useful when each object requires a specific state during creation.
+
+### Summary
+
+| Topic                             | Notes                                                 |
+| --------------------------------- | ----------------------------------------------------- |
+| Pass by Value                     | Copy is made; invokes copy constructor                |
+| Pass by Reference                 | Direct access to original object                      |
+| Temporary Object                  | Exists for one statement or expression                |
+| Dynamic Array of Objects          | Use `new[]` and `delete[]`                            |
+| Parameterized Constructor + Array | Easily initialize fixed-size array with unique values |
