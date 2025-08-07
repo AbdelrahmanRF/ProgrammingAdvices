@@ -31,6 +31,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 07         | ✅ Completed   | Problem Solving #3                     |
 | 08         | ✅ Completed   | Problem Solving #4                     |
 | 09         | ✅ Completed   | Foundations Level 2                    |
+| 10         | ✅ Completed   | OOP (Concepts)                         |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
