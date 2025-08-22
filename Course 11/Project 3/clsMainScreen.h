@@ -12,6 +12,7 @@
 #include "clsDeleteClientScreen.h"
 #include "clsUpdateClientScreen.h"
 #include "clsFindClientScreen.h"
+#include "clsTransactionsScreen.h"
 
 class clsMainScreen : protected clsScreen
 {
@@ -40,9 +41,9 @@ class clsMainScreen : protected clsScreen
         clsFindClientScreen::ShowFindClientScreen();
     };
 
-    static void _ShowTransactionMenu()
+    static void _ShowTransactionsMenu()
     {
-
+        clsTransactionsScreen::ShowTransactionsMenu();
     };
 
     static void ShowManageUsersMenu()
@@ -78,7 +79,7 @@ class clsMainScreen : protected clsScreen
         eDeleteClient = 3,
         eUpdateClient = 4,
         eFindClient = 5,
-        eOpenTransactionMenu = 6,
+        eOpenTransactionsMenu = 6,
         eManageUsers = 7,
         eLogout = 8,
     };
@@ -116,9 +117,10 @@ class clsMainScreen : protected clsScreen
             _BackToMainMenu();
             break;
 
-        case eOpenTransactionMenu:
+        case eOpenTransactionsMenu:
             system("cls");
-            _ShowTransactionMenu();
+            _ShowTransactionsMenu();
+            _BackToMainMenu();
             break;
 
         case eManageUsers:

@@ -263,5 +263,19 @@ public:
 
 		return TotalBalance;
 	}
+
+	void Deposit(double Amount)
+	{
+		_Balance += Amount;
+		Save();
+	}
+
+	bool Withdraw(double Amount)
+	{
+		if (Amount > _Balance) return false;
+
+		_Balance -= Amount;
+		Save();
+	}
 };
 
