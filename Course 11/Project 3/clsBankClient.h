@@ -153,19 +153,19 @@ public:
 
 	__declspec(property(get = GetBalance, put = SetBalance)) float Balance;
 
-	void Print() {
-		cout << "\nClient Card:\n";
-		cout << "------------------------------------------------\n";
-		cout << "FirstName                 : " << FirstName << endl;
-		cout << "LastName                  : " << LastName << endl;
-		cout << "FullName                  : " << GetFullName() << endl;
-		cout << "Email                     : " << Email << endl;
-		cout << "Phone                     : " << Phone << endl;
-		cout << "Acc. Number               : " << _AccountNumber << endl;
-		cout << "Pin Code                  : " << PinCode << endl;
-		cout << "Balance                   : " << Balance << endl;
-		cout << "------------------------------------------------\n";
-	}
+	//void Print() {
+	//	cout << "\nClient Card:\n";
+	//	cout << "------------------------------------------------\n";
+	//	cout << "FirstName                 : " << FirstName << endl;
+	//	cout << "LastName                  : " << LastName << endl;
+	//	cout << "FullName                  : " << GetFullName() << endl;
+	//	cout << "Email                     : " << Email << endl;
+	//	cout << "Phone                     : " << Phone << endl;
+	//	cout << "Acc. Number               : " << _AccountNumber << endl;
+	//	cout << "Pin Code                  : " << PinCode << endl;
+	//	cout << "Balance                   : " << Balance << endl;
+	//	cout << "------------------------------------------------\n";
+	//}
 
 	static clsBankClient Find(string AccountNumber) {
 		fstream ClientsFile;
