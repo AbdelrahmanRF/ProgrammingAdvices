@@ -14,6 +14,8 @@
 #include "clsFindClientScreen.h"
 #include "clsTransactionsScreen.h"
 #include "clsManageUsersScreen.h"
+#include "Global.h"
+#include "clsUser.h"
 
 class clsMainScreen : protected clsScreen
 {
@@ -52,11 +54,20 @@ class clsMainScreen : protected clsScreen
         clsManageUsersScreen::ShowManageUsersMenu();
     };
 
-    static void _ShowEndScreen()
-    {
-        _DrawScreenHeader("\tProgram Ends :-)");
-    };
+    //static void _ShowEndScreen()
+    //{
+    //    _DrawScreenHeader("\tProgram Ends :-)");
+    //};
 
+    static void _Logout()
+    {
+        CurrentUser = clsUser::Find("", "");
+    }
+
+    static void _ShowAccessDeniedScreen()
+    {
+        _DrawScreenHeader("Access Denied, Conact Your Admin.");
+    }
 
     static void _BackToMainMenu()
     {
@@ -85,55 +96,88 @@ class clsMainScreen : protected clsScreen
         eLogout = 8,
     };
 
-    static void _PerformMainMenuOption(enMainMenuOptions MainMenuOption) 
-    {
+    static clsUser::enPermissions GetRequiredPermission(enMainMenuOptions MainMenuOption) {
         switch (MainMenuOption) {
         case eListClient:
-            system("cls");
-            _ShowAllClientsScreen();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pListClients;
         case eAddNewClient:
-            system("cls");
-            _ShowAddNewClientsScreen();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pAddNewClient;
         case eDeleteClient:
-            system("cls");
-            _ShowDeleteClientScreen();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pDeleteClient;
         case eUpdateClient:
-            system("cls");
-            _ShowUpdateClientScreen();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pUpdateClients;
         case eFindClient:
-            system("cls");
-            _ShowFindClientScreen();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pFindClient;
         case eOpenTransactionsMenu:
-            system("cls");
-            _ShowTransactionsMenu();
-            _BackToMainMenu();
-            break;
-
+            return clsUser::enPermissions::pTransactions;
         case eManageUsers:
-            system("cls");
-            ShowManageUsersMenu();
-            _BackToMainMenu();
-            break;
+            return clsUser::enPermissions::pManageUsers;
+        default:
+            return clsUser::enPermissions::eAll;
+        }
+        return clsUser::enPermissions::eAll;
+    }
 
-        case eLogout:
+    static void _PerformMainMenuOption(enMainMenuOptions MainMenuOption) 
+    {
+        clsUser::enPermissions RequiredPermission = GetRequiredPermission(MainMenuOption);
+
+        if (MainMenuOption == eLogout || CurrentUser.Permissions == -1 || (CurrentUser.Permissions & RequiredPermission))
+        {
+            switch (MainMenuOption) {
+            case eListClient:
+                system("cls");
+                _ShowAllClientsScreen();
+                _BackToMainMenu();
+                break;
+
+            case eAddNewClient:
+                system("cls");
+                _ShowAddNewClientsScreen();
+                _BackToMainMenu();
+                break;
+
+            case eDeleteClient:
+                system("cls");
+                _ShowDeleteClientScreen();
+                _BackToMainMenu();
+                break;
+
+            case eUpdateClient:
+                system("cls");
+                _ShowUpdateClientScreen();
+                _BackToMainMenu();
+                break;
+
+            case eFindClient:
+                system("cls");
+                _ShowFindClientScreen();
+                _BackToMainMenu();
+                break;
+
+            case eOpenTransactionsMenu:
+                system("cls");
+                _ShowTransactionsMenu();
+                _BackToMainMenu();
+                break;
+
+            case eManageUsers:
+                system("cls");
+                ShowManageUsersMenu();
+                _BackToMainMenu();
+                break;
+
+            case eLogout:
+                system("cls");
+                _Logout();
+                break;
+            }
+        }
+        else
+        {
             system("cls");
-            _ShowEndScreen();
-            //Login();
+            _ShowAccessDeniedScreen();
+            _BackToMainMenu();
         }
     }
 
