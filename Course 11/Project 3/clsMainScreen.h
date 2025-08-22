@@ -13,6 +13,7 @@
 #include "clsUpdateClientScreen.h"
 #include "clsFindClientScreen.h"
 #include "clsTransactionsScreen.h"
+#include "clsManageUsersScreen.h"
 
 class clsMainScreen : protected clsScreen
 {
@@ -48,7 +49,7 @@ class clsMainScreen : protected clsScreen
 
     static void ShowManageUsersMenu()
     {
-
+        clsManageUsersScreen::ShowManageUsersMenu();
     };
 
     static void _ShowEndScreen()
@@ -126,6 +127,7 @@ class clsMainScreen : protected clsScreen
         case eManageUsers:
             system("cls");
             ShowManageUsersMenu();
+            _BackToMainMenu();
             break;
 
         case eLogout:

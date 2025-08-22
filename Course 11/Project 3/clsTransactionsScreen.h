@@ -38,7 +38,7 @@ class clsTransactionsScreen : protected clsScreen
     static short _ReadUserOption(string Message)
     {
         cout << setw(37) << left << "" << Message;
-        short Option = clsInputValidate::ReadNumberBetween(1, 8);
+        short Option = clsInputValidate::ReadNumberBetween(1, 4);
 
         return Option;
     }
