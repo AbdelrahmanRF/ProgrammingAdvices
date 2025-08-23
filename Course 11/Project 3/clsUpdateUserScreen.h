@@ -66,6 +66,10 @@ class clsUpdateUserScreen : protected clsScreen
         cin >> Answer;
         if (toupper(Answer) == 'Y') Permissions += clsUser::enPermissions::pManageUsers;
 
+        cout << "Login Register? y/n? ";
+        cin >> Answer;
+        if (toupper(Answer) == 'Y') Permissions += clsUser::enPermissions::pLoginRegister;
+
         return Permissions;
     }
 

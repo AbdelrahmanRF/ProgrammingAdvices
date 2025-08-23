@@ -67,7 +67,7 @@ public:
         }
         else
         {
-            cout << "\nCannot withdraw, Insuffecient Balance!\n";
+            cout << "\nCannot withdraw, Insufficient Balance!\n";
             cout << "\nAmount to withdraw is: " << Amount << endl;
             cout << "Your Balance is: " << BankClient.Balance << endl;
         }

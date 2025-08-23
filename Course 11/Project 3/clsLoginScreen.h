@@ -11,15 +11,24 @@ using namespace std;
 
 class clsLoginScreen : protected clsScreen
 {
-	static void _Login()
+	static bool _Login()
 	{
 		bool LoginFailed = false;
+		short LoginTrials = 3;
 		string Username, Password;
 		do
 		{
 			if (LoginFailed) 
 			{
-				cout << "\nInvalid Username/Password!\n\n";
+				--LoginTrials;
+				cout << "\nInvalid Username/Password!\n";
+				cout << "You Have " << LoginTrials << " trial(s) to Login\n\n";
+			}
+
+			if (LoginTrials == 0)
+			{
+				cout << "\nYour are Locked after 3 failed trails\n";
+				return false;
 			}
 
 			cout << "Enter Username: ";
@@ -32,20 +41,20 @@ class clsLoginScreen : protected clsScreen
 			
 			LoginFailed = CurrentUser.isEmpty();
 			
-
 		} while (LoginFailed);
 
+		CurrentUser.LogRegister();
 		clsMainScreen::ShowMainMenu();
-
+		return true;
 	}
 
 public:
 
-	static void ShowLoginScreen()
+	static bool ShowLoginScreen()
 	{
 		system("cls");
 		_DrawScreenHeader("\t  Login Screen");
-		_Login();
+		return _Login();
 	}
 };
 

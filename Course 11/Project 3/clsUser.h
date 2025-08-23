@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include "clsPerson.h"
+#include "clsUtil.h"
 #include "clsString.h"
 
 using namespace std;
@@ -28,22 +29,35 @@ class clsUser : public clsPerson
 	{
 		vector<string> vUser = clsString::Split(Line, Separator);
 
-		return clsUser(UpdateMode, vUser[0], vUser[1], vUser[2], vUser[3], vUser[4], vUser[5], stoi(vUser[6]));
+		return clsUser(UpdateMode, vUser[0], vUser[1], vUser[2], vUser[3], vUser[4], clsUtil::DecryptText(vUser[5]), stoi(vUser[6]));
 	}
 
 	static string _ConvertUserObjectToLine(clsUser User, string Separator = "#//#")
 	{
 		string UserDataLine = "";
 
-		UserDataLine = UserDataLine + User.FirstName + Separator;
-		UserDataLine = UserDataLine + User.LastName + Separator;
-		UserDataLine = UserDataLine + User.Email + Separator;
-		UserDataLine = UserDataLine + User.Phone + Separator;
-		UserDataLine = UserDataLine + User.Username + Separator;
-		UserDataLine = UserDataLine + User.Password + Separator;
-		UserDataLine = UserDataLine + to_string(User.Permissions);
+		UserDataLine += User.FirstName + Separator;
+		UserDataLine += User.LastName + Separator;
+		UserDataLine += User.Email + Separator;
+		UserDataLine += User.Phone + Separator;
+		UserDataLine += User.Username + Separator;
+		UserDataLine += clsUtil::EncryptText(User.Password) + Separator;
+		UserDataLine += to_string(User.Permissions);
 
 		return UserDataLine;
+	}
+
+	string _PrepareLogLine(string Separator = "#//#")
+	{
+		string UserLogLine = "";
+
+		UserLogLine += clsDate::GetSystemDateTimeString() + Separator;
+
+		UserLogLine += Username + Separator;
+		UserLogLine += clsUtil::EncryptText(Password) + Separator;
+		UserLogLine += to_string(Permissions);
+
+		return UserLogLine;
 	}
 
 	static  vector<clsUser> _LoadUsersDataFromFile()
@@ -121,10 +135,17 @@ class clsUser : public clsPerson
 	}
 
 public:
+	struct stLoginRegister {
+		string DateTime;
+		string Username;
+		string Password;
+		int Permissions;
+	};
+
 	enum enPermissions
 	{
 		eAll = -1, pListClients = 1, pAddNewClient = 2, pDeleteClient = 4, 
-		pUpdateClients = 8, pFindClient = 16, pTransactions = 32, pManageUsers = 64
+		pUpdateClients = 8, pFindClient = 16, pTransactions = 32, pManageUsers = 64, pLoginRegister = 128
 	};
 
 	clsUser(enMode Mode, string FirstName, string LastName, string Email, string Phone, string Username, string Password, int Permissions)
@@ -214,7 +235,6 @@ public:
 		return _GetEmptyUserObject();
 	}
 
-
 	static bool IsUserExist(string Username)
 	{
 		return !clsUser::Find(Username).isEmpty();
@@ -268,7 +288,6 @@ public:
 		return true;
 	}
 
-
 	static vector<clsUser> GetUsersList()
 	{
 		return _LoadUsersDataFromFile();
@@ -283,6 +302,57 @@ public:
 			return true;
 		else
 			return false;
+	}
+
+	void LogRegister()
+	{
+		fstream LogFile;
+
+		string LogLine = _PrepareLogLine();
+
+		LogFile.open("LoginRegister.txt", ios::out | ios::app);
+
+		if (LogFile.is_open())
+		{
+			LogFile << LogLine << endl;
+
+			LogFile.close();
+		}
+	}
+
+	static stLoginRegister _ConvertLineToLogObject(string Line, string Separator = "#//#")
+	{
+		vector<string> vLogs = clsString::Split(Line, Separator);
+		stLoginRegister LoginRegister;
+
+		LoginRegister.DateTime = vLogs[0];
+		LoginRegister.Username = vLogs[1];
+		LoginRegister.Password = vLogs[2];
+		LoginRegister.Permissions = stoi(vLogs[3]);
+
+		return LoginRegister;
+	}
+
+	static vector<stLoginRegister> GetLogsList()
+	{
+		vector<stLoginRegister> UsersLog;
+		fstream LogFile;
+
+		LogFile.open("LoginRegister.txt", ios::in);
+
+		if (LogFile.is_open())
+		{
+			string Line;
+
+			while (getline(LogFile, Line))
+			{
+				UsersLog.push_back(_ConvertLineToLogObject(Line));
+			}
+
+			LogFile.close();
+		}
+
+		return UsersLog;
 	}
 };
 

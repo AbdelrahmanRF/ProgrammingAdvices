@@ -2,8 +2,9 @@
 
 #include <iostream>  
 #include <string>  
-#include  "clsString.h"
-#include  "clsPerson.h"
+#include "clsString.h"
+#include "clsPerson.h"
+#include "Global.h"
 #include <vector>  
 #include <fstream>  
 using namespace std;
@@ -107,7 +108,49 @@ class clsBankClient : public clsPerson
 		_AddDataLineToFile(_ConvertClientObjectToLine(*this));
 	}
 
+	string _PrepareTransferLogLine(float Amount, clsBankClient DestinationClient, string Separator = "#//#")
+	{
+		string TransferLogLine = "";
+
+		TransferLogLine += clsDate::GetSystemDateTimeString() + Separator;
+
+		TransferLogLine += GetAccountNumber() + Separator;
+		TransferLogLine += DestinationClient.GetAccountNumber() + Separator;
+		TransferLogLine += to_string(Amount) + Separator;
+		TransferLogLine += to_string(Balance) + Separator;
+		TransferLogLine += to_string(DestinationClient.Balance) + Separator;
+		TransferLogLine += CurrentUser.Username;
+
+		return TransferLogLine;
+	}
+
+	void _LogTransfer(double Amount, clsBankClient DestinationClient)
+	{
+		fstream TransferLogFile;
+
+		TransferLogFile.open("TransferLog.txt", ios::out | ios::app);
+
+		string LogLine = _PrepareTransferLogLine(Amount, DestinationClient);
+
+		if (TransferLogFile.is_open())
+		{
+			TransferLogFile << LogLine << endl;
+
+			TransferLogFile.close();
+		}
+	}
+
 public:
+
+	struct stTransferLog {
+		string DateTime;
+		string SourceAccNo;
+		string DestinationAccNo;
+		float Amount;
+		float SourceBalance;
+		float DestinationBalance;
+		string Username;
+	};
 
 	clsBankClient(enMode Mode, string FirstName, string LastName, string Email, string Phone, string AccountNumber, string PinCode, float Balance)
 		: clsPerson(FirstName, LastName, Email, Phone) 
@@ -152,20 +195,6 @@ public:
 	}
 
 	__declspec(property(get = GetBalance, put = SetBalance)) float Balance;
-
-	//void Print() {
-	//	cout << "\nClient Card:\n";
-	//	cout << "------------------------------------------------\n";
-	//	cout << "FirstName                 : " << FirstName << endl;
-	//	cout << "LastName                  : " << LastName << endl;
-	//	cout << "FullName                  : " << GetFullName() << endl;
-	//	cout << "Email                     : " << Email << endl;
-	//	cout << "Phone                     : " << Phone << endl;
-	//	cout << "Acc. Number               : " << _AccountNumber << endl;
-	//	cout << "Pin Code                  : " << PinCode << endl;
-	//	cout << "Balance                   : " << Balance << endl;
-	//	cout << "------------------------------------------------\n";
-	//}
 
 	static clsBankClient Find(string AccountNumber) {
 		fstream ClientsFile;
@@ -277,5 +306,57 @@ public:
 		_Balance -= Amount;
 		Save();
 	}
+
+	bool Transfer(double Amount, clsBankClient& DestinationClient)
+	{
+		if (Amount > _Balance) return false;
+
+		Withdraw(Amount);
+
+		DestinationClient.Deposit(Amount);
+
+		_LogTransfer(Amount, DestinationClient);
+
+		return true;
+	}
+
+	static stTransferLog ConvertLineToTransferLogObject(string Line, string Separator = "#//#") 
+	{
+		vector<string> vTransferLogs = clsString::Split(Line, Separator);
+		stTransferLog TransferLog;
+
+		TransferLog.DateTime = vTransferLogs[0];
+		TransferLog.SourceAccNo = vTransferLogs[1];
+		TransferLog.DestinationAccNo = vTransferLogs[2];
+		TransferLog.Amount = stof(vTransferLogs[3]);
+		TransferLog.SourceBalance = stof(vTransferLogs[4]);
+		TransferLog.DestinationBalance = stof(vTransferLogs[5]);
+		TransferLog.Username = vTransferLogs[6];
+
+		return TransferLog;
+	}
+
+	static vector<stTransferLog> GetTransferLogsList()
+	{
+		fstream TransferLogFile;
+		vector<stTransferLog> TransferLogs;
+
+		TransferLogFile.open("TransferLog.txt", ios::in);
+
+		if (TransferLogFile.is_open())
+		{
+			string Line;
+
+			while (getline(TransferLogFile, Line))
+			{
+				TransferLogs.push_back(ConvertLineToTransferLogObject(Line));
+			}
+
+			TransferLogFile.close();
+		}
+
+		return TransferLogs;
+	}
+
 };
 

@@ -16,6 +16,7 @@
 #include "clsManageUsersScreen.h"
 #include "Global.h"
 #include "clsUser.h"
+#include "clsLoginRegisterScreen.h"
 
 class clsMainScreen : protected clsScreen
 {
@@ -49,15 +50,15 @@ class clsMainScreen : protected clsScreen
         clsTransactionsScreen::ShowTransactionsMenu();
     };
 
-    static void ShowManageUsersMenu()
+    static void _ShowManageUsersMenu()
     {
         clsManageUsersScreen::ShowManageUsersMenu();
     };
 
-    //static void _ShowEndScreen()
-    //{
-    //    _DrawScreenHeader("\tProgram Ends :-)");
-    //};
+    static void _ShowLoginRegisterScreen()
+    {
+        clsLoginRegisterScreen::ShowLoginRegisterScreen();
+    };
 
     static void _Logout()
     {
@@ -66,7 +67,7 @@ class clsMainScreen : protected clsScreen
 
     static void _ShowAccessDeniedScreen()
     {
-        _DrawScreenHeader("Access Denied, Conact Your Admin.");
+        _DrawScreenHeader("Access Denied, Contact Your Admin.");
     }
 
     static void _BackToMainMenu()
@@ -79,7 +80,7 @@ class clsMainScreen : protected clsScreen
     static short _ReadUserOption(string Message) 
     {
         cout << setw(37) << left << "" << Message;
-        short Option = clsInputValidate::ReadNumberBetween(1,8);
+        short Option = clsInputValidate::ReadNumberBetween(1,9);
 
         return Option;
     }
@@ -93,25 +94,36 @@ class clsMainScreen : protected clsScreen
         eFindClient = 5,
         eOpenTransactionsMenu = 6,
         eManageUsers = 7,
-        eLogout = 8,
+        eLoginRegister = 8,
+        eLogout = 9,
     };
 
     static clsUser::enPermissions GetRequiredPermission(enMainMenuOptions MainMenuOption) {
         switch (MainMenuOption) {
         case eListClient:
             return clsUser::enPermissions::pListClients;
+
         case eAddNewClient:
             return clsUser::enPermissions::pAddNewClient;
+
         case eDeleteClient:
             return clsUser::enPermissions::pDeleteClient;
+
         case eUpdateClient:
             return clsUser::enPermissions::pUpdateClients;
+
         case eFindClient:
             return clsUser::enPermissions::pFindClient;
+
         case eOpenTransactionsMenu:
             return clsUser::enPermissions::pTransactions;
+
         case eManageUsers:
             return clsUser::enPermissions::pManageUsers;
+
+        case eLoginRegister:
+            return clsUser::enPermissions::pLoginRegister;
+
         default:
             return clsUser::enPermissions::eAll;
         }
@@ -163,7 +175,13 @@ class clsMainScreen : protected clsScreen
 
             case eManageUsers:
                 system("cls");
-                ShowManageUsersMenu();
+                _ShowManageUsersMenu();
+                _BackToMainMenu();
+                break;
+
+            case eLoginRegister:
+                system("cls");
+                _ShowLoginRegisterScreen();
                 _BackToMainMenu();
                 break;
 
@@ -199,10 +217,11 @@ public:
         cout << setw(37) << left << "" << "\t[5] Find Client.\n";
         cout << setw(37) << left << "" << "\t[6] Transactions.\n";
         cout << setw(37) << left << "" << "\t[7] Manage Users.\n";
-        cout << setw(37) << left << "" << "\t[8] Logout.\n";
+        cout << setw(37) << left << "" << "\t[8] Login Register.\n";
+        cout << setw(37) << left << "" << "\t[9] Logout.\n";
         cout << setw(37) << left << "" << "===========================================\n";
 
-        _PerformMainMenuOption((enMainMenuOptions)_ReadUserOption("What Do You Want To Do? [1 to 8]? "));
+        _PerformMainMenuOption((enMainMenuOptions)_ReadUserOption("What Do You Want To Do? [1 to 9]? "));
     }
 };
 

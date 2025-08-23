@@ -47,6 +47,8 @@ public:
 
     static void ShowUpdateClientScreen() 
     {
+        _DrawScreenHeader("\t Update Client Screen");
+
         string AccountNumber = "";
 
         cout << "\nPlease Enter client Account Number: ";

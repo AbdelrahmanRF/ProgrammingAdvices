@@ -139,17 +139,17 @@ public:
 		return T;
 	}
 
-	static string EncryptText(string Text, short EncryptionKey) {
-		for (int i = 0; i < Text.length(); i++) {
-			Text[i] = char((int)Text[i] + EncryptionKey);
-		}
+	static string EncryptText(string Text, short EncryptionKey = 2) {
+		for (char & C : Text)
+			C += EncryptionKey;
+
 		return Text;
 	}
 
-	static string DecryptText(string Text, short EncryptionKey) {
-		for (int i = 0; i < Text.length(); i++) {
-			Text[i] = char((int)Text[i] - EncryptionKey);
-		}
+	static string DecryptText(string Text, short EncryptionKey = 2) {
+		for (char& C : Text)
+			C -= EncryptionKey;
+
 		return Text;
 	}
 

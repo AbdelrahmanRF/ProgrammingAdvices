@@ -105,6 +105,27 @@ public:
         return clsDate(Day, Month, Year);
     }
 
+    static string GetSystemDateTimeString() {
+        time_t t = time(0);
+        tm* now = localtime(&t);
+
+        short Day, Month, Year, Hour, Minute, Second;
+
+        Day = now->tm_mday;
+        Month = now->tm_mon + 1;
+        Year = now->tm_year + 1900;
+
+        Hour = now->tm_hour;
+        Minute = now->tm_min;
+        Second = now->tm_sec;
+
+        char buffer[22];
+
+        sprintf(buffer, "%02d/%02d/%04d - %02d:%02d:%02d", Day, Month, Year, Hour, Minute, Second);
+
+        return string(buffer);
+    }
+
     static bool IsValidDate(clsDate Date) {
         if (Date.Day < 1 || Date.Day>31)
             return false;

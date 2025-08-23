@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include "Global.h"
+#include "clsDate.h"
+
 using namespace std;
 
 class clsScreen
@@ -14,6 +17,10 @@ protected:
             cout << "\n\t\t\t\t\t  " << SubTitle;
         }
         cout << "\n\t\t\t\t\t______________________________________\n\n";
+
+        cout << "\t\t\t\t\tUser: " << CurrentUser.Username << "\n";
+        cout << "\t\t\t\t\tDate: " << clsDate::DateToString(clsDate()) << "\n\n";
+
     }
 };
 
