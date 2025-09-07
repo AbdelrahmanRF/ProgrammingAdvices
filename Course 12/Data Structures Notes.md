@@ -40,7 +40,7 @@ There are different basic and advanced types of data structures that are used in
 
 ## Differences between Data Structures and Database
 
-**1. Definition**
+### 1. Definition
 
 - **Data Structure**:
 
@@ -56,7 +56,7 @@ There are different basic and advanced types of data structures that are used in
 
 <br>
 
-**2. Purpose**
+### 2. Purpose
 
 - **Data Structure**: Focuses on efficient access, modification, and processing of data while the program is running.
 
@@ -64,7 +64,7 @@ There are different basic and advanced types of data structures that are used in
 
 <br>
 
-**3. Storage**
+### 3. Storage
 
 - **Data Structure**: Data is usually stored in memory (RAM) → temporary, fast access.
 
@@ -72,7 +72,7 @@ There are different basic and advanced types of data structures that are used in
 
 <br>
 
-**4. Scale**
+### 4. Scale
 
 - **Data Structure**: Works with data that fits in memory, usually for program-level operations.
 
@@ -80,7 +80,7 @@ There are different basic and advanced types of data structures that are used in
 
 <br>
 
-**5. Operations**
+### 5. Operations
 
 - **Data Structure**: Searching, sorting, insertion, deletion, traversal.
 
@@ -88,7 +88,7 @@ There are different basic and advanced types of data structures that are used in
 
 <br>
 
-**6. Examples in Use**
+### 6. Examples in Use
 
 - **Data Structure**:
 
@@ -110,7 +110,7 @@ There are different basic and advanced types of data structures that are used in
 
 ### Classification of Data Structures
 
-**1. Primitive (Basic) Data Structures**
+#### 1. Primitive (Basic) Data Structures
 
 - Examples:
 
@@ -122,7 +122,7 @@ There are different basic and advanced types of data structures that are used in
 
    **Boolean**
 
-**2. Non-Primitive (Advanced) Data Structures**
+#### 2. Non-Primitive (Advanced) Data Structures
 
 - Two main categories:
 
@@ -617,3 +617,463 @@ void func(short x)
 1 + log n -> O(log n)
 ```
 
+---
+
+## Binary Data Structure
+
+### 1. What Does It Mean?
+
+- Normally, we think of data structures as arrays, stacks, queues, etc.
+
+- But binary itself (bits 0 and 1) can be organized to represent information → making it a “data structure”.
+
+- This is often called a bitmask or flag system.
+
+- Each bit in an integer represents whether a feature/permission/option is ON (1) or OFF (0).
+
+
+### Example: Access Permissions
+
+Instead of storing many bool variables like:
+
+```c++
+bool canListClients;
+bool canAddClient;
+bool canDeleteClient;
+bool canUpdateClient;
+...
+```
+
+We can store all of them in one integer, using binary encoding.
+
+```c++
+enum enPermissions {
+    eAll = -1,
+    pListClients      = 1,    // 0000 0001
+    pAddNewClient     = 2,    // 0000 0010
+    pDeleteClient     = 4,    // 0000 0100
+    pUpdateClients    = 8,    // 0000 1000
+    pFindClient       = 16,   // 0001 0000
+    pTransactions     = 32,   // 0010 0000
+    pManageUsers      = 64,   // 0100 0000
+    pCurrencyExchange = 128,  // 1000 0000
+    pLoginRegister    = 256   // 1 0000 0000
+};
+```
+Here each bit corresponds to one permission.
+
+### 3. Example Function: Checking Permission
+
+```c++
+bool CheckAccessPermission(enPermissions Permission) {
+    if (this->Permissions == eAll)
+        return true;
+
+    if ((Permission & this->Permissions) == Permission)
+        return true;
+    else
+        return false;
+}
+```
+
+**Explanation**
+
+- `&` (bitwise AND) is used to test if a **specific bit is set**.
+
+- Example:
+
+    - Permissions = 5 → binary 0101 (has pListClients=1 and pDeleteClient=4).
+
+    - Check pDeleteClient (4) → 5 & 4 = 4 ✅ allowed.
+
+    - Check pAddNewClient (2) → 5 & 2 = 0 ❌ not allowed.
+
+### 4. Why is Binary Useful as a Data Structure?
+
+- Memory Efficient → one integer can hold 32 or 64 flags instead of 32/64 booleans.
+
+- Fast Operations → bitwise &, |, ^ are very fast.
+
+- Compact Representation → easy to store, transfer, and check multiple conditions.
+
+- Real-Life Usage:
+
+    - File system permissions (rwx in Linux).
+
+    - User roles and security systems.
+
+    - Feature toggles in software.
+
+    - Compression and cryptography.
+
+---
+
+## Array Data Structure
+
+### What is an Array?
+
+- An array is a variable that can store multiple values of the same type.
+
+- It is a collection of data items stored at contiguous memory locations.
+
+- Arrays store homogeneous data (same type elements) together.
+
+### Is an Array Always Fixed Size?
+
+**Depends on they language** for example:
+
+- C language → Array has a fixed size. Once declared, it cannot shrink or expand.
+
+- C++ language → Supports both fixed-size arrays and dynamic arrays (using pointers, new, or containers like std::vector).
+
+**Operations on Arrays**
+
+- Arrays allow random access to elements (direct indexing).
+
+- This makes operations like searching, insertion (at index), and access efficient.
+
+- Array elements can be accessed easily using loops.
+
+### Time Complexities in Arrays
+
+**1. Insertion**
+
+Insert value at a specific index.
+
+```c++
+arr[2] = 18;
+```
+
+**Time Complexity:**
+
+O(1) → inserting a single element
+
+O(N) → inserting all elements (where N = size of array)
+
+
+**2. Access**
+
+Directly access element by index.
+
+```c++
+return arr[2];
+```
+
+**Time Complexity:**
+
+O(1) → access a single element
+
+O(N) → access all elements
+
+**3. Searching**
+
+Must check elements one by one (linear search).
+
+```c++
+// Searching for value 55
+for (int i = 0; i < n; i++) {
+    if (arr[i] == 55) return true;
+}
+```
+
+**Time Complexity: O(N)**
+
+
+### Applications of Arrays
+
+- Storing elements of the same data type.
+
+- Useful when the size of the dataset is known.
+
+- Solving matrix problems.
+
+- Applied as a lookup table in computers.
+
+- Database records often use arrays.
+
+- Used in sorting algorithms.
+
+- Grouping variables of the same type under one name.
+
+- Used for Computer Graphics (CGR).
+
+- Basis for implementing other data structures: Stacks, Queues, Heaps, Hash Tables, etc.
+
+---
+
+## Matrix Data Structure
+
+**Matrix**: A matrix is a 2D array where elements are arranged in rows and columns.
+
+Elements are stored in contiguous memory locations, just like arrays.
+
+Each element is accessed using two indices: row index and column index.
+
+### Time Complexity on The Matrix
+
+**1. Insertion**
+
+Insert value at a specific matrix index.
+
+```c++
+arr[2][1] = 18;
+```
+
+**Time Complexity:**
+
+O(1) → inserting a single element (random access).
+
+O(N²) → inserting all elements in an N x N matrix.
+
+
+**2. Access**
+
+```c++
+return arr[2][1];
+```
+
+**Time Complexity:**
+
+O(1) → accessing a single element.
+
+O(N²) → accessing all elements.
+
+**3. Searching**
+
+```c++
+// Searching for value 55 in an N x N matrix
+for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+        if (arr[i][j] == 55) return true;
+    }
+}
+```
+**Time Complexity: O(N²)**
+
+
+**Applications of Matrices**
+
+- Representing graphs in adjacency matrix form.
+
+- Used in computer graphics (image processing, transformations).
+
+- Solving mathematical problems (linear algebra, matrix multiplication).
+
+- Used in dynamic programming (DP tables).
+
+- Representing maps, grids, and game boards.
+
+---
+
+## Vector Data Structure
+
+### Definition
+
+- **A dynamic array** (resizable array).
+
+- Unlike normal arrays (fixed size), vectors can **grow or shrink** at runtime.
+
+- Provides **random access** (like arrays) and **automatic resizing** when capacity is exceeded.
+
+
+### Key Characteristics
+
+- **Contiguous memory allocation** (like arrays).
+
+- **Dynamic resizing** → automatically doubles capacity when full.
+
+- **Homogeneous elements** → all elements are of the same type.
+
+- **Efficient access** → direct indexing using `[]`.
+
+---
+
+## Stack Data Structure
+
+A **linear data structure** that follows the principle:
+
+**LIFO (Last In, First Out)** → the last element inserted is the first one removed.
+
+
+### Basic Operations
+
+- **push(x)** → insert element x at the top.
+
+- **pop()** → remove the element at the top.
+
+- **top() / peek()** → view the element at the top without removing it.
+
+- **bottom()** → view the first element inserted (not always supported in standard implementations).
+
+- **empty()** → check if the stack is empty.
+
+- **size()** → return the number of elements in the stack.
+
+### Common Time Complexities
+
+| Operation            | Complexity         |
+| -------------------- | ------------------ |
+| Access by index      | **O(1)**           |
+| Update by index      | **O(1)**           |
+| Append at end        | **Amortized O(1)** |
+| Insert/Delete middle | **O(n)**           |
+| Search (linear)      | **O(n)**           |
+
+
+### Examples in Real Life
+
+- **Call Stack** (function calls in programming):
+
+    - When a function is called, it’s pushed onto the stack.
+
+    - When it finishes, it’s popped off.
+
+- **Undo / Redo operations** in text editors.
+
+- **Browser history** (Back button).
+
+- **Balancing parentheses in compilers**.
+
+
+### Implementation
+
+Can be implemented using:
+
+- **Array / Vector** (dynamic resizing).
+
+- **Linked List** (flexible, no size limit).
+
+---
+
+## Queue Data Structure
+
+A Queue is a **linear data structure** that follows the principle:
+
+**FIFO (First In, First Out)**
+
+The **first element inserted** is the **first element removed**.
+
+A **real-world queue (line at a supermarket)**:
+
+- People enter from the back.
+
+- People leave from the front.
+
+### Basic Operations
+
+- **push / enqueue** → Insert an element at the back of the queue.
+
+- **pop / dequeue** → Remove the element from the front of the queue.
+
+- **front / peek** → Access the element at the front without removing it.
+
+- **back** → Access the last element.
+
+- **size** → Number of elements in the queue.
+
+- **empty** → Checks whether the queue has no elements.
+
+### Time Complexity
+
+| Operation         | Complexity |
+| ----------------- | ---------- |
+| Enqueue           | **O(1)**   |
+| Dequeue           | **O(1)**   |
+| Access front/back | **O(1)**   |
+| Size/Empty        | **O(1)**   |
+
+
+### Real-Life Examples of Queues
+
+- **Print queue** → documents get printed in the order submitted.
+
+- **Task scheduling** in operating systems.
+
+- **Customer service line** (first customer served first).
+
+- **Breadth-first search (BFS)** in graphs.
+
+- **Data buffers** (e.g., streaming, IO operations).
+
+---
+
+
+## Singly Linked List
+
+**A Singly Linked List (SLL)** is a **linear data structure** made of nodes, where:
+
+- Each **node** contains:
+
+    1. **Data** (the value you want to store).
+
+    2. **Next pointer** (a reference to the next node in the list).
+
+- The **last node** points to **NULL** (end of the list).
+
+Unlike arrays, linked lists do not use contiguous memory → they are dynamic in size.
+
+
+### Basic Operations
+
+**1. Insert At Beginning**
+
+- Create a new node.
+
+- Point its next to the current head.
+
+- Update head to this new node.
+
+- **Time Complexity: O(1)**
+
+
+**2. Find (Search)**
+
+- Traverse the list from head until you find the value or reach the end.
+
+- **Time Complexity: O(n)**
+
+**3. Insert After (insert a node after a given node)**
+
+- Find the target node.
+
+- Update new node’s next to point to target’s next.
+
+- Update target’s next to point to the new node.
+
+- **Time Complexity: O(1)** (after finding the node)
+
+**4. Insert At End**
+
+- Traverse to the last node.
+
+- Point the last node’s next to the new node.
+
+- **Time Complexity: O(n)**
+
+**5. Delete Node (by value)**
+
+- Find the node (and its previous node).
+
+- Update previous node’s next to skip the deleted node.
+
+- Free the deleted node.
+
+- **Time Complexity: O(n)**
+
+**6. Delete First Node**
+
+- Update head to the second node.
+
+- Free the old head.
+
+- **Time Complexity: O(1)**
+
+**7. Delete Last Node**
+
+- Traverse to the second-to-last node.
+
+- Set its next to NULL.
+
+- Free the last node.
+
+- **Time Complexity: O(n)**
