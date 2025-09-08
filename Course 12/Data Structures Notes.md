@@ -1077,3 +1077,38 @@ Unlike arrays, linked lists do not use contiguous memory → they are dynamic in
 - Free the last node.
 
 - **Time Complexity: O(n)**
+
+---
+
+## Doubly Linked List
+
+A **Doubly Linked List** is a **linear data structure** where:
+
+- Each node contains:
+
+    1. **Data** (value to store)
+
+    2. **Next pointer** (points to the next node)
+
+    3. **Prev pointer** (points to the previous node)
+
+- The **first node’s prev = NULL** and the **last node’s next = NULL**.
+
+Because each node points in both directions, traversal can go **forward or backward**, unlike singly linked lists.
+
+
+### Advantages of DLL
+
+- Can traverse both directions.
+
+- Easier deletion (no need to keep track of previous node explicitly).
+
+- More flexible than SLL.
+
+### Disadvantages of DLL
+
+- Requires extra memory for prev pointer.
+
+- Slightly more complex implementation.
+
+---
