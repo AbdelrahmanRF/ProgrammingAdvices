@@ -1112,3 +1112,169 @@ Because each node points in both directions, traversal can go **forward or backw
 - Slightly more complex implementation.
 
 ---
+
+## Circular Linked List
+
+**A Circular Linked List** is similar to a normal linked list, but **the last node does not point to NULL**.
+Instead:
+
+- In a **Singly Circular Linked List (SCLL)** → the last node’s `next` points back to the **head**.
+
+- In a **Doubly Circular Linked List (DCLL)** → the last node’s `next` points to the head, and the head’s `prev` points back to the last node.
+
+This makes traversal **circular (infinite loop if not careful)**.
+
+
+### Advantages of Circular Linked List
+
+- No fixed beginning or end (you can start anywhere).
+
+- Efficient for applications where data is continuously cycled.
+
+- Useful for managing buffers and queues in OS/embedded systems.
+
+
+### Real Example: Circular Buffer (Ring Buffer)
+
+**A circular buffer **is a fixed-size buffer that **wraps around** when it reaches the end.
+
+- When the buffer is full, new data **overwrites the oldest data**.
+
+- Often implemented with **arrays + modulo arithmetic**, but the concept is the same as a circular linked list.
+
+### Applications:
+
+- **Streaming data** (audio/video buffers).
+
+- **Networking** (packet queues).
+
+- **Producer–consumer problems** in OS.
+
+---
+
+## ADT
+
+### What is an ADT?
+
+- **Abstract Data Type (ADT) is a conceptual model** of a data structure.
+
+- It tells us what operations are possible, but **not how they are implemented**.
+
+- Think of it as a **contract**: it defines the interface but hides the internal details.
+
+
+### Why is ADT important?
+
+- **Encapsulation**: Users don’t need to know implementation details.
+
+- **Flexibility**: Same ADT can have multiple implementations (e.g., a Queue can be implemented using arrays or linked lists).
+
+- **Abstraction**: Focuses on the "what" instead of the "how."
+
+### ADT Example: Stack
+
+Defined operations:
+
+- `push(x)` → add item to top
+
+- `pop()` → remove item from top
+
+- `top()` → peek at top item
+
+- `isEmpty()` → check if stack is empty
+
+The ADT doesn’t say whether you use an array or linked list to build it.
+
+
+### Examples of Common ADTs
+
+- **Vector (Dynamic Array)**
+
+- **Stack**
+
+- **Queue**
+
+- **Deque**
+
+- **Priority Queue**
+
+- **List (Linked List, Array List)**
+
+- **Map / Dictionary**
+
+- **Set**
+
+---
+
+## Map Data Structure
+
+**A Map** is a **data structure** that stores elements in **key–value pairs**:
+
+- **Key**: unique identifier (must be unique).
+
+- **Value**: the data associated with that key.
+
+The key acts like an index, but unlike arrays, keys don’t need to be integers — they can be strings, numbers, or even objects (depending on the language).
+
+### Key Properties
+
+- **Unique Keys** → no two elements can have the same key.
+
+- **Values are not unique** → multiple keys can point to the same value.
+
+- **Efficient Lookup** → you can quickly find a value by its key.
+
+- **Implementation may vary**:
+
+    - **Balanced BST (like Red-Black Tree)** → used in C++ `std::map` (keeps keys sorted).
+
+    - **Hash Table** → used in `std::unordered_map`, Python `dict`, Java `HashMap`.
+
+### Common Operations
+
+- `insert(key, value)` → add a new pair.
+
+- `erase(key)` → remove by key.
+
+- `find(key)` → check if a key exists / return its value.
+
+- `size()` → number of pairs.
+
+- `empty()` → check if map is empty.
+
+- Access by `map[key]` → get or set the value of a key.
+
+---
+
+## Union
+
+### What is a Union?
+
+**A Union** in C++ is **a user-defined data type** (like struct) that lets you store **different data types in the same memory location**.
+
+Unlike a `struct`, where each member gets its own memory, in a `union` all members share the same memory.
+
+`Purpose` → save memory when you need to store one value out of many possible types.
+
+
+### Key Properties of Unions
+
+**1. Shared Memory:**
+Only one member of the union can hold a value at any time.
+Writing to one member overwrites the others.
+
+**2. Size:**
+The size of the union is equal to the size of its largest member.
+
+**3. Memory Efficient:**
+Useful in low-level programming (like embedded systems) where memory is limited.
+
+
+### Limitations & Risks
+
+- **Undefined behavior**: If you read from a member that wasn’t the last one written, the value is meaningless.
+
+- **Type safety issues**: You must track which member is “active.”
+
+- **No automatic tracking**: Unlike `std::varian`t (C++17), a union doesn’t remember which type it currently holds.
+
