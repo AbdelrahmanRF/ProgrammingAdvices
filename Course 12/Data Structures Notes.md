@@ -1276,5 +1276,5 @@ Useful in low-level programming (like embedded systems) where memory is limited.
 
 - **Type safety issues**: You must track which member is “active.”
 
-- **No automatic tracking**: Unlike `std::varian`t (C++17), a union doesn’t remember which type it currently holds.
+- **No automatic tracking**: Unlike `std::variant` (C++17), a union doesn’t remember which type it currently holds.
 
