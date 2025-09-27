@@ -25,7 +25,14 @@ app.config
 AssemblyInfo.cs
 *.csproj
 
+# Windows Forms
+*.resx
+*.settings
+
 # User-specific files & directories
 Course 01
 Course 05/Project2/
 Course 09
+
+# Keep Files 
+!Course 14/**/*.sln
