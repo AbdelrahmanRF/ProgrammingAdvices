@@ -75,5 +75,35 @@ namespace WindowsForms_misc_2
             Form frm = new FListView();
             frm.Show();
         }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            Form frm = new FErrorProvider();
+            frm.Show();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            Form frm = new FTrackBar();
+            frm.Show();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            Form frm = new FNumericUpDown();
+            frm.Show();
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            Form frm = new Containers();
+            frm.Show();
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            Form frm = new Dialogs();
+            frm.Show();
+        }
     }
 }

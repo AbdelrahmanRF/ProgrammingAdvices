@@ -35,6 +35,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 11         | ✅ Completed   | OOP (Applications)                     |
 | 12         | ✅ Completed   | Data Structures Level 1                |
 | 13         | ✅ Completed   | Problem Solving #5                     |
+| 14         | ✅ Completed   | C# Level 1                             |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
