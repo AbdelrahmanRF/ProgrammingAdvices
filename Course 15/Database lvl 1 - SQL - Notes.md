@@ -418,3 +418,256 @@ SQL is important because it:
 - **DBMS** → Old, simple system, **no relations**, **hard to scale**.
 
 - **RDBMS** → Advanced system, **uses tables** + **relations**, **more secure**, **SQL-based**, and **multi-user friendly**.
+
+---
+
+## Database Design: Conceptual Design
+
+
+### What is ERD? and Why?
+
+### What is ERD?
+
+- **ERD (Entity Relationship Diagram)** is a **visual representation** that shows how entities (tables) in a database are related to each other.
+
+- It serves as a **blueprint** or **structural design** for a database before it’s implemented.
+
+- ERDs are built using **entities**, **attributes**, and **relationships**.
+
+
+### What is an ER Model?
+
+- The **Entity-Relationship Model** defines the **logical structure** of a database using diagrams.
+
+- It is part of the **database design process** and helps analyze data requirements **before implementation**.
+
+- ER modeling ensures that the database structure aligns with business rules and data relationships.
+
+### Why Use ER Diagrams in DBMS?
+
+- Helps **visualize and conceptualize** the database design.
+
+- Shows which **fields (attributes)** belong to which **entities**.
+
+- Provides a clear overview of **data relationships**, **reducing design complexity**.
+
+- Enables **faster and more accurate** database development.
+
+- Serves as a **communication tool** between designers, developers, and stakeholders.
+
+- Offers a **preview of the logical structure** of the database before actual creation.
+
+### Conclusion
+
+- ER Diagrams are essential for **conceptual database design** in RDBMS.
+
+- They help ensure **clarity**, **consistency**, and **correctness** before implementation.
+
+- Both developers and users can understand the **database structure** easily through an ERD.
+
+---
+
+### ERD Symbols
+
+### Basic ERD Symbols
+
+| Symbol                  | Meaning          | Description                                                                                                        |
+| ----------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| **Rectangle**        | **Entity**       | Represents an entity (a real-world object or concept that has data stored about it, e.g., *Student*, *Course*).    |
+| **Double Rectangle** | **Weak Entity**  | Represents an entity that depends on another entity for its identification (e.g., *OrderItem* depends on *Order*). |
+| **Diamond**          | **Relationship** | Shows the relationship between entities (e.g., *Enrolls*, *Contains*, *Assigned To*).                              |
+| **Line**              | **Connection**   | Connects entities to relationships or attributes to entities.                                                      |
+
+
+### Attribute Symbols
+
+| Symbol                            | Meaning                         | Description                                                                                                               |
+| --------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Ellipse**                     | **Attribute**                   | Represents a property or characteristic of an entity (e.g., *Name*, *Salary*).                                            |
+| **Double Ellipse**              | **Multivalued Attribute**       | Represents attributes that can have multiple values (e.g., *Phone Numbers*).                                              |
+| **Dashed Ellipse**              | **Derived Attribute**           | Represents attributes that can be derived or calculated from other attributes (e.g., *Age* derived from *Date of Birth*). |
+| **Ellipses Connected Together** | **Composite Attribute**         | Represents an attribute made up of smaller parts (e.g., *Full Name* made of *First Name* and *Last Name*).                |
+| **Underlined Attribute**        | **Key Attribute (Primary Key)** | Represents a unique identifier for the entity (e.g., *StudentID*).                                                        |
+
+---
+
+### Components of ERD
+
+**An Entity Relationship Diagram (ERD)** is based on three main components:
+
+**1. Entities**
+
+- Strong Entity
+
+- Weak Entity
+
+
+**2. Attributes**
+
+- Key Attribute
+
+- Composite Attribute
+
+- Multivalued Attribute
+
+- Derived Attribute
+
+**3. Relationships**
+
+- One-to-One (1:1)
+
+- One-to-Many (1:N)
+
+- Many-to-One (N:1)
+
+- Many-to-Many (M:N)
+
+---
+
+### Entity (Strong) and Weak Entity
+
+
+**1. Strong Entity**
+
+- A **Strong Entity** represents an independent object or concept — something that exists on its own without depending on another entity.
+
+- Represented by a **single rectangle** in an ER diagram.
+
+- Each strong entity **must have a primary key**, which uniquely identifies each record.
+
+- Example:
+
+    - In a Student–Course system, both `Student` and `Course` are strong entities.
+
+    - `StudentID` and `CourseID` are their respective primary keys.
+
+
+**2. Weak Entity**
+
+- A **Weak Entity** depends on another entity (called the **owner entity**) for its existence.
+
+- It **does not have a primary key** of its own — instead, it uses a **partial key** (also called a discriminator) combined with the owner’s key to create uniqueness.
+
+- Represented by a **double rectangle** in an ER diagram.
+
+- Example:
+
+    - `Employee` → strong entity (has primary key `EmployeeID`)
+
+    - `Dependent` → weak entity (depends on `Employee`, uses something like `DependentName` as a discriminator).
+
+    - Together, `EmployeeID + DependentName` uniquely identify each dependent.
+
+
+---
+
+### Attributes
+
+
+### What is an Attribute?
+
+- An **attribute** represents a property or characteristic of an entity.
+
+- In an ER diagram, **attributes are shown as ovals (ellipses)** connected to their entity.
+
+- Example:
+
+    - For the entity `Student`, attributes can include `StudentID`, `Name`, `Age`, and `Email`.
+
+
+**1. Key Attribute**
+
+- **A key attribute** uniquely identifies each record in an entity set.
+
+- It is **underlined** in an ER diagram.
+
+- Example:
+
+    - `StudentID` uniquely identifies each `Student`.
+
+- Symbol: Single oval with the attribute name underlined
+
+**2. Composite Attribute**
+
+- **A composite attribute** is made up of multiple sub-attributes.
+
+- It represents data that can be broken down into smaller meaningful parts.
+
+- Example:
+
+    - `FullName` → consists of `FirstName` and `LastName`.
+
+- Symbol: An oval connected to smaller ovals representing its components.
+
+**3. Multivalued Attribute**
+
+- **A multivalued attribute** can hold multiple values for a single entity.
+
+- Example:
+
+    - A `Student` can have multiple `PhoneNumbers`.
+
+- Symbol: Double oval.
+
+**4. Derived Attribute**
+
+- A **derived attribute** is one that can be **calculated or derived** from another attribute.
+
+- Example:
+
+    - `Age` can be derived from `DateOfBirth`.
+
+- Symbol: Dashed oval.
+
+---
+
+### Relationships
+
+### What is a Relationship?
+
+- A **relationship** shows how two or more entities are connected to each other in a database.
+
+- Represented by a **diamond shape** in an ER diagram.
+
+- Relationships help define how data in one entity relates to data in another.
+
+
+### Examples of Relationships
+
+- Student → Enrolled → Course
+
+    - `Student` and Course are `entities`.
+
+    - Enrolled is the relationship that shows which student is enrolled in which course.
+
+- Customer → Makes → Order → Contains → Product
+
+    - A `Customer` places an `Order`.
+
+    - An `Order` contains one or more `Products`.
+
+    - This shows a chain of relationships between multiple entities.
+
+- Employee → WorksOn → Project
+
+    - An `Employee` works on one or more `Projects`.
+
+    - Additionally, an `Employee` can Manage a `Project`.
+
+### Self-Referencing Relationship
+
+- When an entity is related to itself, it’s called a **self-relationship** (or **recursive relationship**).
+
+- Example:
+
+    - Each `Employee` has one `Manager`, and the `Manager` is also an `Employee`.
+
+### Types of Relationships
+
+- **One-to-One (1:1)**
+
+- **One-to-Many (1:N)**
+
+- **Many-to-One (N:1)**
+
+- **Many-to-Many (M:N)**
