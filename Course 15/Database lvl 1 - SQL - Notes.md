@@ -671,3 +671,206 @@ SQL is important because it:
 - **Many-to-One (N:1)**
 
 - **Many-to-Many (M:N)**
+
+---
+
+### One-to-One Relationship
+
+A **One-to-One (1:1) Relationship** means that **one entity** instance is associated with **only one instance** of another entity — and **vice versa**.
+
+In ER diagrams, this is shown by connecting two entities with a line labeled “1” on both ends.
+
+### Examples
+
+**1. Student — Identification Card**
+
+- **Entities**: Student, Identification-Card
+
+- **Relationship**: Has
+
+- Each **student** has **only one ID card**, and each **ID card** belongs to **only one student**.
+
+**Diagram:**
+
+`Student (1) ───<has>─── (1) Identification-Card`
+
+
+**2. Citizen — Car**
+
+- **Entities**: Citizen, Car
+
+- **Relationship**: Own
+
+- Each **citizen** owns **one car**, and each **car** is owned by **only one citizen**.
+
+**Diagram:**
+
+`Citizen (1) ───<own>─── (1) Car`
+
+---
+
+### One-to-Many/Many-to-One Relationship
+
+A **One-to-Many (1:N)** or **Many-to-One (N:1)** relationship occurs when **a single record in one entity** is related to **multiple records in another entity**, but each of those records relates **back to only one** in the first entity.
+
+
+**1. One-to-Many (1:N) Relationship**
+
+**Definition:**
+
+When a **single element** of an entity is associated with **more than one element** of another entity.
+
+**Example:**
+
+- A **customer** can place **many orders**,
+
+- But an **order** belongs to **only one customer**.
+
+**Diagram:**
+
+`Customer (1) ───<places>─── (N) Order`
+
+
+**2. Many-to-One (N:1) Relationship**
+
+**Definition:**
+
+When **many elements** of an entity relate to **one element** of another entity.
+
+**Example:**
+
+- **Many employees** can work on the **same project**,
+
+- But each **employee** works on **only one project**.
+
+**Diagram:**
+
+`Employee (N) ───<works on>─── (1) Project`
+
+
+**3. Self-Referencing One-to-Many Relationship**
+
+**Example:**
+
+- Each **employee** has **one manager**,
+
+- But **a manager** can manage **many employees**.
+
+`Employee (1) <──<manages>── (N) Employee`
+
+--- 
+
+### Many-to-Many (M:N) Relationship
+
+A **Many-to-Many (M:N)** relationship occurs when **multiple elements** of one entity are related to **multiple elements** of another entity.
+
+In other words:
+
+One record in Entity A can relate to many records in Entity B,
+
+And one record in Entity B can also relate to many records in Entity A.
+
+
+### Example 1 — Student & Course
+
+**Entities**: Student, Course
+
+**Relationship**: Enrolled
+
+- A **student** can enroll in **many courses**,
+
+- A **course** can have **many students** enrolled.
+
+**Diagram:**
+
+`Student (M) ───<Enrolled>─── (N) Course`
+
+**Important:**
+
+In a real database, **a bridge (junction)** table is used to handle many-to-many relationships — for example, `Enrollment(StudentID, CourseID)`.
+
+
+### Example 2 — Customer, Order, and Product
+
+**Entities**: Customer, Order, Product
+
+**Relationships**: Place, Contains
+
+- A **customer** can place **many orders**,
+
+- Each **order** can contain **many products**,
+
+- And each **product** can appear in **many orders**.
+
+**Diagram:**
+
+`Customer ───<Place>─── Order ───<Contains>─── Product`
+
+This means the `Order` entity often acts as a **bridge** between **Customer** and **Product**.
+
+---
+
+### Cardinality vs Ordinality
+
+### Cardinality
+
+- **Definition**:
+
+Cardinality defines the **maximum number** of times an instance in one entity can be associated with instances of another entity.
+
+- **Purpose**:
+
+It shows the **upper limit** of participation in a relationship.
+
+- **Examples:**
+
+    - A **customer** can place **many orders** → (Maximum = Many)
+
+    - A **student** can enroll in **up to 5 courses** → (Maximum = 5)
+
+- **Notation Example**:
+
+    - 1 (One)
+
+    - N / M (Many)
+
+
+### Ordinality
+
+- **Definition**:
+
+Ordinality specifies the **minimum number** of times an instance in one entity must be associated with an instance in another entity.
+
+In simpler terms — it tells whether the relationship is **optional** or **mandatory**.
+
+- **Purpose**:
+
+It defines the **lower limit** of participation in a relationship.
+
+- **Examples:**
+
+    - A **customer** may or may not place an order → (Minimum = 0 → Optional)
+
+    - An **order** must belong to a customer → (Minimum = 1 → Mandatory)
+
+
+### Common Representation in ERD
+
+Cardinality and Ordinality are often written together as:
+
+- (0,1) → Optional, at most one
+
+- (1,1) → Mandatory, exactly one
+
+- (0,N) → Optional, many
+
+- (1,N) → Mandatory, many
+
+**Example:**
+
+`Customer (1,N)──<Places>──(1,1) Order`
+
+→ Each order must belong to exactly one customer, but a customer can place many orders.
+
+---
+
