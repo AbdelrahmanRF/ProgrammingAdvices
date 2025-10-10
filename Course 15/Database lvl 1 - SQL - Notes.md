@@ -1042,3 +1042,87 @@ It is a **top-down approach**, meaning we start from a **general entity** and cr
 To represent **unique attributes or relationships** that apply only to certain members of a general entity set.
 
 ---
+
+## Relational Schema
+
+### What is Relational Schema?
+
+- A **relational schema** is a collection of **relations (tables)** and the relationships among them.
+
+- It defines the **design and structure** of a database at the logical level.
+
+- Each relation schema includes:
+
+    - The **relation name** (table name)
+
+    - A **set of attributes** (field/column names)
+
+    - The **domain** (data type or range of values) for each attribute
+
+---
+
+### Converting to Relational Schema
+
+**1. Convert Self-Referential (Recursive) Relationship → Relational Schema**
+
+Add a **foreign key** in the same table referencing its own **primary key**.
+
+Example: `Employee(EmpID, Name, ManagerID(FK))`
+
+**2. Convert Composite / Multivalued / Derived Attributes → Relational Schema**
+
+- **Composite Attribute:**
+
+    Split into separate columns.
+
+    Example: `Name → FirstName, LastName`
+
+- **Multivalued Attribute:**
+
+    Create a new table containing the **primary key** of the original entity + the multivalued attribute.
+
+    Example: `StudentPhones(StudentID, Phone)`
+
+- **Derived Attribute:**
+    Do not store it — it can be calculated when needed.
+    Example: `Age` is derived from `BirthDate`.
+
+**3. Convert One-to-One Relationship → Relational Schema**
+
+Take the **primary key** from one entity and make it a **foreign key** in the other table.
+
+If the relationship is **mandatory**, both entities can be **merged** into one table.
+
+Example: `Person(PersonID)` ↔ `Passport(PassportID, PersonID FK)`
+
+**4. Convert One-to-Many / Many-to-One Relationship → Relational Schema**
+
+Place the **primary key** of the “One” side as a **foreign key** in the “Many” side.
+
+Example: `Department(DeptID)` → `Employee(EmpID, DeptID FK)`
+
+**5. Convert Many-to-Many Relationship → Relational Schema**
+
+Create an **associative (bridge) table** that contains the **primary keys** of both entities as **foreign keys**.
+
+Example: `Student(SID) ↔ Course(CID)` → `Enrollment(SID, CID, Grade)`
+
+**6. Convert Generalization & Specialization → Relational Schema**
+
+The relationship is always **One-to-One**.
+
+Use the **primary key** from the parent entity as a **foreign key** in the child entity.
+
+Example:
+
+`Person(PersonID)` → `Employee(EmployeeID, PersonID FK)` → `Secretary(SecID, EmpID FK)`
+
+**7. Convert Associative Entity → Relational Schema**
+
+If the **associative entity** has its own attributes, it becomes a **separate table**.
+
+It contains the **foreign keys** from the related entities + its own attributes.
+
+Example: `Assignment(EmpID, ProjID, Hours)`
+
+---
