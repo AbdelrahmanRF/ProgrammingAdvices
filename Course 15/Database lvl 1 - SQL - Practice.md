@@ -414,4 +414,652 @@ Use `INSERT INTO SELECT` when copying into an **existing** one.
 
 ---
 
+## Miscellaneous SQL Concepts 
 
+### Identity Field (Auto Increment)
+
+Auto-increment allows a unique number to be generated automatically when a new record is inserted into a table.
+
+Often, this is the primary key field that we would like to be created automatically every time a new record is inserted.
+
+#### Syntax for SQL Server
+The following SQL statement defines the `Personid` column to be an auto-increment primary key field in the `Persons` table:
+
+```sql
+CREATE TABLE Persons (
+    Personid int IDENTITY(1,1) PRIMARY KEY,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int
+);
+```
+
+The **MS SQL Server** uses the `IDENTITY` keyword to perform an auto-increment feature.
+
+In the example above, the starting value for `IDENTITY` is **1**, and it will increment by **1** for each new record.
+
+> 💡 **Tip:** To specify that the `Personid` column should start at value 10 and increment by 5, use `IDENTITY(10,5)`.
+
+To insert a new record into the `Persons` table, we will **not** have to specify a value for the `Personid` column (a unique value will be added automatically):
+
+```sql
+INSERT INTO Persons (FirstName, LastName)
+VALUES ('Mohammed', 'Salem');
+```
+
+This SQL statement inserts a new record into the `Persons` table. The `Personid` column is assigned a unique value, while `FirstName` and `LastName` are filled accordingly.
+
+---
+
+### Delete vs Truncate Statement
+
+The main difference between both statements is that `DELETE FROM` supports a `WHERE` clause, whereas `TRUNCATE` does **not**.
+
+Also, the `DELETE FROM` statement **does not reset** the auto number (identity field), while `TRUNCATE` **resets** the identity field.
+
+That means we can delete single or multiple rows using `DELETE FROM`, while `TRUNCATE` deletes **all** records from the table at once.
+
+Examples:
+
+```sql
+DELETE FROM Customers;
+```
+
+is similar to:
+
+```sql
+TRUNCATE TABLE Customers;
+```
+
+> ⚠️ **Note:** Use `DELETE FROM` if you want conditional deletion (using `WHERE`), otherwise `TRUNCATE` is faster for clearing all data.
+
+---
+
+### Foreign Key Constraint
+
+In SQL, we can create a relationship between two tables using the **FOREIGN KEY** constraint.
+
+A foreign key ensures referential integrity — values in one table must correspond to values in another.
+
+Example relationship:
+
+- The `customer_id` field in the `Orders` table is a **FOREIGN KEY** that references the `id` field in the `Customers` table.
+
+This means that the value of `customer_id` in the `Orders` table must exist as an `id` in the `Customers` table.
+
+> 🧠 **Note:** A foreign key can reference any column in the parent table, but it is generally best practice to reference the **primary key**.
+
+#### Example: Creating Tables with Foreign Key
+
+```sql
+-- Parent table
+CREATE TABLE Customers (
+  id INT,
+  first_name VARCHAR(40),
+  last_name VARCHAR(40),
+  age INT,
+  country VARCHAR(10),
+  PRIMARY KEY (id)
+);
+
+-- Child table referencing Customers
+CREATE TABLE Orders (
+  order_id INT,
+  item VARCHAR(40),
+  amount INT,
+  customer_id INT REFERENCES Customers(id),
+  PRIMARY KEY (order_id)
+);
+```
+
+Here, the value of `customer_id` in `Orders` must exist in the `id` column of `Customers`.
+
+> 📌 **Note:** The syntax may vary slightly across databases — always check your DBMS documentation.
+
+#### Adding a Foreign Key Using ALTER TABLE
+
+We can add a foreign key to an existing table using `ALTER TABLE`:
+
+```sql
+-- Create base tables first
+CREATE TABLE Customers (
+  id INT,
+  first_name VARCHAR(40),
+  last_name VARCHAR(40),
+  age INT,
+  country VARCHAR(10),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Orders (
+  order_id INT,
+  item VARCHAR(40),
+  amount INT,
+  customer_id INT,
+  PRIMARY KEY (order_id)
+);
+
+-- Add foreign key constraint after creation
+ALTER TABLE Orders
+ADD FOREIGN KEY (customer_id) REFERENCES Customers(id);
+```
+---
+
+## SQL - Queries
+
+### SELECT Statement
+The `SELECT` statement is used to retrieve data from a database. The results are stored in a result set.
+
+**Syntax:**
+```sql
+SELECT column1, column2, ...
+FROM table_name;
+```
+To select all columns:
+```sql
+SELECT * FROM table_name;
+```
+
+**Examples:**
+```sql
+SELECT * FROM Employees;
+SELECT Employees.* FROM Employees;
+SELECT ID, FirstName, LastName, MonthlySalary FROM Employees;
+SELECT ID, FirstName, DateOfBirth FROM Employees;
+SELECT * FROM Departments;
+SELECT * FROM Countries;
+```
+
+---
+
+### SELECT DISTINCT Statement
+The `SELECT DISTINCT` statement returns only unique (different) values.
+
+**Syntax:**
+```sql
+SELECT DISTINCT column1, column2, ...
+FROM table_name;
+```
+
+**Examples:**
+```sql
+SELECT DepartmentID FROM Employees;
+SELECT DISTINCT DepartmentID FROM Employees;
+
+SELECT FirstName FROM Employees;
+SELECT DISTINCT FirstName FROM Employees;
+
+SELECT FirstName, DepartmentID FROM Employees;
+SELECT DISTINCT FirstName, DepartmentID FROM Employees;
+```
+
+---
+
+### WHERE Clause (AND, OR, NOT)
+The `WHERE` clause filters records based on specified conditions.
+
+**Syntax:**
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+The `AND`, `OR`, and `NOT` operators can be used to combine multiple conditions.
+
+**Examples:**
+```sql
+SELECT * FROM Employees WHERE Gender = 'F';
+SELECT * FROM Employees WHERE MonthlySalary <= 500;
+SELECT * FROM Employees WHERE NOT MonthlySalary <= 500;
+SELECT * FROM Employees WHERE MonthlySalary < 500 AND Gender = 'F';
+
+SELECT * FROM Employees WHERE CountryID = 1;
+SELECT * FROM Employees WHERE NOT CountryID = 1;
+SELECT * FROM Employees WHERE CountryID <> 1;
+
+SELECT * FROM Employees WHERE DepartmentID = 1;
+SELECT * FROM Employees WHERE DepartmentID = 1 AND Gender = 'M';
+SELECT * FROM Employees WHERE DepartmentID = 1 OR DepartmentID = 2;
+
+SELECT * FROM Employees WHERE ExitDate IS NULL;
+SELECT * FROM Employees WHERE ExitDate IS NOT NULL;
+```
+
+---
+
+### IN Operator
+The `IN` operator allows specifying multiple values in a `WHERE` clause.
+
+**Syntax:**
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE column_name IN (value1, value2, ...);
+```
+
+**Examples:**
+```sql
+SELECT * FROM Employees WHERE DepartmentID IN (1, 2, 5, 7);
+SELECT * FROM Employees WHERE FirstName IN ('Jacob', 'Brooks', 'Harper');
+
+SELECT Departments.Name FROM Departments
+WHERE ID IN (SELECT DepartmentID FROM Employees WHERE MonthlySalary <= 210);
+
+SELECT Departments.Name FROM Departments
+WHERE ID NOT IN (SELECT DepartmentID FROM Employees WHERE MonthlySalary <= 210);
+```
+
+---
+
+### ORDER BY Keyword
+The `ORDER BY` keyword sorts the result set in ascending (`ASC`) or descending (`DESC`) order.
+
+**Syntax:**
+```sql
+SELECT column1, column2, ...
+FROM table_name
+ORDER BY column1, column2, ... ASC|DESC;
+```
+
+**Examples:**
+```sql
+SELECT ID, FirstName, MonthlySalary FROM Employees
+WHERE DepartmentID = 1
+ORDER BY FirstName;
+
+SELECT ID, FirstName, MonthlySalary FROM Employees
+WHERE DepartmentID = 1
+ORDER BY FirstName DESC;
+
+SELECT ID, FirstName, MonthlySalary FROM Employees
+WHERE DepartmentID = 1
+ORDER BY MonthlySalary ASC;
+
+SELECT ID, FirstName, MonthlySalary FROM Employees
+WHERE DepartmentID = 1
+ORDER BY FirstName ASC, MonthlySalary DESC;
+```
+
+---
+
+### SELECT TOP Statement
+
+**The SQL SELECT TOP Clause**
+
+The `SELECT TOP` clause is used to specify the number of records to return.
+
+It is useful for large tables with thousands of records, as returning too many rows can impact performance.
+
+> **Note:** Not all databases support `SELECT TOP`.  
+> MySQL uses `LIMIT`, while Oracle uses `FETCH FIRST n ROWS ONLY` or `ROWNUM`.
+
+**SQL Server / MS Access Syntax:**
+```sql
+SELECT TOP number|percent column_name(s)
+FROM table_name
+WHERE condition;
+```
+
+**Examples:**
+
+```sql
+SELECT * FROM Employees;
+
+-- Show top 5 employees
+SELECT TOP 5 * FROM Employees;
+
+-- Show top 10% of data
+SELECT TOP 10 PERCENT * FROM Employees;
+
+-- Show all salaries (highest to lowest)
+SELECT MonthlySalary FROM Employees
+ORDER BY MonthlySalary DESC;
+
+-- Show all unique salaries (highest to lowest)
+SELECT DISTINCT MonthlySalary FROM Employees
+ORDER BY MonthlySalary DESC;
+
+-- Show the 3 highest salaries
+SELECT DISTINCT TOP 3 MonthlySalary FROM Employees
+ORDER BY MonthlySalary DESC;
+
+-- Show all employees who take one of the 3 highest salaries
+SELECT ID, FirstName, MonthlySalary 
+FROM Employees 
+WHERE MonthlySalary IN (
+    SELECT DISTINCT TOP 3 MonthlySalary FROM Employees
+    ORDER BY MonthlySalary DESC
+)
+ORDER BY MonthlySalary DESC;
+
+-- Show all employees who take one of the 3 lowest salaries
+SELECT ID, FirstName, MonthlySalary 
+FROM Employees 
+WHERE MonthlySalary IN (
+    SELECT DISTINCT TOP 3 MonthlySalary FROM Employees
+    ORDER BY MonthlySalary ASC
+)
+ORDER BY MonthlySalary ASC;
+```
+
+---
+
+### SELECT AS (Aliases)
+
+**SQL Aliases**
+
+SQL aliases give a temporary name to a table or column to make it more readable.
+An alias exists **only for the duration of the query**.
+
+**Syntax:**
+
+```sql
+SELECT column_name AS alias_name
+FROM table_name;
+```
+
+**Examples:**
+
+```sql
+SELECT A = 5 * 4, B = 6 / 2;
+
+SELECT A = 5 * 4, B = 6 / 2 FROM Employees;
+
+SELECT ID, FirstName, A = MonthlySalary / 2 FROM Employees;
+
+SELECT ID, FirstName + ' ' + LastName AS FullName FROM Employees;
+
+SELECT ID, FullName = FirstName + ' ' + LastName FROM Employees;
+
+SELECT ID, FirstName, MonthlySalary, YearlySalary = MonthlySalary * 12 FROM Employees;
+
+SELECT ID, FirstName, MonthlySalary,
+       YearlySalary = MonthlySalary * 12,
+       BonusAmount = MonthlySalary * BonusPerc
+FROM Employees;
+
+SELECT Today = GETDATE();
+
+SELECT ID, 
+       FullName = FirstName + ' ' + LastName,
+       Age = DATEDIFF(YEAR, DateOfBirth, GETDATE())
+FROM Employees;
+```
+
+---
+
+### BETWEEN Operator
+
+**The SQL BETWEEN Operator**
+
+The BETWEEN operator selects values within a given range.
+
+It is inclusive, meaning both the start and end values are included.
+
+**Syntax:**
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE column_name BETWEEN value1 AND value2;
+```
+
+**Examples:**
+
+```sql
+SELECT * FROM Employees
+WHERE (MonthlySalary >= 500 AND MonthlySalary <= 1000);
+
+SELECT * FROM Employees
+WHERE MonthlySalary BETWEEN 500 AND 1000;
+```
+
+---
+
+### COUNT(), SUM(), AVG(), MIN(), MAX() Functions
+
+These aggregate functions are used for mathematical calculations on columns.
+
+**COUNT()** → Counts the number of rows that match a condition.
+
+**AVG()** → Returns the average value of a numeric column.
+
+**SUM()** → Returns the total sum of a numeric column.
+
+**MIN()** → Returns the smallest value.
+
+**MAX()** → Returns the largest value.
+
+**Examples:**
+
+```sql
+SELECT TotalCount = COUNT(MonthlySalary),
+       TotalSum = SUM(MonthlySalary),
+       Average = AVG(MonthlySalary),
+       MinSalary = MIN(MonthlySalary),
+       MaxSalary = MAX(MonthlySalary)
+FROM Employees;
+
+SELECT TotalCount = COUNT(MonthlySalary),
+       TotalSum = SUM(MonthlySalary),
+       Average = AVG(MonthlySalary),
+       MinSalary = MIN(MonthlySalary),
+       MaxSalary = MAX(MonthlySalary)
+FROM Employees
+WHERE DepartmentID = 1;
+
+SELECT * FROM Employees;
+
+SELECT TotalEmployees = COUNT(ID) FROM Employees;
+
+-- COUNT only counts non-null values
+SELECT ResignedEmployees = COUNT(ExitDate) FROM Employees;
+```
+---
+
+### GROUP BY Statement
+
+**The SQL GROUP BY Statement**
+
+The GROUP BY statement groups rows with the same values into summary rows.
+
+It is often used with aggregate functions to group results by one or more columns.
+
+**Syntax:**
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+```
+
+**Examples:**
+
+```sql
+SELECT DepartmentID,
+       TotalCount = COUNT(MonthlySalary),
+       TotalSum = SUM(MonthlySalary),
+       Average = AVG(MonthlySalary),
+       MinSalary = MIN(MonthlySalary),
+       MaxSalary = MAX(MonthlySalary)
+FROM Employees
+GROUP BY DepartmentID
+ORDER BY DepartmentID;
+```
+
+---
+
+### HAVING
+
+The `HAVING` clause was added to SQL because the `WHERE` keyword cannot be used directly with aggregate functions.
+
+**Syntax**
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+HAVING condition
+ORDER BY column_name(s);
+```
+
+**Examples:**
+
+```sql
+SELECT DepartmentID,
+       TotalCount = COUNT(MonthlySalary),
+       TotalSum = SUM(MonthlySalary),
+       Average = AVG(MonthlySalary),
+       MinSalary = MIN(MonthlySalary),
+       MaxSalary = MAX(MonthlySalary)
+FROM Employees
+GROUP BY DepartmentID
+ORDER BY DepartmentID;
+
+-- HAVING acts like WHERE for GROUP BY
+SELECT DepartmentID,
+       TotalCount = COUNT(MonthlySalary),
+       TotalSum = SUM(MonthlySalary),
+       Average = AVG(MonthlySalary),
+       MinSalary = MIN(MonthlySalary),
+       MaxSalary = MAX(MonthlySalary)
+FROM Employees
+GROUP BY DepartmentID
+HAVING COUNT(MonthlySalary) > 100;
+
+-- Same result using a subquery (without HAVING)
+SELECT * FROM (
+    SELECT DepartmentID,
+           TotalCount = COUNT(MonthlySalary),
+           TotalSum = SUM(MonthlySalary),
+           Average = AVG(MonthlySalary),
+           MinSalary = MIN(MonthlySalary),
+           MaxSalary = MAX(MonthlySalary)
+    FROM Employees
+    GROUP BY DepartmentID
+) R1
+WHERE R1.TotalCount > 100;
+```
+
+---
+
+### LIKE 
+
+The `LIKE` operator is used in a `WHERE` clause to search for a specified pattern in a column.
+
+**Wildcards**
+
+- `%` → Represents **zero, one, or multiple characters**
+
+- `_` → Represents **exactly one character**
+
+> **Note**: MS Access uses `*` instead of `%` and `?` instead of `_`.
+
+You can also combine wildcards together for more specific searches.
+
+**Syntax**
+
+```sql
+SELECT column1, column2, ...
+FROM table_name
+WHERE columnN LIKE pattern;
+```
+
+**Examples:**
+
+```sql
+SELECT * FROM Employees;
+
+-- Finds values starting with "a"
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE 'a%';
+
+-- Finds values ending with "a"
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE '%a';
+
+-- Finds values containing "tell" anywhere
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE '%tell%';
+
+-- Finds values starting and ending with "a"
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE 'a%a';
+
+-- Finds values with "a" in the second position
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE '_a%';
+
+-- Finds values with "a" in the third position
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE '__a%';
+
+-- Finds values starting with "a" and at least 3 chars long
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE 'a__%';
+
+-- Finds values starting with "a" and at least 4 chars long
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE 'a___%';
+
+-- Finds values starting with "a" or "b"
+SELECT ID, FirstName FROM Employees
+WHERE FirstName LIKE 'a%' OR FirstName LIKE 'b%';
+```
+
+---
+
+### Wildcards 
+
+Wildcards are used with the `LIKE` operator to substitute one or more characters in a string.
+
+**Examples:**
+
+| Symbol | Description                                            |
+| :----- | :----------------------------------------------------- |
+| `%`    | Represents zero or more characters                     |
+| `_`    | Represents a single character                          |
+| `[]`   | Represents any single character within the brackets    |
+| `^`    | Represents any character **not** in the brackets       |
+| `-`    | Represents any character within a specified range      |
+| `{}`   | Represents escaped characters (used in some databases) |
+
+
+```sql
+-- Update data
+UPDATE Employees 
+SET FirstName = 'Mohammed', LastName = 'Abu-Hadhoud'
+WHERE ID = 285;
+
+UPDATE Employees 
+SET FirstName = 'Mohammad', LastName = 'Maher'
+WHERE ID = 286;
+
+-- Search for exact names
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName = 'Mohammed' OR FirstName = 'Mohammad';
+
+-- Search for both 'Mohammed' and 'Mohammad' (pattern)
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName LIKE 'Mohamm[ae]d';
+
+-- Exclude 'Mohammed' and 'Mohammad'
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName NOT LIKE 'Mohamm[ae]d';
+
+-- Search for employees whose names start with a, b, or c
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName LIKE 'a%' OR FirstName LIKE 'b%' OR FirstName LIKE 'c%';
+
+-- Simplified version using character ranges
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName LIKE '[abc]%';
+
+-- Search for names starting with any letter from a to l
+SELECT ID, FirstName, LastName FROM Employees
+WHERE FirstName LIKE '[a-l]%';
+```
