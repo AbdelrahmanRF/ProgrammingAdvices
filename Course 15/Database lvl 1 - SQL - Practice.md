@@ -1063,3 +1063,364 @@ WHERE FirstName LIKE '[abc]%';
 SELECT ID, FirstName, LastName FROM Employees
 WHERE FirstName LIKE '[a-l]%';
 ```
+
+---
+
+## Joins
+
+**What is a JOIN?**
+
+A **JOIN** clause in SQL is used to **combine rows from two or more tables** based on a **related column** between them.
+
+It allows you to retrieve meaningful data spread across multiple tables, avoiding duplication and ensuring data normalization.
+
+## 🔸 Types of SQL JOINs
+
+| Type | Description |
+|------|--------------|
+| **INNER JOIN** | Returns records that have matching values in both tables. |
+| **LEFT (OUTER) JOIN** | Returns all records from the left table, and the matched records from the right table. |
+| **RIGHT (OUTER) JOIN** | Returns all records from the right table, and the matched records from the left table. |
+| **FULL (OUTER) JOIN** | Returns all records when there is a match in either left or right table. |
+
+---
+
+### (Inner) Join
+
+### Description
+`INNER JOIN` returns only the records that have matching values in both tables.  
+Rows that do **not** have matches in both tables are **excluded** from the result.
+
+### Syntax
+```sql
+SELECT columns
+FROM table1
+INNER JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+**Examples**
+
+```sql
+SELECT Customers.CustomerID, Customers.FirstName, Orders.Amount
+FROM Customers
+INNER JOIN Orders
+ON Customers.CustomerID = Orders.Customer;
+
+SELECT Customers.CustomerID, Customers.FirstName, Orders.Amount
+FROM Customers
+INNER JOIN Orders
+ON Customers.CustomerID = Orders.Customer
+WHERE Orders.Amount >= 500;
+
+-- Inner Join Two Tables
+SELECT Employees.ID, Employees.FirstName, Employees.LastName, Departments.Name AS DeptName
+FROM Employees
+INNER JOIN Departments
+ON Employees.DepartmentID = Departments.ID;
+
+-- Inner Join with WHERE
+SELECT Employees.ID, Employees.FirstName, Employees.LastName, Departments.Name AS DeptName
+FROM Employees
+INNER JOIN Departments
+ON Employees.DepartmentID = Departments.ID
+WHERE Departments.Name = 'IT';
+
+-- Three tables with WHERE
+SELECT Employees.ID, Employees.FirstName, Employees.LastName, 
+       Departments.Name AS DeptName, Countries.Name AS CountryName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.ID
+INNER JOIN Countries ON Employees.CountryID = Countries.ID
+WHERE Countries.Name = 'USA';
+
+```
+
+---
+
+### SQL LEFT (OUTER) JOIN
+
+**Description**
+
+`LEFT JOIN` returns all records from the left table, and the matched records from the right table.
+
+If there is no match, the result will still include the left table’s data, with `NULL` values for columns from the right table.
+
+**Syntax**
+
+```sql
+SELECT columns
+FROM table1
+LEFT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+> Note: `LEFT JOIN` and `LEFT OUTER JOIN` are the same.
+
+**Example**
+
+```sql
+SELECT Customers.CustomerID, Customers.Name, Orders.Amount
+FROM Customers
+LEFT JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+```
+
+---
+
+### SQL RIGHT (OUTER) JOIN
+
+**Description**
+
+`RIGHT JOIN` returns all records from the right table, and the matched records from the left table.
+If no match exists, you’ll still get the right table’s record, with `NULLs` for left table columns.
+
+**Syntax**
+
+```sql
+SELECT columns
+FROM table1
+RIGHT JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+> Note: `RIGHT JOIN` and `RIGHT OUTER JOIN` are the same.
+
+**Example**
+
+```sql
+SELECT Customers.CustomerID, Customers.Name, Orders.Amount
+FROM Customers
+RIGHT OUTER JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+```
+
+---
+
+### SQL FULL (OUTER) JOIN
+
+**Description**
+
+`FULL OUTER JOIN` returns all records when there is a match in either table.
+This means it includes rows from both tables, with `NULLs` where data doesn’t match.
+
+**Syntax**
+
+```sql
+SELECT columns
+FROM table1
+FULL OUTER JOIN table2
+ON table1.column_name = table2.column_name;
+```
+
+**Example**
+
+```sql
+SELECT Customers.CustomerID, Customers.Name, Orders.Amount
+FROM Customers
+FULL OUTER JOIN Orders
+ON Customers.CustomerID = Orders.CustomerID;
+```
+
+### Summary Table
+
+| JOIN Type      | Returns                                         |
+| -------------- | ----------------------------------------------- |
+| **INNER JOIN** | Only rows with matches in both tables           |
+| **LEFT JOIN**  | All rows from left table + matches from right   |
+| **RIGHT JOIN** | All rows from right table + matches from left   |
+| **FULL JOIN**  | All rows from both tables (matches + unmatched) |
+
+### Notes
+
+- You can join more than two tables by chaining `JOIN` clauses.
+
+- Always use **table aliases** to make queries shorter and clearer.
+
+- `JOIN` order can affect readability but not results (unless using `OUTER JOIN`).
+
+---
+
+## Views
+
+### What is a View?
+
+A **view** in SQL is a **virtual table** that stores a **predefined SQL query**.  
+It behaves like a table but doesn’t physically store data — instead, it displays data fetched from one or more real tables whenever you query it.
+
+Views are powerful for:
+- Simplifying complex queries.
+- Restricting access to sensitive columns.
+- Presenting consistent data formats across the database.
+
+### Characteristics of a View
+
+- A view **does not store data itself** — it only stores the query.
+- It **fetches fresh data** each time you select from it.
+- You can use a view **as if it were a table** in SELECT statements.
+- Views can be **based on one or more tables** (or even other views).
+
+
+### CREATE VIEW Statement
+
+**Syntax**
+
+```sql
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+**Example**
+
+```sql
+CREATE VIEW HighSalaryEmployees AS
+SELECT FirstName, LastName, DepartmentID, MonthlySalary
+FROM Employees
+WHERE MonthlySalary > 3000;
+```
+
+### Querying a View
+
+You can use a view just like a normal table:
+
+```sql
+SELECT * FROM HighSalaryEmployees;
+```
+
+### View with Joins
+
+Views can combine multiple tables for easier querying.
+
+**Example:**
+
+```sql
+CREATE VIEW EmployeeDetails AS
+SELECT e.FirstName, e.LastName, d.Name AS DepartmentName, c.Name AS CountryName
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentID = d.ID
+INNER JOIN Countries c ON e.CountryID = c.ID;
+```
+
+### Updating a View
+
+**Syntax**
+
+```sql
+CREATE OR ALTER VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+**Example**
+
+```sql
+CREATE OR ALTER VIEW HighSalaryEmployees AS
+SELECT FirstName, LastName, DepartmentID, MonthlySalary
+FROM Employees
+WHERE MonthlySalary > 5000;
+```
+
+**Explanation:**
+
+This replaces the existing HighSalaryEmployees view and updates the salary condition to 5000.
+
+### Deleting a View
+
+**Syntax**
+
+```sql
+DROP VIEW view_name;
+```
+
+**Example**
+
+```sql
+DROP VIEW HighSalaryEmployees;
+```
+
+### Advantages of Using Views
+
+| Benefit            | Description                                                                     |
+| ------------------ | ------------------------------------------------------------------------------- |
+| **Simplification** | Complex joins and filters can be stored in a single view for easy reuse.        |
+| **Security**       | You can hide sensitive columns (like salaries or passwords) from certain users. |
+| **Consistency**    | Ensures all users see data in a standardized format.                            |
+| **Abstraction**    | Users don’t need to know the underlying table structure.                        |
+
+
+### Limitations of Views
+
+| Limitation                | Description                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| **Performance**           | Since a view runs a query each time, large or complex views may slow down performance. |
+| **Non-updatable Views**   | Some views cannot be updated (especially those with joins, aggregates, or DISTINCT).   |
+| **Dependency Management** | Dropping or renaming tables used in views can break the view.                          |
+
+### Updatable Views
+
+Some views allow you to **INSERT**, **UPDATE**, or **DELETE** data — but only if:
+
+- The view is based on **one table**.
+
+- It does **not** use `DISTINCT`, `GROUP BY`, or `JOIN`.
+
+- It includes all required columns for a valid row.
+
+Example:
+
+```sql
+CREATE VIEW BasicEmployeeInfo AS
+SELECT ID, FirstName, LastName, DepartmentID
+FROM Employees;
+```
+
+Now you can:
+
+```sql
+UPDATE BasicEmployeeInfo
+SET DepartmentID = 2
+WHERE ID = 5;
+```
+
+**Explanation:**
+
+This updates the `DepartmentID` for employee with `ID = 5` in the original table — because the view directly maps to that table.
+
+### Does a View Store Data?
+
+**No.**
+
+A view is **recomputed every time** you query it.
+
+It always shows **up-to-date** data from the underlying tables.
+
+This ensures accuracy — but also means performance can depend on how complex the view query is.
+
+### Best Practices
+
+- Use **views** to abstract complex queries and simplify access for end-users.
+
+- Avoid nesting multiple views inside each other (can slow down performance).
+
+- Restrict access to base tables and grant permissions only on views when needed.
+
+- Name views descriptively (e.g., `ActiveCustomers`, `EmployeeSummary`).
+
+### Summary
+
+| Command                  | Description               |
+| ------------------------ | ------------------------- |
+| `CREATE VIEW`            | Creates a new view.       |
+| `CREATE OR REPLACE VIEW` | Updates an existing view. |
+| `DROP VIEW`              | Deletes an existing view. |
+| `SELECT FROM view_name`  | Queries data from a view. |
+
+### In short:
+
+> A view is like a reusable SQL query saved as a virtual table — great for readability, security, and data consistency.
+
+---
+
