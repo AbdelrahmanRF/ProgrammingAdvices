@@ -1,0 +1,160 @@
+USE DB2;
+
+-- SQL PRIMARY KEY
+
+CREATE TABLE Persons(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+	CONSTRAINT PK_Persons PRIMARY KEY(ID, LastName)
+);
+
+CREATE TABLE Persons1(
+	ID INT NOT NULL PRIMARY KEY,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+);
+
+CREATE TABLE Persons3(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+);
+
+ALTER TABLE Persons3
+ADD PRIMARY KEY(ID)
+
+
+CREATE TABLE Persons4(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+);
+
+ALTER TABLE Persons4
+ADD CONSTRAINT PK_Persons4 PRIMARY KEY(ID);
+
+
+ALTER TABLE Persons4
+DROP CONSTRAINT PK_Persons4;
+
+-- FOREIGN KEY
+
+CREATE TABLE Persons5(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+	Persons_ID INT NOT NULL FOREIGN KEY REFERENCES Persons1(ID)
+);
+
+CREATE TABLE Persons6(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50) NOT NULL,
+	LastName NVARCHAR(50) NOT NULL,
+	Persons_ID INT NOT NULL,
+	CONSTRAINT FK_Persons FOREIGN KEY(Persons_ID) REFERENCES Persons1(ID)
+);
+
+ALTER TABLE Persons3
+ADD Persons_ID INT NOT NULL;
+
+ALTER TABLE Persons3
+ADD CONSTRAINT FK_Persons FOREIGN KEY (Persons_ID) REFERENCES Persons1(ID);
+
+ALTER TABLE Persons3
+DROP CONSTRAINT FK_Persons;
+
+-- NOT NULL on ALTER TABLE
+
+CREATE TABLE Persons7(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50),
+	LastName NVARCHAR(50),
+);
+
+ALTER TABLE Persons7
+ALTER COLUMN FirstName NVARCHAR(50) NOT NULL;
+
+-- DEFAULT 
+
+CREATE TABLE Persons8(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50),
+	LastName NVARCHAR(50),
+	City VARCHAR(100) DEFAULT 'Amman'
+);
+
+INSERT INTO Persons8 (ID, FirstName, LastName) VALUES
+(1, 'Rami', 'Ayoub')
+
+select * from Persons8;
+
+CREATE TABLE Orders(
+	ID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	OrderNumber INT NOT NULL,
+	OrderDate DATE DEFAULT GETDATE()
+);
+
+INSERT INTO Orders (OrderNumber) VALUES
+(14564);
+
+select * from Orders;
+
+
+CREATE TABLE Persons9(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50),
+	LastName NVARCHAR(50),
+	City VARCHAR(100)
+);
+
+ALTER TABLE Persons9
+ADD CONSTRAINT DF_City
+DEFAULT 'Amman' FOR City;
+
+ALTER TABLE Persons9
+DROP CONSTRAINT DF_City
+
+-- Check Constraint
+
+CREATE TABLE Persons10(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50),
+	LastName NVARCHAR(50),
+	City VARCHAR(100),
+	Age INT CHECK (Age >= 18)
+);
+
+INSERT INTO Persons10 VALUES
+(1, 'Ahmad', 'Ahmad', 'Amman', 18)
+
+CREATE TABLE Persons11(
+	ID INT NOT NULL,
+	FirstName NVARCHAR(50),
+	LastName NVARCHAR(50),
+	City VARCHAR(100),
+	Age INT,
+
+	CONSTRAINT CHK_Person CHECK (Age >= 18 AND City = 'Amman')
+);
+
+ALTER TABLE Persons11
+DROP CONSTRAINT CHK_Person
+
+-- Unique Constraint
+
+CREATE TABLE Persons12 (
+   ID int PRIMARY KEY,
+   LastName varchar(255) NOT NULL,
+   FirstName varchar(255),
+   Age int,
+   --IDCardNumber INT UNIQUE,
+   IDCardNumber INT,
+   CONSTRAINT UC_Person UNIQUE (IDCardNumber)
+);
+
+ALTER TABLE Persons12
+DROP CONSTRAINT UC_Person
+
+ALTER TABLE Persons12
+ADD CONSTRAINT UC_Person UNIQUE (IDCardNumber)

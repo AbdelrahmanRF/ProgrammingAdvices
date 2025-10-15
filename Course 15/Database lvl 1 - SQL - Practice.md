@@ -1424,3 +1424,399 @@ This ensures accuracy — but also means performance can depend on how complex t
 
 ---
 
+## SQL - More Queries
+
+### EXISTS
+
+### The SQL EXISTS Operator
+The **EXISTS** operator is used to test whether a **subquery returns any rows**.  
+It returns **TRUE** if the subquery produces at least one record — otherwise, it returns **FALSE**.
+
+This is typically used in **WHERE** clauses to filter results based on related data in another table.
+
+### ✅ Syntax
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS (
+    SELECT column_name 
+    FROM table_name 
+    WHERE condition
+);
+```
+
+### Notes
+
+- EXISTS stops searching as soon as it finds the **first matching record** — making it faster than joins in certain cases.
+
+- Commonly used to check if related records exist in another table.
+
+**ExampleS**
+
+```sql
+SELECT X = 'Yes'
+WHERE EXISTS 
+(
+    SELECT * 
+    FROM Orders
+    WHERE CustomerID = 3 AND Amount < 600
+);
+
+SELECT * 
+FROM Customers T1
+WHERE EXISTS 
+(
+    SELECT * 
+    FROM Orders
+    WHERE CustomerID = T1.CustomerID AND Amount < 600
+);
+
+-- Optimized Version 
+SELECT * 
+FROM Customers T1
+WHERE EXISTS 
+(
+    SELECT TOP 1 R = 'Y'  
+    FROM Orders
+    WHERE CustomerID = T1.CustomerID AND Amount < 600
+);
+```
+
+---
+
+### UNION
+
+### The SQL UNION Operator
+
+The **UNION** operator combines the result sets of **two or more SELECT statements** into a single result.
+
+**Rules**
+
+- Each SELECT must return the **same number of columns**.
+
+- The columns must have **compatible data types**.
+
+- The columns are **combined in order**, not by name.
+
+### ✅ Syntax
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS (
+    SELECT column_name 
+    FROM table_name 
+    WHERE condition
+);
+
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+```
+
+`UNION` performs a distinct operation, while `UNION ALL` simply appends all rows (faster, but may have duplicates).
+
+**Examples**
+
+```sql
+SELECT * FROM ActiveEmployees
+UNION
+SELECT * FROM ResignedEmployees;
+
+-- Removes duplicates
+SELECT * FROM Departments
+UNION
+SELECT * FROM Departments;
+
+-- Keeps duplicates
+SELECT * FROM Departments
+UNION ALL
+SELECT * FROM Departments;
+```
+
+---
+
+### CASE
+
+### The SQL CASE Expression
+
+The **CASE** expression works like an **IF-THEN-ELSE** statement in SQL.
+It allows you to apply conditional logic inside queries.
+
+### ✅ Syntax
+```sql
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+```
+
+**Examples**
+
+```sql
+SELECT ID, FirstName, LastName,
+       GenderTitle = 
+       CASE
+           WHEN Gender = 'M' THEN 'Male'
+           WHEN Gender = 'F' THEN 'Female'
+           ELSE 'Unknown'
+       END
+FROM Employees;
+
+
+SELECT ID, FirstName, LastName,
+       GenderTitle =
+       CASE
+           WHEN Gender = 'M' THEN 'Male'
+           WHEN Gender = 'F' THEN 'Female'
+           ELSE 'Unknown'
+       END,
+       Status =
+       CASE
+           WHEN ExitDate IS NULL THEN 'Active'
+           WHEN Gender IS NOT NULL THEN 'Resigned'
+       END
+FROM Employees;
+
+
+SELECT ID, FirstName, LastName, MonthlySalary,
+       NewSalaryToBe =
+       CASE
+           WHEN Gender = 'M' THEN MonthlySalary * 1.25
+           WHEN Gender = 'F' THEN MonthlySalary * 1.15
+       END
+FROM Employees;
+```
+---
+
+## More About Constraints
+
+### SQL Create Constraints
+
+Constraints can be specified when the table is created with the **CREATE TABLE** statement, or after the table is created with the **ALTER TABLE** statement.
+
+```sql
+CREATE TABLE table_name (
+   column1 datatype constraint,
+   column2 datatype constraint,
+   column3 datatype constraint,
+   ...
+);
+```
+
+Constraints ensure data integrity and validity in a database.
+They can be column-level (apply to a single column) or table-level (apply to multiple columns).
+
+### Common SQL Constraints
+
+- **NOT NULL** – Ensures a column cannot contain `NULL`
+
+- **UNIQUE** – Ensures all values in a column are different
+
+- **PRIMARY KEY** – Combines `NOT NULL` + `UNIQUE` to uniquely identify each record
+
+- **FOREIGN KEY** – Maintains referential integrity between tables
+
+- **CHECK** – Restricts the range or values allowed in a column
+
+- **DEFAULT** – Provides a default value when none is specified
+
+- **CREATE INDEX** – Speeds up data retrieval
+
+---
+
+### PRIMARY KEY Constraint
+
+### Definition
+
+The `PRIMARY KEY` uniquely identifies each record in a table.
+
+It automatically combines the effects of `UNIQUE` and `NOT NULL`.
+
+```sql
+CREATE TABLE Persons (
+   ID int NOT NULL PRIMARY KEY,
+   LastName varchar(255) NOT NULL,
+   FirstName varchar(255),
+   Age int
+);
+
+-- To name it manually or use multiple columns:
+CREATE TABLE Persons (
+   ID int NOT NULL,
+   LastName varchar(255) NOT NULL,
+   CONSTRAINT PK_Person PRIMARY KEY (ID, LastName)
+);
+
+-- To add later:
+ALTER TABLE Persons
+ADD CONSTRAINT PK_Person PRIMARY KEY (ID, LastName);
+
+-- To drop:
+
+ALTER TABLE Persons
+DROP CONSTRAINT PK_Person;
+```
+
+---
+
+### FOREIGN KEY Constraint
+
+### Definition
+
+The `FOREIGN KEY` constraint ensures **referential integrity** between two tables, it enforces that a value in one table exists in another.
+
+```sql
+CREATE TABLE Orders (
+   OrderID int NOT NULL PRIMARY KEY,
+   OrderNumber int NOT NULL,
+   PersonID int FOREIGN KEY REFERENCES Persons(PersonID)
+);
+
+-- To name it manually:
+CREATE TABLE Orders (
+   OrderID int NOT NULL,
+   OrderNumber int NOT NULL,
+   PersonID int,
+   CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
+   REFERENCES Persons(PersonID)
+);
+
+-- To add later:
+ALTER TABLE Orders
+ADD CONSTRAINT FK_PersonOrder
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+
+-- To drop:
+
+ALTER TABLE Orders
+DROP CONSTRAINT FK_PersonOrder;
+```
+
+### Important Notes
+
+- Foreign keys prevent orphan records.
+
+- Updates/deletes can be cascaded using `ON UPDATE CASCADE` or `ON DELETE CASCADE`.
+
+---
+
+### NOT NULL Constraint
+
+### Definition
+
+The `NOT NULL` constraint ensures that a column must always have a value — NULLs are not allowed.
+
+```sql
+CREATE TABLE Persons (
+   ID int NOT NULL,
+   LastName varchar(255) NOT NULL,
+   FirstName varchar(255) NOT NULL,
+   Age int
+);
+
+-- Add later:
+ALTER TABLE Persons
+ALTER COLUMN Age int NOT NULL;
+```
+
+**Key Notes**
+
+- `NOT NULL` is commonly combined with `PRIMARY` KEY and `UNIQUE`.
+
+- Prevents incomplete or missing data in important fields.
+
+---
+
+### DEFAULT Constraint
+
+### Definition
+
+The `DEFAULT` constraint provides a fallback value when none is supplied.
+
+```sql
+CREATE TABLE Persons (
+    ID INT NOT NULL,
+    FirstName VARCHAR(255),
+    City VARCHAR(255) DEFAULT 'Amman'
+);
+
+-- Using Function Default
+CREATE TABLE Orders (
+    ID INT NOT NULL,
+    OrderNumber INT NOT NULL,
+    OrderDate DATE DEFAULT GETDATE()
+);
+
+-- ALTER TABLE
+ALTER TABLE Persons
+ADD CONSTRAINT DF_City DEFAULT 'Amman' FOR City;
+
+-- Drop DEFAULT Constraint
+ALTER TABLE Persons
+DROP CONSTRAINT DF_City;
+```
+
+---
+
+### CHECK Constraint
+
+Definition
+
+The `CHECK` constraint ensures that values in a column meet a specific logical condition.
+
+```sql
+-- Single Column
+CREATE TABLE Persons (
+    ID INT NOT NULL,
+    Age INT CHECK (Age >= 18)
+);
+
+-- Named & Multi-Column
+CREATE TABLE Persons (
+    ID INT NOT NULL,
+    Age INT,
+    City VARCHAR(255),
+    CONSTRAINT CHK_Person CHECK (Age >= 18 AND City = 'Amman')
+);
+
+-- Drop CHECK Constraint
+ALTER TABLE Persons
+DROP CONSTRAINT CHK_Person;
+```
+---
+
+### UNIQUE Constraint
+
+### Definition
+
+The `UNIQUE` constraint ensures that all values in a column (or combination of columns) are distinct.
+
+```sql
+CREATE TABLE Persons (
+    ID INT NOT NULL UNIQUE,
+    LastName VARCHAR(255) NOT NULL,
+    FirstName VARCHAR(255),
+    Age INT
+);
+
+-- Named UNIQUE Constraint
+CREATE TABLE Persons (
+    ID INT NOT NULL,
+    LastName VARCHAR(255) NOT NULL,
+    CONSTRAINT UC_Person UNIQUE (ID, LastName)
+);
+
+-- ALTER TABLE
+ALTER TABLE
+ALTER TABLE Persons
+ADD CONSTRAINT UC_Person UNIQUE (ID, LastName);
+
+-- Drop UNIQUE Constraint
+ALTER TABLE Persons
+DROP CONSTRAINT UC_Person;
+```
+
+---
+
