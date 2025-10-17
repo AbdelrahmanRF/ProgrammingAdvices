@@ -158,3 +158,17 @@ DROP CONSTRAINT UC_Person
 
 ALTER TABLE Persons12
 ADD CONSTRAINT UC_Person UNIQUE (IDCardNumber)
+
+-- SQL Index
+
+USE HR_Database;
+
+CREATE INDEX IDX_Salary
+ON Employees(MonthlySalary);
+
+CREATE INDEX IDX_EmpName
+ON Employees(FirstName, LastName)
+
+DROP INDEX Employees.IDX_Salary;
+
+SELECT FirstName, LastName, MonthlySalary FROM Employees;

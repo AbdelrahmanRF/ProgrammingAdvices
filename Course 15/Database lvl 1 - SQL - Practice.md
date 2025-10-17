@@ -1820,3 +1820,163 @@ DROP CONSTRAINT UC_Person;
 
 ---
 
+### SQL Index
+
+### Overview
+Indexes in SQL are **performance optimization structures** that allow databases to locate and retrieve rows much faster than scanning the entire table. They are similar to an index in a book — instead of reading every page, the database can jump directly to the location of the needed data.
+
+However, while indexes improve **read performance**, they can **slow down write operations** (INSERT, UPDATE, DELETE) because the index must also be updated each time the table data changes.
+
+### Why Use Indexes?
+Indexes help:
+- Speed up **SELECT queries**.
+- Improve the performance of **JOINs**, **WHERE**, and **ORDER BY** clauses.
+- Enforce **uniqueness** when using a **UNIQUE index**.
+
+But you should avoid overusing them because:
+- They **consume storage space**.
+- They **slow down data modification operations**.
+
+### SQL CREATE INDEX Statement
+The `CREATE INDEX` statement is used to create an index on one or more columns of a table.
+
+### Syntax
+```sql
+CREATE INDEX index_name
+ON table_name (column1, column2, ...);
+```
+
+**Note:** Duplicate values are allowed in a regular index.
+
+### Example
+
+```sql
+CREATE INDEX idx_lastname
+ON Persons (LastName);
+```
+
+This creates an index named `idx_lastname` on the `LastName` column of the `Persons` table.
+
+### Multi-Column Index Example
+```sql
+CREATE INDEX idx_pname
+ON Persons (LastName, FirstName);
+```
+This creates an index on a combination of columns. SQL can use this to efficiently filter or sort results when both columns are involved in the query.
+
+### SQL CREATE UNIQUE INDEX Statement
+A **UNIQUE INDEX** ensures that all values in the indexed column(s) are unique — no duplicates allowed.
+
+### Syntax
+```sql
+CREATE UNIQUE INDEX index_name
+ON table_name (column1, column2, ...);
+```
+
+### Example
+```sql
+CREATE UNIQUE INDEX idx_email_unique
+ON Employees (Email);
+```
+This guarantees that no two employees share the same email address.
+
+**Note:** Creating a `PRIMARY KEY` constraint automatically creates a **UNIQUE INDEX** on that column.
+
+### SQL DROP INDEX Statement
+To remove an index, use the `DROP INDEX` statement.
+
+### Syntax (SQL Server)
+```sql
+DROP INDEX table_name.index_name;
+```
+
+### Example
+```sql
+DROP INDEX Persons.idx_lastname;
+```
+This deletes the `idx_lastname` index from the `Persons` table.
+
+**Be careful:** Dropping an index does not remove any data, but it can slow down queries that depended on it.
+
+
+### Clustered vs Non-Clustered Indexes
+
+Indexes come in two main types:
+
+### 1. Clustered Index
+- Determines the **physical order** of data in the table.
+- There can be **only one clustered index** per table.
+- The **PRIMARY KEY constraint** automatically creates a clustered index.
+- Data rows are **stored and sorted** based on the clustered index.
+
+#### Example
+```sql
+CREATE CLUSTERED INDEX idx_employee_id
+ON Employees (EmployeeID);
+```
+
+### 2. Non-Clustered Index
+- Creates a **separate structure** from the data itself.
+- Contains pointers to the physical data location.
+- You can have **multiple non-clustered indexes** on a table.
+
+#### Example
+```sql
+CREATE NONCLUSTERED INDEX idx_employee_lastname
+ON Employees (LastName);
+```
+
+---
+
+## Performance Notes
+| Operation | Impact of Index |
+|------------|-----------------|
+| **SELECT** | Much faster (especially with WHERE and JOIN conditions) |
+| **INSERT** | Slightly slower (index must be updated) |
+| **UPDATE** | Slightly slower (index may need to be adjusted) |
+| **DELETE** | Slightly slower (index must remove entries) |
+
+**Best Practice Tips:**
+- Create indexes **only on columns** that are frequently searched or used in joins.
+- Avoid indexing columns that change frequently.
+- Use **composite indexes** wisely — order of columns matters.
+- Regularly **analyze query performance** using database tools.
+
+---
+
+### Example: Combined Usage
+```sql
+-- Create table
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,      -- Creates a clustered index automatically
+    FirstName NVARCHAR(50),
+    LastName NVARCHAR(50),
+    DepartmentID INT,
+    Email NVARCHAR(100)
+);
+
+-- Create additional indexes for optimization
+CREATE INDEX idx_department
+ON Employees (DepartmentID);
+
+CREATE UNIQUE INDEX idx_unique_email
+ON Employees (Email);
+```
+
+### Explanation
+- The **PRIMARY KEY** automatically creates a clustered index on `EmployeeID`.
+- The **idx_department** non-clustered index speeds up searches by `DepartmentID`.
+- The **idx_unique_email** ensures no duplicate email addresses exist.
+
+---
+
+### Summary
+| Type | Allows Duplicates | Physical Order | Automatically Created by |
+|------|-------------------|----------------|----------------------------|
+| **Clustered Index** | ❌ No | ✅ Yes | PRIMARY KEY |
+| **Non-Clustered Index** | ✅ Yes | ❌ No | Manual or UNIQUE constraint |
+
+Indexes are essential for **query performance**, but balance is key. Too many indexes can hurt performance during data modification. Always analyze your workload and choose indexes wisely.
+
+---
+
