@@ -37,6 +37,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 13         | ✅ Completed   | Problem Solving #5                     |
 | 14         | ✅ Completed   | C# Level 1                             |
 | 15         | ✅ Completed   | Database Level 1                       |
+| 16         | ✅ Completed   | OOP In C#                              |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
