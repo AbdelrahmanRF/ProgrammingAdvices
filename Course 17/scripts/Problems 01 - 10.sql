@@ -4,6 +4,9 @@ SELECT * FROM VehicleDetails;
 SELECT * FROM VehicleMasterDetails;
 
 -- Problem 01: Create Master View
+IF OBJECT_ID('VehicleMasterDetails', 'V') IS NOT NULL
+    DROP VIEW VehicleMasterDetails;
+GO
 CREATE VIEW VehicleMasterDetails AS
 SELECT VehicleDetails.ID, VehicleDetails.MakeID, Makes.Make, 
 VehicleDetails.SubModelID, SubModels.SubModelName, VehicleDetails.BodyID,
