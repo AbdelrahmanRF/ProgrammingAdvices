@@ -635,3 +635,285 @@ else
 * This method fetches a single row efficiently and avoids leaving resources open.
 
 ---
+
+## Insert/Add Data
+
+In ADO.NET, inserting data into a database can be done using the `SqlCommand` object with an **INSERT** statement. To insert a new record, you use the `ExecuteNonQuery()` method, which executes a command that doesn’t return a result set but instead returns the number of affected rows.
+
+#### Insert-Add Data
+
+This example demonstrates how to insert a new record into the `Contacts` table using parameterized queries to prevent SQL injection.
+
+```csharp
+static void AddNewClient(strContact Contact)
+{
+    SqlConnection Connection = new SqlConnection(ConnectionString);
+    string Query = @"INSERT INTO Contacts (FirstName, LastName, Email, Phone, Address, CountryID)
+                    VALUES(@FirstName, @LastName, @Email, @Phone, @Address, @CountryID)";
+
+    SqlCommand Command = new SqlCommand(Query, Connection);
+    Command.Parameters.AddWithValue("@FirstName", Contact.FirstName);
+    Command.Parameters.AddWithValue("@LastName", Contact.LastName);
+    Command.Parameters.AddWithValue("@Email", Contact.Email);
+    Command.Parameters.AddWithValue("@Phone", Contact.Phone);
+    Command.Parameters.AddWithValue("@Address", Contact.Address);
+    Command.Parameters.AddWithValue("@CountryID", Contact.CountryID);
+
+    try
+    {
+        Connection.Open();
+        int RowsAffected = Command.ExecuteNonQuery();
+
+        if (RowsAffected > 0)
+        {
+            Console.WriteLine("Record Inserted Successfully");
+        }
+        else
+        {
+            Console.WriteLine("Record Insertion Failed");
+        }
+
+        Connection.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+```
+
+### Explanation
+
+* **`ExecuteNonQuery()`** executes the SQL command and returns the number of affected rows.
+
+---
+
+### Retrieve Auto Number after Inserting/Adding Data
+
+If your table uses an **IDENTITY column** (like `ContactID`) that auto-generates values, you can retrieve the newly inserted ID using the `SCOPE_IDENTITY()` function.
+
+```csharp
+static void AddNewClientAndGetID(strContact Contact)
+{
+    SqlConnection Connection = new SqlConnection(ConnectionString);
+    string Query = @"INSERT INTO Contacts (FirstName, LastName, Email, Phone, Address, CountryID)
+                    VALUES(@FirstName, @LastName, @Email, @Phone, @Address, @CountryID);
+                    SELECT SCOPE_IDENTITY();";
+
+    SqlCommand Command = new SqlCommand(Query, Connection);
+    Command.Parameters.AddWithValue("@FirstName", Contact.FirstName);
+    Command.Parameters.AddWithValue("@LastName", Contact.LastName);
+    Command.Parameters.AddWithValue("@Email", Contact.Email);
+    Command.Parameters.AddWithValue("@Phone", Contact.Phone);
+    Command.Parameters.AddWithValue("@Address", Contact.Address);
+    Command.Parameters.AddWithValue("@CountryID", Contact.CountryID);
+
+    try
+    {
+        Connection.Open();
+        object Result = Command.ExecuteScalar();
+
+        if (Result != null && int.TryParse(Result.ToString(), out int InsertedID))
+        {
+            Console.WriteLine($"Newly Inserted ID: {InsertedID}");
+        }
+        else
+        {
+            Console.WriteLine("Failed to Retrieve Inserted ID");
+        }
+
+        Connection.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+```
+
+### Explanation
+
+* `SCOPE_IDENTITY()` returns the **last identity value generated** in the current session and scope.
+* `ExecuteScalar()` retrieves the first value of the first row from the result — in this case, the new `ContactID`.
+* The returned value is converted to an `int` and displayed.
+
+### Example Usage
+
+```csharp
+strContact NewContact = new strContact
+{
+    FirstName = "Omar",
+    LastName = "Saleh",
+    Email = "omar.saleh@example.com",
+    Phone = "+962777000123",
+    Address = "Amman, Jordan",
+    CountryID = 1
+};
+
+AddNewClient(NewContact);
+AddNewClientAndGetID(NewContact);
+```
+
+### Notes
+
+* Use `ExecuteNonQuery()` for **INSERT**, **UPDATE**, and **DELETE** operations.
+* Use `ExecuteScalar()` when expecting **a single value** (like a newly generated ID).
+
+---
+
+## Update Data
+
+```csharp
+static void UpdateContact(int ContactID, strContact Contact)
+{
+    SqlConnection Connection = new SqlConnection(ConnectionString);
+    string Query = @"UPDATE Contacts SET
+                        FirstName = @FirstName, LastName = @LastName, Email = @Email,
+                        Phone = @Phone, Address = @Address, CountryID = @CountryID
+                    WHERE ContactID = @ContactID";
+
+    SqlCommand Command = new SqlCommand(Query, Connection);
+    Command.Parameters.AddWithValue("@FirstName", Contact.FirstName);
+    Command.Parameters.AddWithValue("@LastName", Contact.LastName);
+    Command.Parameters.AddWithValue("@Email", Contact.Email);
+    Command.Parameters.AddWithValue("@Phone", Contact.Phone);
+    Command.Parameters.AddWithValue("@Address", Contact.Address);
+    Command.Parameters.AddWithValue("@CountryID", Contact.CountryID);
+    Command.Parameters.AddWithValue("@ContactID", ContactID);
+
+    try
+    {
+        Connection.Open();
+        int RowsAffected = Command.ExecuteNonQuery();
+
+        if (RowsAffected > 0)
+        {
+            Console.WriteLine("Record Updated Successfully");
+        }
+        else
+        {
+            Console.WriteLine("Record Updating Failed");
+        }
+
+        Connection.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+```
+---
+
+## Delete Data
+
+```csharp
+static void DeleteContact(int ContactID)
+{
+    SqlConnection Connection = new SqlConnection(ConnectionString);
+    string Query = @"DELETE Contacts WHERE ContactID = @ContactID";
+
+    SqlCommand Command = new SqlCommand(Query, Connection);
+    Command.Parameters.AddWithValue("@ContactID", ContactID);
+
+    try
+    {
+        Connection.Open();
+        int RowsAffected = Command.ExecuteNonQuery();
+
+        if (RowsAffected > 0)
+        {
+            Console.WriteLine("Record Deleted Successfully");
+        }
+        else
+        {
+            Console.WriteLine("Record Deleting Failed");
+        }
+
+        Connection.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+```
+---
+
+## Handle IN Statement
+
+```csharp
+static void DeleteContacts(string ContactIDs)
+{
+    SqlConnection Connection = new SqlConnection(ConnectionString);
+    string Query = @"DELETE Contacts WHERE ContactID IN (" + ContactIDs + ")";
+
+    SqlCommand Command = new SqlCommand(Query, Connection);
+
+    try
+    {
+        Connection.Open();
+        int RowsAffected = Command.ExecuteNonQuery();
+
+        if (RowsAffected > 0)
+        {
+            Console.WriteLine("Record/s Deleted Successfully");
+        }
+        else
+        {
+            Console.WriteLine("Record/s Deleting Failed");
+        }
+
+        Connection.Close();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
+```
+
+---
+
+## What are CRUD Operations?
+
+CRUD stands for **Create**, **Read**, **Update**, and **Delete** — the four fundamental operations used to manage data in a database.  
+Every data-driven application relies on these core actions to interact with its underlying database.
+
+### **Create**
+- **Purpose:** Add new data (records) into a table.  
+- **SQL Command Used:** `INSERT`  
+- **C# Example:** Executing an `INSERT` statement using `ExecuteNonQuery()`.  
+- **Use Case:** Adding a new contact into the `Contacts` table.
+
+### **Read**
+- **Purpose:** Retrieve or view existing data.  
+- **SQL Command Used:** `SELECT`  
+- **C# Example:** Using `ExecuteReader()` or `ExecuteScalar()` to fetch data.  
+- **Use Case:** Listing all contacts or displaying details of a specific contact by `ContactID`.
+
+### **Update**
+- **Purpose:** Modify or change existing data in a table.  
+- **SQL Command Used:** `UPDATE`  
+- **C# Example:** Running an `UPDATE` command with `ExecuteNonQuery()`.  
+- **Use Case:** Editing an existing contact’s email or phone number.
+
+### 🔴 **Delete**
+- **Purpose:** Remove existing data from a table.  
+- **SQL Command Used:** `DELETE`  
+- **C# Example:** Executing a `DELETE` command via `ExecuteNonQuery()`.  
+- **Use Case:** Deleting a contact by `ContactID`.
+
+### Summary
+
+| Operation | SQL Keyword | Description | Common C# Method |
+|------------|--------------|--------------|------------------|
+| Create     | INSERT       | Adds new records | `ExecuteNonQuery()` |
+| Read       | SELECT       | Retrieves data | `ExecuteReader()` / `ExecuteScalar()` |
+| Update     | UPDATE       | Modifies data | `ExecuteNonQuery()` |
+| Delete     | DELETE       | Removes records | `ExecuteNonQuery()` |
+
+These operations together form the **CRUD** cycle, providing complete control over how data is added, accessed, modified, and removed in relational databases.
+
+---
+
