@@ -917,3 +917,52 @@ These operations together form the **CRUD** cycle, providing complete control ov
 
 ---
 
+## Foreign Key Delete Behavior
+
+When deleting a record that is **referenced by a foreign key** in another table, the outcome depends on how the **foreign key constraint** is defined.  
+Here are the main possible behaviors:
+
+---
+
+### 1. **Restrict / No Action (Default)**
+- The database **prevents deletion** of the parent record if child records exist.
+- **Example:** Deleting a customer who has orders in the `Orders` table will fail.
+- **Use Case:** Ensures data integrity and prevents accidental loss of related data.
+
+---
+
+### 2. **Cascade**
+- Deleting the parent record **automatically deletes** all related child records.
+- **Example:** Deleting a customer removes all their orders.
+- **Use Case:** Useful when dependent data should always be removed with the parent.
+
+---
+
+### 3. **Set Null**
+- The foreign key values in child records are set to `NULL`.
+- **Example:** Deleting a customer makes the `CustomerID` in their orders `NULL`.
+- **Use Case:** Keeps child records but removes their link to the deleted parent.
+
+---
+
+### 4. **Set Default**
+- The foreign key values in child records are set to a **default** value.
+- **Example:** Deleting a customer sets their orders’ `CustomerID` to a default (e.g., `0`).
+- **Use Case:** Maintains valid data by redirecting references to a default entity.
+
+---
+
+### 🔹 Summary of Delete Behaviors
+
+| Behavior | Description | Result When Parent Deleted |
+|-----------|--------------|-----------------------------|
+| **Restrict / No Action** | Prevents deletion if child exists | Deletion blocked |
+| **Cascade** | Deletes related child rows | Child records deleted |
+| **Set Null** | Sets FK to `NULL` in child table | Link removed |
+| **Set Default** | Sets FK to default value | Default value applied |
+
+The delete behavior is defined when creating the **foreign key constraint** and determines how the database maintains **referential integrity** during deletions.
+
+---
+
+

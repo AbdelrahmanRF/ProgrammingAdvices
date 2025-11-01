@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace ContactsDataAccessLayer
 {
-    static class clsContactDataAccessSettings
+    static class clsDataAccessSettings
     {
         public static string ConnectionString = ConfigurationManager.ConnectionStrings["ContactsDB"].ConnectionString;
     }

@@ -11,7 +11,7 @@ namespace ContactsDataAccessLayer
         {
             bool isFound = false;
 
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
             string Query = "SELECT * FROM Contacts WHERE ContactID = @ContactID";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@ContactID", ID);
@@ -54,7 +54,7 @@ namespace ContactsDataAccessLayer
         {
             int ContactID = -1;
 
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
             string Query = @"INSERT INTO Contacts (FirstName, LastName, Email, Phone, Address, 
                 ImagePath, DateOfBirth, CountryID)
                 VALUES (@FirstName, @LastName, @Email, @Phone, @Address, 
@@ -91,7 +91,7 @@ namespace ContactsDataAccessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
             }
             finally
             {
@@ -105,7 +105,7 @@ namespace ContactsDataAccessLayer
             string Phone, string Address, string ImagePath, DateTime DateOfBirth, int CountryID)
         {
             int RowsAffected = 0;
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
             string Query = @"UPDATE Contacts
                             SET FirstName = @FirstName,
@@ -160,7 +160,7 @@ namespace ContactsDataAccessLayer
         {
             int RowsAffected = 0;
 
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
             string Query = @"DELETE Contacts
                              WHERE ContactID = @ContactID";
@@ -187,7 +187,7 @@ namespace ContactsDataAccessLayer
 
         public static DataTable GetAllContacts()
         {
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
             DataTable DT = new DataTable();
 
             string Query = "SELECT * FROM Contacts";
@@ -220,7 +220,7 @@ namespace ContactsDataAccessLayer
         public static bool IsContactExist(int ID)
         {
             bool isFound = false;
-            SqlConnection Connection = new SqlConnection(clsContactDataAccessSettings.ConnectionString);
+            SqlConnection Connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
             string Query = @"SELECT CASE WHEN EXISTS (SELECT 1 FROM Contacts WHERE ContactID = @ContactID) 
                             THEN CAST (1 AS BIT) ELSE CAST (0 AS BIT) END";
