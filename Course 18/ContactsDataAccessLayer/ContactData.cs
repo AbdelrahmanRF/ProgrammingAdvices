@@ -30,6 +30,7 @@ namespace ContactsDataAccessLayer
                     Email = (string)Reader["Email"];
                     Phone = (string)Reader["Phone"];
                     Address = (string)Reader["Address"];
+                    DateOfBirth = (DateTime)Reader["DateOfBirth"];
                     ImagePath = Reader["ImagePath"] != DBNull.Value ? (string)Reader["ImagePath"] : "";
                     CountryID = (int)Reader["CountryID"];
                 }
