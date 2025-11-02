@@ -965,4 +965,458 @@ The delete behavior is defined when creating the **foreign key constraint** and 
 
 ---
 
+## DataTables
+
+### What is a DataTable?
+
+In **C#**, a `DataTable` (part of ADO.NET) is an **in-memory table** that holds tabular data — rows and columns — similar to a database table or spreadsheet. It’s commonly used for temporary data storage, manipulation, and binding to UI controls.
+
+### Key Concepts & Features
+
+* **Rows and Columns:** A `DataTable` contains a collection of `DataColumn` objects (schema) and `DataRow` objects (data).
+* **Data Types:** Each column has a CLR type (e.g., `int`, `string`, `DateTime`) which enforces type safety.
+* **Constraints & Keys:** You can define primary keys, unique constraints, and foreign-key-like relations (when used inside a `DataSet`).
+* **Disconnected Mode:** `DataTable` works in memory and doesn’t need a live DB connection; you can fill it from the database and then work offline.
+* **Data Binding:** Easily bind to UI controls (e.g., `DataGridView`) for display and editing.
+* **Querying & Aggregation:** Use `Select()`, `Compute()`, `DefaultView`, and LINQ to query, filter, sort, and aggregate data.
+* **Serialization:** Can be written to and read from XML (useful for transfer or persistence).
+
+---
+
+### Example 1 — Create Offline DataTable and List Data
+
+**What it does:** Creates a `DataTable` in memory, defines columns (with types), adds rows, and prints them.
+
+```csharp
+DataTable EmployeesDT = new DataTable();
+
+EmployeesDT.Columns.Add("ID", typeof(int));
+EmployeesDT.Columns.Add("FirstName", typeof(string));
+EmployeesDT.Columns.Add("LastName", typeof(string));
+EmployeesDT.Columns.Add("Country", typeof(string));
+EmployeesDT.Columns.Add("Salary", typeof(double));
+EmployeesDT.Columns.Add("DOB", typeof(DateTime));
+
+EmployeesDT.Rows.Add(1, "Fares", "Haddad", "Lebanon", 3000, new DateTime(1970, 1, 1));
+EmployeesDT.Rows.Add(2, "Leila", "Mansour", "Jordan", 4500, new DateTime(1985, 5, 20));
+EmployeesDT.Rows.Add(3, "Tariq", "Ali", "Egypt", 3800, new DateTime(1992, 11, 15));
+EmployeesDT.Rows.Add(4, "Sara", "Khoury", "Palestine", 5200, new DateTime(1978, 3, 10));
+EmployeesDT.Rows.Add(5, "Omar", "Basha", "Syria", 3100, new DateTime(2000, 7, 25));
+
+Console.WriteLine("Employees List:");
+foreach (DataRow Row in EmployeesDT.Rows)
+{
+    Console.WriteLine($"Record: ID: {Row["ID"]}\tName: {Row["FirstName"]} {Row["LastName"]}\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDOB: {Row["DOB"]}");
+}
+```
+
+**Explanation:**
+
+* `Columns.Add(name, type)` defines the schema. Use the correct CLR type to avoid casting issues.
+* `Rows.Add(...)` inserts a new `DataRow` with values matching the column order.
+
+---
+
+### Example 2 — Aggregate (Count, Sum, Avg, Min, Max)
+
+**What it does:** Uses `Rows.Count` and `DataTable.Compute()` to calculate aggregates.
+
+```csharp
+int EmployeesCount = EmployeesDT.Rows.Count;
+double TotalEmployeeSalaries = Convert.ToDouble(EmployeesDT.Compute("SUM(Salary)", string.Empty));
+double AverageEmployeeSalaries = Convert.ToDouble(EmployeesDT.Compute("AVG(Salary)", string.Empty));
+double MinSalary = Convert.ToDouble(EmployeesDT.Compute("MIN(Salary)", string.Empty));
+double MaxSalary = Convert.ToDouble(EmployeesDT.Compute("MAX(Salary)", string.Empty));
+
+Console.WriteLine($"Count of Employees = {EmployeesCount}");
+Console.WriteLine($"Total Employee Salaries = {TotalEmployeeSalaries}");
+Console.WriteLine($"Average Employee Salaries = {AverageEmployeeSalaries}");
+Console.WriteLine($"Minimum Salary = {MinSalary}");
+Console.WriteLine($"Maximum Salary = {MaxSalary}");
+```
+
+**Explanation:**
+
+* `Compute(expression, filter)` evaluates a SQL-like aggregate expression. Use an empty filter (`string.Empty`) to apply to all rows.
+* Convert the result to the expected numeric type; `Compute` returns `object`.
+
+---
+
+### Example 3 — Filter Rows
+
+**What it does:** Filters rows using `Select()` and then recomputes aggregates for the filtered set.
+
+```csharp
+DataRow[] ResultRows = EmployeesDT.Select("Country = 'Jordan'");
+
+Console.WriteLine("Employees List in Jordan:");
+foreach (DataRow Row in ResultRows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["FirstName"]} {Row["LastName"]}\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDOB: {Row["DOB"]}");
+}
+
+int FilteredCount = ResultRows.Length;
+double FilteredSum = Convert.ToDouble(EmployeesDT.Compute("SUM(Salary)", "Country = 'Jordan'"));
+// ... similarly for AVG, MIN, MAX
+```
+
+**Explanation:**
+
+* `Select(filterExpression)` returns an array of `DataRow` that match the filter.
+* Use `Compute` with the same filter string to aggregate only the filtered rows.
+
+---
+
+### Example 4 — Sorting
+
+**What it does:** Sorts using `DefaultView.Sort`, then converts the view back to a `DataTable`.
+
+```csharp
+EmployeesDT.DefaultView.Sort = "ID DESC";
+EmployeesDT = EmployeesDT.DefaultView.ToTable();
+```
+
+**Explanation:**
+
+* `DefaultView` provides a sorted/filtered view without altering the original row order. `ToTable()` materializes the view into a new `DataTable`.
+
+---
+
+### Example 5 — Delete Rows
+
+**What it does:** Marks rows for deletion and accepts changes to remove them.
+
+```csharp
+DataRow[] FilteredRows = EmployeesDT.Select("ID = 4");
+foreach (DataRow Row in FilteredRows)
+{
+    Row.Delete(); // Marks row for deletion
+}
+EmployeesDT.AcceptChanges(); // Apply deletes
+```
+
+**Explanation:**
+
+* `Row.Delete()` marks the row with `RowState.Deleted`. `AcceptChanges()` permanently removes rows with that state from the table.
+* If the `DataTable` is tied to a `DataAdapter` for updating the database, call `DataAdapter.Update(DataTable)` before `AcceptChanges()` to persist deletions to the DB.
+
+### Important Note about DataRow References
+
+When you use methods like `Select()` or access rows through `foreach (DataRow row in DataTable.Rows)`,
+each `DataRow` you get is a reference to the actual row stored inside the `DataTable`.
+
+**That means:**
+
+If you modify the row (for example, `row["Salary"] = 5000;`), the change is **automatically reflected** in the original `DataTable`.
+
+If you call `row.Delete();`, the row is **marked for deletion** inside the `DataTable` itself.
+
+After calling `DataTable.AcceptChanges();`, the deletion or modification becomes **permanent** in the table.
+
+> In short, a `DataRow` object is **not a copy** — it’s a **live link** to the data inside the `DataTable`. <br>
+Any changes you make to the `DataRow` will directly affect the `DataTable` it belongs to.
+
+---
+
+### Best Practices & Tips
+
+* Prefer **strongly typed** access (`row.Field<T>("ColumnName")`) over casting (`(int)row["ID"]`) to avoid invalid casts and `DBNull` issues.
+* Handle `DBNull` values using `row.IsNull("ColumnName")` or `row.Field<T?>()` for nullable types.
+* For large data sets, consider `DataReader` for forward-only reading to reduce memory footprint.
+* When binding to UI, use `DefaultView` or a `BindingSource` for sorting and filtering.
+* Dispose of heavy objects and avoid creating too many `DataTable` copies unnecessarily.
+
+---
+
+### DataTable Example 6 (Update Rows)
+
+In this example, we demonstrate how to **update existing rows** in a DataTable. Since each `DataRow` is a reference to the actual row inside the `DataTable`, modifying its values directly updates the table.
+
+### Code Example
+
+```csharp
+DataRow[] RowsToUpdate;
+RowsToUpdate = EmployeesDT.Select("ID = 3");
+
+foreach(DataRow Row in RowsToUpdate)
+{
+    Row["LastName"] = "Maher";
+    Row["Salary"] = "3200";
+}
+EmployeesDT.AcceptChanges();
+
+Console.WriteLine("Employees List After Updating Employee 3:");
+foreach (DataRow Row in EmployeesDT.Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["FirstName"]} {Row["LastName"]}\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+```
+
+### Explanation
+
+* The `Select()` method retrieves the rows matching a given condition (`ID = 3`).
+* Each returned `DataRow` is **a live reference**, not a copy. Any changes you make are reflected immediately in the DataTable.
+* The `AcceptChanges()` method commits the updates — marking all modified rows as unchanged (finalized state).
+
+---
+
+### DataTable Example 7 (Clear)
+
+To remove **all data (rows)** from a DataTable while keeping its structure (columns and schema), use the `Clear()` method.
+
+### Code Example
+
+```csharp
+// Clear all data
+EmployeesDataTable.Clear();
+```
+
+### Explanation
+
+* The `Clear()` method deletes all rows but keeps the column definitions intact.
+* This is useful when you want to **reuse the DataTable** structure with fresh data.
+
+> **Note:** If the DataTable has constraints (like foreign keys or unique columns), make sure clearing it doesn’t violate those constraints.
+
+---
+
+### DataTable Example 8 (Primary Key)
+
+A **primary key** ensures that each row in the DataTable is unique and can be easily searched or referenced.
+
+### Code Example
+
+```csharp
+// Make ID the primary key
+DataColumn[] PrimaryKeyColumns = new DataColumn[1];
+PrimaryKeyColumns[0] = EmployeesDT.Columns["ID"];
+EmployeesDT.PrimaryKey = PrimaryKeyColumns;
+```
+
+### Explanation
+
+* `PrimaryKeyColumns` is an array of one or more `DataColumn` objects that will act as the table’s primary key.
+* Setting `EmployeesDT.PrimaryKey` enforces **uniqueness** and speeds up **searches** and **row lookups**.
+
+You can now use `Rows.Find()` to locate a specific record quickly using its primary key.
+
+```csharp
+DataRow foundRow = EmployeesDT.Rows.Find(3);
+```
+
+---
+
+### DataTable Example 9 (Autoincrement and Others)
+
+In this example, we create a **DataTable from scratch**, defining its columns, data types, and additional properties like auto-increment, captions, and null constraints.
+
+### Code Example
+
+```csharp
+DataTable EmployeesDataTable = new DataTable();
+DataColumn dtColumn;
+
+// ID Column
+
+dtColumn = new DataColumn();
+dtColumn.ColumnName = "ID";
+dtColumn.DataType = typeof(int);
+dtColumn.AllowDBNull = false;
+dtColumn.Unique = true;
+dtColumn.Caption = "Employee ID";
+dtColumn.AutoIncrement = true;
+dtColumn.AutoIncrementSeed = 1;
+dtColumn.AutoIncrementStep = 1;
+dtColumn.ReadOnly = true;
+EmployeesDataTable.Columns.Add(dtColumn);
+
+// Name Column
+dtColumn = new DataColumn();
+dtColumn.ColumnName = "Name";
+dtColumn.DataType = typeof(string);
+dtColumn.AllowDBNull = false;
+dtColumn.Caption = "FullName";
+EmployeesDataTable.Columns.Add(dtColumn);
+
+// Country Column
+dtColumn = new DataColumn();
+dtColumn.ColumnName = "Country";
+dtColumn.DataType = typeof(string);
+dtColumn.AllowDBNull = true;
+dtColumn.Caption = "Country of Residence";
+EmployeesDataTable.Columns.Add(dtColumn);
+
+// DOB Column
+dtColumn = new DataColumn();
+dtColumn.ColumnName = "DOB";
+dtColumn.DataType = typeof(DateTime);
+dtColumn.AllowDBNull = false;
+dtColumn.Caption = "Date of Birth";
+EmployeesDataTable.Columns.Add(dtColumn);
+
+// Salary Column
+dtColumn = new DataColumn();
+dtColumn.ColumnName = "Salary";
+dtColumn.DataType = typeof(decimal);
+dtColumn.AllowDBNull = false;
+dtColumn.Caption = "Annual Salary";
+EmployeesDataTable.Columns.Add(dtColumn);
+
+// Set Primary Key
+DataColumn[] PrimaryKeys = new DataColumn[1];
+PrimaryKeys[0] = EmployeesDataTable.Columns["ID"];
+EmployeesDataTable.PrimaryKey = PrimaryKeys;
+
+// Insert Data
+EmployeesDataTable.Rows.Add(null, "Fares Mohammad", "Jordan", new DateTime(1970,1,1), 3200);
+EmployeesDataTable.Rows.Add(null, "Amal Zaki", "Iraq", new DateTime(1980, 9, 5), 2400);
+
+// Display Data
+Console.WriteLine("Employees List:");
+foreach (DataRow Row in EmployeesDataTable.Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+```
+
+### Explanation
+
+* **AutoIncrement**: Automatically generates unique values for new rows.
+* **AutoIncrementSeed**: Defines the starting number.
+* **AutoIncrementStep**: Defines the increment between generated IDs.
+* **AllowDBNull**: Controls whether the column accepts `NULL` values.
+* **Unique**: Ensures values in this column are distinct.
+* **ReadOnly**: Prevents modification after insertion.
+* **Caption**: Provides a human-readable name (useful in data-bound UIs).
+
+> After defining these columns, adding rows automatically assigns IDs.
+
+### Why can we still add rows with null in the ID column?
+
+* The `ID` column has `AutoIncrement = true`.
+* When a column is auto-incremented, the `DataTable` **automatically generates** a value for it if you pass `null` or `DBNull.Value`.
+* So when you write `Rows.Add(null, ...)`, that `null` is not actually stored — it means “let the table assign the next value automatically.”
+
+That’s why even though `AllowDBNull = false`, there’s no conflict. The final stored value in the `ID` column is always an integer (like `1`, `2`, etc.), not `null`.
+
+### Output
+
+```
+Employees List:
+ID: 1   Name: Fares Mohammad   Country: Jordan   Salary: 3200   Date of Birth: 1/1/1970
+ID: 2   Name: Amal Zaki        Country: Iraq     Salary: 2400   Date of Birth: 9/5/1980
+```
+
+---
+
+## DataView
+
+### What is DataView?
+
+A **DataView** in C# provides a dynamic and customizable view of a `DataTable`. It does not duplicate the data — rather, it acts as a *window* through which you can view, filter, sort, and search data efficiently.
+
+#### Key Concepts:
+
+* **Represents a bindable, customizable view** of a `DataTable` for sorting, filtering, searching, editing, and navigation.
+* **Connected view**: Changes made through a DataView reflect in its DataTable, and vice versa.
+* **Lightweight**: A DataView is faster and uses less memory than working directly with DataTable operations.
+* **Subset and customization**: You can display only specific rows or columns from a DataTable.
+* **Data binding**: Often used with UI controls (e.g., DataGridView) to reflect dynamic changes instantly.
+
+#### When to Use DataView:
+
+* When you need **sorting or filtering** of data without changing the DataTable.
+* When you want to **bind multiple views** (filtered/sorted differently) of the same DataTable to different UI elements.
+* When you want **faster data manipulation** (searching, filtering, etc.).
+
+While `DataTable` provides full control over schema and structure (columns, relations, constraints), `DataView` focuses on *viewing and querying* the existing data efficiently.
+
+---
+
+### Creating a DataView from a DataTable
+
+```csharp
+DataTable EmployeesDT = new DataTable();
+EmployeesDT.Columns.Add("ID", typeof(int));
+EmployeesDT.Columns.Add("Name", typeof(string));
+EmployeesDT.Columns.Add("Country", typeof(string));
+EmployeesDT.Columns.Add("DOB", typeof(DateTime));
+EmployeesDT.Columns.Add("Salary", typeof(double));
+
+EmployeesDT.Rows.Add(1, "Fares Haddad", "Lebanon", new DateTime(1970, 1, 1), 3000.00);
+EmployeesDT.Rows.Add(2, "Ahmad Al-Hassan", "Jordan", new DateTime(1990, 5, 15), 75000.50);
+EmployeesDT.Rows.Add(3, "Sara Khaled", "Jordan", new DateTime(1995, 11, 28), 62000.00);
+EmployeesDT.Rows.Add(4, "Omar Abdulaziz", "UAE", new DateTime(1985, 3, 10), 98500.25);
+EmployeesDT.Rows.Add(5, "Laila Hassan", "Egypt", new DateTime(1982, 7, 20), 45000.00);
+
+// Create a DataView from the existing DataTable
+DataView EmployeesDV1 = EmployeesDT.DefaultView;
+
+Console.WriteLine("Employees List From DataView1:");
+foreach (DataRowView Row in EmployeesDV1)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+```
+
+**Explanation:**
+
+* `DefaultView` gives a default `DataView` representation of the `DataTable`.
+* Iterating through `DataRowView` objects allows you to access each record as seen through the DataView.
+* Since the DataView is linked to the DataTable, any modification made to the view (like editing or deleting a record) is reflected in the original table.
+
+---
+
+### Filtering and Sorting Data in a DataView
+
+```csharp
+// Sort records by Country in ascending order
+EmployeesDV1.Sort = "Country ASC";
+
+Console.WriteLine("Employees List Sorted By Country:");
+foreach (DataRowView Row in EmployeesDV1)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+
+// Filter only employees from Jordan and Egypt
+EmployeesDV1.RowFilter = "Country = 'Jordan' OR Country = 'Egypt'";
+
+Console.WriteLine("Employees From Jordan & Egypt:");
+foreach (DataRowView Row in EmployeesDV1)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+```
+
+**Explanation:**
+
+* `Sort` allows ordering by one or more columns (ASC/DESC).
+* `RowFilter` lets you apply SQL-like conditions to display specific records.
+* The filter affects **only the view**, not the underlying `DataTable`.
+* You can chain filters and sorts for flexible data views.
+
+---
+
+### Summary
+
+| Feature                     | Description                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Connection to DataTable** | DataView directly references its DataTable — changes sync both ways.                             |
+| **Sorting**                 | Controlled via the `Sort` property using SQL-like syntax.                                        |
+| **Filtering**               | Controlled via the `RowFilter` property using conditional expressions.                           |
+| **Binding**                 | Ideal for data binding in UI controls like DataGridView or ComboBox.                             |
+| **Performance**             | Faster and more memory-efficient for read/query operations than manipulating DataTable directly. |
+
+---
+
+**In short:**
+
+> DataView is a lightweight, real-time, and customizable window to view, sort, and filter data from a DataTable — without duplicating the data itself.
+
 
