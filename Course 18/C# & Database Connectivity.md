@@ -1419,4 +1419,230 @@ Console.WriteLine();
 
 > DataView is a lightweight, real-time, and customizable window to view, sort, and filter data from a DataTable — without duplicating the data itself.
 
+---
 
+## Dataset in C#  
+
+### What is Dataset?  
+
+In C#, a **DataSet** is an in-memory representation of a collection of structured data. It is part of the ADO.NET framework and is used for storing, manipulating, and managing data offline. A DataSet can contain multiple **DataTable** objects, which represent tables of data. Each DataTable has **DataColumn** objects for defining columns and **DataRow** objects for storing records.  
+
+**Key points about DataSet:**  
+- A DataSet is a **disconnected**, in-memory representation of data. Once filled with data, it does not require a continuous connection to the data source.  
+- It can store multiple DataTables along with relationships and constraints between them.  
+- Acts as a **local copy of your database**, including tables, relationships, and constraints.  
+- DataSet is part of the **`System.Data`** namespace.  
+- Compared to **DataReader**, DataSet has more overhead because it stores all data in memory and supports advanced operations, so it can be slower for large datasets.  
+
+**Advantages:**  
+- Supports multiple tables, constraints, and relations.  
+- Can be used for offline data manipulation.  
+- Data can be accessed by table name or index.  
+
+**When to use:**  
+- Use DataSet when you need to work with multiple related tables in memory.  
+- If performance is critical for reading large datasets sequentially, consider using **DataReader** instead.  
+
+---
+
+### Create a Dataset  
+
+```csharp
+// Create Employees DataTable
+DataTable EmployeesDT = new DataTable();
+EmployeesDT.Columns.Add("ID", typeof(int));
+EmployeesDT.Columns.Add("Name", typeof(string));
+EmployeesDT.Columns.Add("Country", typeof(string));
+EmployeesDT.Columns.Add("DOB", typeof(DateTime));
+EmployeesDT.Columns.Add("Salary", typeof(Double));
+
+EmployeesDT.Rows.Add(1, "Fares Haddad", "Lebanon", new DateTime(1970, 1, 1), 3000.00);
+EmployeesDT.Rows.Add(2, "Ahmad Al-Hassan", "Jordan", new DateTime(1990, 5, 15), 75000.50);
+EmployeesDT.Rows.Add(3, "Sara Khaled", "Jordan", new DateTime(1995, 11, 28), 62000.00);
+EmployeesDT.Rows.Add(4, "Omar Abdulaziz", "UAE", new DateTime(1985, 3, 10), 98500.25);
+EmployeesDT.Rows.Add(5, "Laila Hassan", "Egypt", new DateTime(1982, 7, 20), 45000.00);
+
+// Create Departments DataTable
+DataTable DepartmentsDT = new DataTable();
+DepartmentsDT.Columns.Add("DeptID", typeof(int));
+DepartmentsDT.Columns.Add("DeptName", typeof(string));
+
+DepartmentsDT.Rows.Add(1, "Information Technology");
+DepartmentsDT.Rows.Add(2, "Human Resources");
+DepartmentsDT.Rows.Add(3, "Finance");
+
+// Display Employees
+Console.WriteLine("Employees List");
+foreach(DataRow Row in EmployeesDT.Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}" +
+    $"\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+
+// Display Departments
+Console.WriteLine("Departments List");
+foreach (DataRow Row in DepartmentsDT.Rows)
+{
+    Console.WriteLine($"Department: ID: {Row["DeptID"]}\tName: {Row["DeptName"]}");
+}
+Console.WriteLine();
+
+// Create DataSet and add tables
+DataSet ds = new DataSet();
+ds.Tables.Add(EmployeesDT);
+ds.Tables.Add(DepartmentsDT);
+
+// Access Employees Table inside DataSet
+Console.WriteLine("Employees List From DataSet");
+foreach (DataRow Row in ds.Tables[0].Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}" +
+    $"\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+
+```
+
+---
+
+### Access DataTables Inside a DataSet by Name
+
+> You can access tables in a DataSet using their names rather than indexes. This is especially useful when working with multiple tables.
+
+```csharp
+// Create Employees DataTable with name
+DataTable EmployeesDT = new DataTable("EmployeesDT");
+
+Console.WriteLine("Employees List Using Table Name");
+foreach (DataRow Row in ds.Tables["EmployeesDT"].Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["Name"]}" +
+    $"\t\tCountry: {Row["Country"]}\tSalary: {Row["Salary"]}\tDate of Birth: {Row["DOB"]}");
+}
+Console.WriteLine();
+```
+
+### Explanation:
+
+* `ds.Tables[0]` accesses the first table by index.
+
+* `ds.Tables["EmployeesDT"]` accesses the table by name.
+
+* A DataSet allows easy organization of multiple related DataTables in one object.
+
+---
+
+## DataAdapter
+
+### What is DataAdapter?
+
+In C#, a **DataAdapter** is a class in ADO.NET that acts as a bridge between a **DataSet** and a data source, such as a SQL database. It allows you to **populate a DataSet** with data from the database and also **update the database** with changes made to the DataSet.
+
+**Key points:**  
+- The DataAdapter is **disconnected**, meaning it does not maintain an open connection to the database after filling the DataSet.  
+- It provides methods such as `.Fill()` to populate DataTables in a DataSet, and `.Update()` to propagate changes (insert, update, delete) back to the database.  
+- Typically used when working with **offline data manipulation**, allowing you to fetch data, make changes, and then sync with the database.  
+
+**Advantages:**  
+- Works well with DataSets for in-memory data manipulation.  
+- Supports batch updates to the database.  
+- Can automatically handle INSERT, UPDATE, DELETE commands if configured.  
+
+---
+
+### DataAdapter Example
+
+```csharp
+// Connection string
+string ConnectionString = ConfigurationManager.ConnectionStrings["HR_Database"].ConnectionString;
+
+// Create a DataSet to hold data
+DataSet ds = new DataSet();
+
+// SQL query to fetch data
+string Query = "SELECT * FROM Employees";
+
+// Create DataAdapter with query and connection
+SqlDataAdapter DataAdapter = new SqlDataAdapter(Query, ConnectionString);
+
+// Automatically generate Insert/Update/Delete commands
+SqlCommandBuilder CommandBuilder = new SqlCommandBuilder(DataAdapter);
+
+// Fill DataSet with data
+using(SqlConnection Connection = new SqlConnection(ConnectionString))
+{
+    Connection.Open();
+
+    // Assign the connection to the SelectCommand
+    //DataAdapter.SelectCommand.Connection = Connection;
+
+    // Fill DataSet with Employees table
+    DataAdapter.Fill(ds, "Employees");
+}
+
+// Access the DataTable from DataSet
+DataTable EmployeesDT = ds.Tables["Employees"];
+
+// Display data from DataTable
+Console.WriteLine("Before Update:");
+foreach(DataRow Row in EmployeesDT.Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["FirstName"]} {Row["LastName"]}" +
+    $"\tGender: {Row["Gendor"]}\tDate of Birth: {Row["DateOfBirth"]}\tSalary: {Row["MonthlySalary"]}");
+}
+
+DataRow[] ResultRows = EmployeesDT.Select("ID = 287");
+foreach(DataRow Row in ResultRows)
+{
+    Row["MonthlySalary"] = 8500m;
+    Row["BonusPerc"] = 0.1;
+}
+
+// Apply changes to the database
+DataAdapter.Update(ds, "Employees");
+
+Console.WriteLine("\nAfter Update:");
+foreach(DataRow Row in EmployeesDT.Rows)
+{
+    Console.WriteLine($"ID: {Row["ID"]}\tName: {Row["FirstName"]} {Row["LastName"]}" +
+    $"\tGender: {Row["Gendor"]}\tDate of Birth: {Row["DateOfBirth"]}\tSalary: {Row["MonthlySalary"]}");
+}
+
+// Update the database with any changes made in the DataSet
+// using (SqlConnection Connection = new SqlConnection(ConnectionString))
+// {
+//     Connection.Open();
+
+//     // Assign the connection to UpdateCommand
+//     DataAdapter.UpdateCommand.Connection = Connection;
+
+//     // Propagate changes back to database
+//     DataAdapter.Update(ds, "Employees");
+// }
+```
+
+### Explanation:
+
+* `.Fill(ds, "Employees")` loads the result of the SQL query into the `Employees` DataTable inside the DataSet.
+
+* Any modifications (add, edit, delete rows) on `EmployeesDT` are made **in-memory**.
+
+* `.Update(ds, "Employees")` pushes the changes back to the database.
+
+* The DataAdapter uses **SelectCommand**, **InsertCommand**, **UpdateCommand**, **DeleteCommand** to manage database operations.
+
+* This approach allows you to work with the database data offline and synchronize later.
+
+
+### Important Note:
+
+* Changes in the DataTable **must be tracked** by the DataAdapter to propagate correctly.
+
+* If commands for Insert/Update/Delete are not provided, you may need to generate them automatically or set them manually.
+
+* Always use `SqlCommandBuilder` if you want to auto-generate `UpdateCommand` for a `DataAdapter`.
+
+* Connection is closed automatically after the Fill() or Update() operation is done.
+
+* This works because DataAdapter.Fill() and DataAdapter.Update() internally check the connection

@@ -39,6 +39,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 15         | ✅ Completed   | Database Level 1                       |
 | 16         | ✅ Completed   | OOP In C#                              |
 | 17         | ✅ Completed   | Database (Projects & Practice)         |
+| 18         | ✅ Completed   | C# & Database Connectivity             |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
