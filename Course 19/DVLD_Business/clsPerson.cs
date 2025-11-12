@@ -134,6 +134,13 @@ namespace DVLD_Business
             return (this.PersonID != -1);
         }
 
+        private bool _UpdatePerson()
+        {
+            return clsPersonDataAccess.UpdatePerson(this.PersonID, this.NationalNo, this.FirstName, this.SecondName, this.ThirdName,
+                this.LastName, this.DateOfBirth, this.Gendor, this.Address, this.Phone, this.Email,
+                this.NationalityCountryID, this.ImagePath);
+        }
+
         public bool Save()
         {
             switch(Mode)
@@ -148,8 +155,8 @@ namespace DVLD_Business
                     {
                         return false;
                     }
-                //case enMode.Update:
-                //    return _UpdatePerson();
+                case enMode.Update:
+                    return _UpdatePerson();
             }
 
             return false;

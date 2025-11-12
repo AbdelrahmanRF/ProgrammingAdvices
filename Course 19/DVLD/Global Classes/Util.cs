@@ -8,7 +8,7 @@ namespace DVLD.Global_Classes
     {
         public static string GenerateGUID()
         {
-            Guid guid = new Guid();
+            Guid guid = Guid.NewGuid();
 
             return guid.ToString();
         }
@@ -47,8 +47,10 @@ namespace DVLD.Global_Classes
 
             string DestinationDirectory = @"C:\DVLD-People-Images\";
 
-            if (!Directory.Exists(DestinationDirectory)) 
+            if (!CreateFolderIfDoesNotExist(DestinationDirectory))
+            {
                 return false;
+            }
 
             string DestinationFile = DestinationDirectory + ReplaceFileNameWithGUID(SourceFile);
 

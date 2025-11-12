@@ -70,12 +70,10 @@ namespace DVLD.People
             txtAddress.Text = _Person.Address;
             cbCountry.SelectedIndex = cbCountry.FindString(_Person.CountryInfo.CountryName);
 
-            ////////////////////////////////
             if (_Person.ImagePath != "")
             {
                 pbImage.Load(_Person.ImagePath);
             }
-            ////////////////////////////////
             lblRemoveImage.Visible = _Person.ImagePath != "";
         }
 
@@ -155,19 +153,20 @@ namespace DVLD.People
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string selectedFilePath = openFileDialog1.FileName;
-                ////////////////////////////////
+                lblRemoveImage.Visible = true;
 
-                ////////////////////////////////
+                Util.CopyImageToProjectImagesFolder(ref selectedFilePath);
+
                 pbImage.Load(selectedFilePath);
+
             }
         }
 
         private void lblRemoveImage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ////////////////////////////////
-            //pbImage.ImageLocation = null;
-            //lblRemoveImage.Visible = false;
-            ////////////////////////////////
+            pbImage.ImageLocation = null;
+            pbImage.Image = rbMale.Checked ? Resources.Male_512 : Resources.Female_512;
+            lblRemoveImage.Visible = false;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -189,6 +188,7 @@ namespace DVLD.People
             _Person.NationalNo = txtNationalNo.Text;
             _Person.Gendor = (short)(rbMale.Checked ? 0 : 1);
             _Person.DateOfBirth = dtpDOB.Value;
+            _Person.Address = txtAddress.Text;
 
             if (txtEmail.Text != null)
                 _Person.Email = txtEmail.Text;

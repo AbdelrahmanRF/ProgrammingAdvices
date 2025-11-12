@@ -27,12 +27,22 @@ namespace DVLD.People.Controls
             lblDOB.Text = clsFormat.DateToShort(Person.DateOfBirth);
             lblPhone.Text = Person.Phone;
             lblCountry.Text = Person.CountryInfo.CountryName;
+
+            if (Person.ImagePath != "")
+            {
+                pbImage.Load(Person.ImagePath);
+            } 
+            else
+            {
+                pbImage.Image = Person.Gendor == 0 ? Resources.Male_512 : Resources.Female_512;
+            }
         }
 
         private void lblEditPersonInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             frmAddUpdatePerson frm = new frmAddUpdatePerson(PersonID);
             frm.ShowDialog();
+            FillPersonData(clsPerson.Find(PersonID));
         }
     }
 }

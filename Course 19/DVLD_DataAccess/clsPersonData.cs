@@ -254,7 +254,72 @@ namespace DVLD_DataAccess
             return PersonID;
 		}
 
+		public static bool UpdatePerson(int PersonID, string NationalNo, string FirstName,
+            string SecondName, string ThirdName, string LastName, DateTime DateOfBirth,
+            short Gendor, string Address, string Phone, string Email,
+            int NationalityCountryID, string ImagePath)
+		{
+			int RowsAffected = 0;
+			SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+			string Query = @"UPDATE People
+								SET NationalNo = @NationalNo,
+									FirstName = @FirstName,
+									SecondName = @SecondName,
+									ThirdName = @ThirdName,
+									LastName = @LastName,
+									DateOfBirth = @DateOfBirth,
+									Gendor = @Gendor,
+									Address = @Address,
+									Phone = @Phone,
+									Email = @Email,
+									NationalityCountryID = @NationalityCountryID,
+									ImagePath = @ImagePath
+								WHERE PersonID = @PersonID;";
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@PersonID", PersonID);
+            Command.Parameters.AddWithValue("@NationalNo", NationalNo);
+            Command.Parameters.AddWithValue("@FirstName", FirstName);
+            Command.Parameters.AddWithValue("@SecondName", SecondName);
 
+            if (ThirdName != "")
+                Command.Parameters.AddWithValue("@ThirdName", ThirdName);
+            else
+                Command.Parameters.AddWithValue("@ThirdName", System.DBNull.Value);
+
+            Command.Parameters.AddWithValue("@LastName", LastName);
+            Command.Parameters.AddWithValue("@DateOfBirth", DateOfBirth);
+            Command.Parameters.AddWithValue("@Gendor", Gendor);
+            Command.Parameters.AddWithValue("@Address", Address);
+            Command.Parameters.AddWithValue("@Phone", Phone);
+
+            if (Email != "")
+                Command.Parameters.AddWithValue("@Email", Email);
+            else
+                Command.Parameters.AddWithValue("@Email", System.DBNull.Value);
+
+            Command.Parameters.AddWithValue("@NationalityCountryID", NationalityCountryID);
+
+            if (ImagePath != "")
+                Command.Parameters.AddWithValue("@ImagePath", ImagePath);
+            else
+                Command.Parameters.AddWithValue("@ImagePath", System.DBNull.Value);
+
+			try
+			{
+				Connection.Open();
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
+			finally
+			{
+				Connection.Close();
+			}
+
+            return RowsAffected > 0;
+		}
         public static bool DeletePerson(int PersonID)
 		{
 			int RowsAffected = 0;
