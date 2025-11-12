@@ -4,6 +4,7 @@ using DVLD_Business;
 using System;
 using System.Data;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Windows.Forms;
 
 namespace DVLD.People
@@ -152,6 +153,15 @@ namespace DVLD.People
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                try
+                {
+                    File.Delete(_Person.ImagePath);
+                }
+                catch (IOException)
+                {
+   
+                }
+
                 string selectedFilePath = openFileDialog1.FileName;
                 lblRemoveImage.Visible = true;
 
