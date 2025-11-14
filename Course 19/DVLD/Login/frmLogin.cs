@@ -62,7 +62,7 @@ namespace DVLD.Login
                 clsGlobal.CurrentUser = User;
                 this.Hide();
 
-                frmMain frm = new frmMain();
+                frmMain frm = new frmMain(this);
                 frm.ShowDialog();
             }
             else

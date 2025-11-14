@@ -111,28 +111,28 @@
             this.tsmiSendEmail,
             this.tsmiPhoneCall});
             this.cmsRecordOptions.Name = "cmsRecordOptions";
-            this.cmsRecordOptions.Size = new System.Drawing.Size(181, 182);
+            this.cmsRecordOptions.Size = new System.Drawing.Size(178, 160);
             // 
             // tsmiShowDetails
             // 
             this.tsmiShowDetails.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiShowDetails.Image = global::DVLD.Properties.Resources.PersonDetails_32;
             this.tsmiShowDetails.Name = "tsmiShowDetails";
-            this.tsmiShowDetails.Size = new System.Drawing.Size(180, 24);
+            this.tsmiShowDetails.Size = new System.Drawing.Size(177, 24);
             this.tsmiShowDetails.Text = "Show Details";
             this.tsmiShowDetails.Click += new System.EventHandler(this.tsmiShowDetails_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
             // 
             // tsmiAddNewPerson
             // 
             this.tsmiAddNewPerson.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiAddNewPerson.Image = global::DVLD.Properties.Resources.Add_Person_40;
             this.tsmiAddNewPerson.Name = "tsmiAddNewPerson";
-            this.tsmiAddNewPerson.Size = new System.Drawing.Size(180, 24);
+            this.tsmiAddNewPerson.Size = new System.Drawing.Size(177, 24);
             this.tsmiAddNewPerson.Text = "Add New Person";
             this.tsmiAddNewPerson.Click += new System.EventHandler(this.tsmiAddNewPerson_Click);
             // 
@@ -141,7 +141,7 @@
             this.tsmiEdit.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiEdit.Image = global::DVLD.Properties.Resources.edit_32;
             this.tsmiEdit.Name = "tsmiEdit";
-            this.tsmiEdit.Size = new System.Drawing.Size(180, 24);
+            this.tsmiEdit.Size = new System.Drawing.Size(177, 24);
             this.tsmiEdit.Text = "Edit";
             this.tsmiEdit.Click += new System.EventHandler(this.tsmiEdit_Click);
             // 
@@ -150,21 +150,21 @@
             this.tsmiDelete.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiDelete.Image = global::DVLD.Properties.Resources.Delete_32;
             this.tsmiDelete.Name = "tsmiDelete";
-            this.tsmiDelete.Size = new System.Drawing.Size(180, 24);
+            this.tsmiDelete.Size = new System.Drawing.Size(177, 24);
             this.tsmiDelete.Text = "Delete";
             this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(174, 6);
             // 
             // tsmiSendEmail
             // 
             this.tsmiSendEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiSendEmail.Image = global::DVLD.Properties.Resources.send_email_32;
             this.tsmiSendEmail.Name = "tsmiSendEmail";
-            this.tsmiSendEmail.Size = new System.Drawing.Size(180, 24);
+            this.tsmiSendEmail.Size = new System.Drawing.Size(177, 24);
             this.tsmiSendEmail.Text = "Send Email";
             // 
             // tsmiPhoneCall
@@ -172,7 +172,7 @@
             this.tsmiPhoneCall.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.tsmiPhoneCall.Image = global::DVLD.Properties.Resources.call_32;
             this.tsmiPhoneCall.Name = "tsmiPhoneCall";
-            this.tsmiPhoneCall.Size = new System.Drawing.Size(180, 24);
+            this.tsmiPhoneCall.Size = new System.Drawing.Size(177, 24);
             this.tsmiPhoneCall.Text = "Phone Call";
             // 
             // label3
@@ -189,6 +189,7 @@
             // cbFilterBy
             // 
             this.cbFilterBy.BackColor = System.Drawing.SystemColors.Control;
+            this.cbFilterBy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbFilterBy.FormattingEnabled = true;
             this.cbFilterBy.Items.AddRange(new object[] {
             "None",
