@@ -51,9 +51,73 @@ namespace DVLD_Business
             return null;
         }
 
+        public static clsUser FindUserByUserID(int userID)
+        {
+            int personID = -1;
+            string username = "", password = "";
+            bool isActive = false;
+
+            if (clsUserData.GetUserByUserID(userID, ref personID, ref username, ref password, ref isActive))
+                return new clsUser(userID, personID, username, password, isActive);
+
+            return null;
+        }
+
+        public static bool isUserExistByUserName(string username)
+        {
+            return clsUserData.isUserExistByUserName(username);
+        }
+
+        public static bool isUserExistByPersonID(int personID)
+        {
+            return clsUserData.isUserExistByPersonID(personID);
+        }
         public static DataTable GetAllUsers()
         {
             return clsUserData.GetAllUsers();
+        }
+
+        private bool _AddNewUser()
+        {
+            this.UserID = clsUserData.AddNewUser(this.PersonID, this.Username, this.Password, this.isActive);
+
+            return UserID != -1;
+        }
+
+        private bool _UpdateUser()
+        {
+            return clsUserData.UpdateUser(this.UserID, this.PersonID, this.Username, this.Password, this.isActive);
+        }
+
+        public bool UpdatePassword()
+        {
+            return clsUserData.UpdatePassword(this.UserID, this.Password);
+        }
+
+        public bool Save()
+        {
+            switch(_Mode)
+            {
+                case enMode.AddNew:
+                    {
+                        if (_AddNewUser())
+                        {
+                            _Mode = enMode.Update;
+                            return true;
+                        }
+
+                        return false;
+                    }
+                case enMode.Update:
+                    return _UpdateUser();
+            }
+
+            return false;
+        }
+
+        public static bool DeleteUser(int userID)
+        {
+            return clsUserData.DeleteUser(userID);
         }
     }
 }

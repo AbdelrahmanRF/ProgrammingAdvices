@@ -344,7 +344,7 @@ namespace DVLD_DataAccess
 					switch(ex.Errors[0].Number)
 					{
                         case 547:
-                            throw new InvalidOperationException("Person was not deleted because it has data linked to it.", ex);
+                            throw new InvalidOperationException("Person was not Deleted Because it has Data Linked to it.", ex);
                         default:
                             throw new Exception();
                     }

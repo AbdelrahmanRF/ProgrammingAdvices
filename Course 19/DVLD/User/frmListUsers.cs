@@ -1,4 +1,5 @@
-﻿using DVLD_Business;
+﻿using DVLD.Global_Classes;
+using DVLD_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,9 +36,16 @@ namespace DVLD.User
             txtFilter.Visible = false;
         }
 
+        private void _OpenAddEditUserForm(int UserID)
+        {
+            frmAddUpdateUser frm = new frmAddUpdateUser(UserID);
+            frm.ShowDialog();
+            _RefreshUsers();
+        }
+
         private void btnAddUser_Click(object sender, EventArgs e)
         {
-
+            _OpenAddEditUserForm(-1);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -49,8 +57,6 @@ namespace DVLD.User
         {
             txtFilter.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex != 5;
             cbIsActive.Visible = cbFilterBy.SelectedIndex == 5;
-
-
         }
 
         private void cbIsActive_SelectedIndexChanged(object sender, EventArgs e)
@@ -107,6 +113,53 @@ namespace DVLD.User
             {
                 e.Handled = true;
             }
+        }
+
+        private void tsmiShowDetails_Click(object sender, EventArgs e)
+        {
+            frmUserInfo frm = new frmUserInfo((int)dgvUsersList.CurrentRow.Cells[0].Value);
+            frm.ShowDialog();
+        }
+        private void tsmiAddNewUser_Click(object sender, EventArgs e)
+        {
+            _OpenAddEditUserForm(-1);
+        }
+
+        private void tsmiEdit_Click(object sender, EventArgs e)
+        {
+            _OpenAddEditUserForm((int)dgvUsersList.CurrentRow.Cells[0].Value);
+        }
+
+        private void tsmiDelete_Click(object sender, EventArgs e)
+        {
+            int UserID = (int)dgvUsersList.CurrentRow.Cells[0].Value;
+
+            try
+            {
+                if (clsUser.DeleteUser(UserID))
+                {
+                    MessageBox.Show("User has been Deleted Successfully", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _RefreshUsers();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void tsmiChangePassword_Click(object sender, EventArgs e)
+        {
+            frmChangePassword frm = new frmChangePassword((int)dgvUsersList.CurrentRow.Cells[0].Value);
+            frm.ShowDialog();
+        }
+
+        private void cmsRecordOptions_Opening(object sender, CancelEventArgs e)
+        {
+            if (clsGlobal.CurrentUser.UserID == (int)dgvUsersList.CurrentRow.Cells[0].Value)
+                tsmiDelete.Enabled = false;
+            else
+                tsmiDelete.Enabled = true;
         }
     }
 }

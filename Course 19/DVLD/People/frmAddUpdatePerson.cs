@@ -15,6 +15,10 @@ namespace DVLD.People
         public enum enMode { AddNew = 0, Update = 1 }
         enMode _Mode = enMode.AddNew;
         clsPerson _Person;
+
+        public delegate void DataBackEventHandler(clsPerson Person);
+        public event DataBackEventHandler DataBack;
+
         public frmAddUpdatePerson(int PersonID)
         {
             InitializeComponent();
@@ -98,14 +102,18 @@ namespace DVLD.People
         private void ValidateNationalNo(object sender, System.ComponentModel.CancelEventArgs e)
         {
             TextBox txtBox = sender as TextBox;
+            string NationalNo = txtBox.Text.Trim();
 
-            if (String.IsNullOrEmpty(txtBox.Text.Trim()))
+            bool IDExists = clsPerson.isPersonExist(NationalNo);
+            bool IsSamePerson = (_Mode == enMode.Update) && (_Person.NationalNo == NationalNo);
+
+            if (String.IsNullOrEmpty(NationalNo))
             {
                 e.Cancel = true;
                 txtBox.Focus();
                 errorProvider1.SetError(txtBox, $"{txtBox.Tag} Cannot be Empty!");
-            }
-            else if (clsPerson.isPersonExist(txtBox.Text))
+            } 
+            else if (IDExists && !IsSamePerson)
             {
                 e.Cancel = true;
                 txtBox.Focus();
@@ -155,7 +163,8 @@ namespace DVLD.People
             {
                 try
                 {
-                    File.Delete(_Person.ImagePath);
+                    if (File.Exists(_Person.ImagePath))
+                        File.Delete(_Person.ImagePath);
                 }
                 catch (IOException)
                 {
@@ -186,6 +195,13 @@ namespace DVLD.People
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if (!ValidateChildren())
+            {
+                MessageBox.Show("Fix Validation Errors Before Saving.", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             _Person.FirstName = txtFirstName.Text;
             _Person.SecondName = txtSecondName.Text;
 
@@ -213,10 +229,14 @@ namespace DVLD.People
             else
                 _Person.ImagePath = "";
 
-            _Person.Save();
-            _Mode = enMode.Update;
-            lblFormTitle.Text = "Update Person";
-            lblPersonID.Text = _Person.PersonID.ToString();
+            if (_Person.Save())
+            {
+                MessageBox.Show("Data Saved Successfully", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _Mode = enMode.Update;
+                lblFormTitle.Text = "Update Person";
+                lblPersonID.Text = _Person.PersonID.ToString();
+                DataBack?.Invoke(_Person);
+            }
         }
 
         private void rbMale_CheckedChanged(object sender, EventArgs e)

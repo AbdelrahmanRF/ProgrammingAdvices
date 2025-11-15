@@ -28,10 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.dgvUsersList = new System.Windows.Forms.DataGridView();
+            this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiShowDetails = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiAddNewUser = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiChangePassword = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiSendEmail = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCall = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTotalRecords = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -40,6 +51,7 @@
             this.btnAddUser = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsersList)).BeginInit();
+            this.cmsRecordOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,11 +100,99 @@
             this.dgvUsersList.AllowUserToOrderColumns = true;
             this.dgvUsersList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvUsersList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsersList.ContextMenuStrip = this.cmsRecordOptions;
             this.dgvUsersList.Location = new System.Drawing.Point(27, 262);
             this.dgvUsersList.Name = "dgvUsersList";
             this.dgvUsersList.ReadOnly = true;
             this.dgvUsersList.Size = new System.Drawing.Size(1119, 278);
             this.dgvUsersList.TabIndex = 16;
+            // 
+            // cmsRecordOptions
+            // 
+            this.cmsRecordOptions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiShowDetails,
+            this.toolStripSeparator1,
+            this.tsmiAddNewUser,
+            this.tsmiEdit,
+            this.tsmiDelete,
+            this.tsmiChangePassword,
+            this.toolStripSeparator2,
+            this.tsmiSendEmail,
+            this.tsmiCall});
+            this.cmsRecordOptions.Name = "cmsRecordOptions";
+            this.cmsRecordOptions.Size = new System.Drawing.Size(186, 206);
+            this.cmsRecordOptions.Opening += new System.ComponentModel.CancelEventHandler(this.cmsRecordOptions_Opening);
+            // 
+            // tsmiShowDetails
+            // 
+            this.tsmiShowDetails.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiShowDetails.Image = global::DVLD.Properties.Resources.PersonDetails_32;
+            this.tsmiShowDetails.Name = "tsmiShowDetails";
+            this.tsmiShowDetails.Size = new System.Drawing.Size(185, 24);
+            this.tsmiShowDetails.Text = "Show Details";
+            this.tsmiShowDetails.Click += new System.EventHandler(this.tsmiShowDetails_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
+            // 
+            // tsmiAddNewUser
+            // 
+            this.tsmiAddNewUser.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiAddNewUser.Image = global::DVLD.Properties.Resources.Add_New_User_32;
+            this.tsmiAddNewUser.Name = "tsmiAddNewUser";
+            this.tsmiAddNewUser.Size = new System.Drawing.Size(185, 24);
+            this.tsmiAddNewUser.Text = "Add New User";
+            this.tsmiAddNewUser.Click += new System.EventHandler(this.tsmiAddNewUser_Click);
+            // 
+            // tsmiEdit
+            // 
+            this.tsmiEdit.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiEdit.Image = global::DVLD.Properties.Resources.edit_32;
+            this.tsmiEdit.Name = "tsmiEdit";
+            this.tsmiEdit.Size = new System.Drawing.Size(185, 24);
+            this.tsmiEdit.Text = "Edit";
+            this.tsmiEdit.Click += new System.EventHandler(this.tsmiEdit_Click);
+            // 
+            // tsmiDelete
+            // 
+            this.tsmiDelete.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiDelete.Image = global::DVLD.Properties.Resources.Delete_32;
+            this.tsmiDelete.Name = "tsmiDelete";
+            this.tsmiDelete.Size = new System.Drawing.Size(185, 24);
+            this.tsmiDelete.Text = "Delete";
+            this.tsmiDelete.Click += new System.EventHandler(this.tsmiDelete_Click);
+            // 
+            // tsmiChangePassword
+            // 
+            this.tsmiChangePassword.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiChangePassword.Image = global::DVLD.Properties.Resources.Password_32;
+            this.tsmiChangePassword.Name = "tsmiChangePassword";
+            this.tsmiChangePassword.Size = new System.Drawing.Size(185, 24);
+            this.tsmiChangePassword.Text = "Change Password";
+            this.tsmiChangePassword.Click += new System.EventHandler(this.tsmiChangePassword_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(182, 6);
+            // 
+            // tsmiSendEmail
+            // 
+            this.tsmiSendEmail.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiSendEmail.Image = global::DVLD.Properties.Resources.send_email_32;
+            this.tsmiSendEmail.Name = "tsmiSendEmail";
+            this.tsmiSendEmail.Size = new System.Drawing.Size(185, 24);
+            this.tsmiSendEmail.Text = "Send Email";
+            // 
+            // tsmiCall
+            // 
+            this.tsmiCall.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiCall.Image = global::DVLD.Properties.Resources.call_32;
+            this.tsmiCall.Name = "tsmiCall";
+            this.tsmiCall.Size = new System.Drawing.Size(185, 24);
+            this.tsmiCall.Text = "Phone Call";
             // 
             // lblTotalRecords
             // 
@@ -199,6 +299,7 @@
             this.Text = " ";
             this.Load += new System.EventHandler(this.frmListUsers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsersList)).EndInit();
+            this.cmsRecordOptions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -218,5 +319,15 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox cbIsActive;
+        private System.Windows.Forms.ContextMenuStrip cmsRecordOptions;
+        private System.Windows.Forms.ToolStripMenuItem tsmiShowDetails;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAddNewUser;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEdit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDelete;
+        private System.Windows.Forms.ToolStripMenuItem tsmiChangePassword;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSendEmail;
+        private System.Windows.Forms.ToolStripMenuItem tsmiCall;
     }
 }

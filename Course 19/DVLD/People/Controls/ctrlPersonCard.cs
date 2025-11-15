@@ -11,6 +11,7 @@ namespace DVLD.People.Controls
         public ctrlPersonCard()
         {
             InitializeComponent();
+            lblEditPersonInfo.Visible = false;
         }
 
         public void FillPersonData(clsPerson Person)
@@ -36,6 +37,8 @@ namespace DVLD.People.Controls
             {
                 pbImage.Image = Person.Gendor == 0 ? Resources.Male_512 : Resources.Female_512;
             }
+
+            lblEditPersonInfo.Visible = true;
         }
 
         private void lblEditPersonInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

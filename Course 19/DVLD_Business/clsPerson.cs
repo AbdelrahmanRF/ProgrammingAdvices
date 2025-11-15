@@ -149,6 +149,7 @@ namespace DVLD_Business
                     if (_AddNewPerson())
                     {
                         Mode = enMode.Update;
+                        this.CountryInfo = clsCountry.Find(NationalityCountryID);
                         return true;
                     }
                     else
