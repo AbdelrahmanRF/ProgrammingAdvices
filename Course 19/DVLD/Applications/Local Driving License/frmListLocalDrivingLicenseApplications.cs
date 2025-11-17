@@ -1,0 +1,126 @@
+﻿using DVLD_Business;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace DVLD.Applications.Local_Driving_License
+{
+    public partial class frmListLocalDrivingLicenseApplications : Form
+    {
+        DataTable _LDLAppsList;
+        public frmListLocalDrivingLicenseApplications()
+        {
+            InitializeComponent();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void _RefreshLDLApplicationsList()
+        {
+            _LDLAppsList = clsLocalDrivingLicenseApplication.GetAllLocalDrivingLicenseApplications();
+            dgvApplicationsList.DataSource = _LDLAppsList;
+            lblTotalRecords.Text = dgvApplicationsList.Rows.Count.ToString();
+        }
+
+        private void btnAddNewApplication_Click(object sender, EventArgs e)
+        {
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(-1);
+            frm.ShowDialog();
+            _RefreshLDLApplicationsList();
+        }
+
+        private void frmListLocalDrivingLicenseApplications_Load(object sender, EventArgs e)
+        {
+            cbFilterBy.SelectedIndex = 0;
+            cbIsStatus.SelectedIndex = 0;
+            _RefreshLDLApplicationsList();
+
+            if (dgvApplicationsList.Rows.Count > 0)
+            {
+                dgvApplicationsList.Columns[0].HeaderText = "L.D.L.AppID";
+                dgvApplicationsList.Columns[1].HeaderText = "Driving Class";
+                dgvApplicationsList.Columns[2].HeaderText = "National No";
+                dgvApplicationsList.Columns[3].HeaderText = "Full Name";
+                dgvApplicationsList.Columns[4].HeaderText = "Application Date";
+                dgvApplicationsList.Columns[5].HeaderText = "Passed Tests";
+            }
+        }
+
+        private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtFilter.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex != 4;
+            cbIsStatus.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex == 4;
+        }
+
+        private void txtFilter_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (cbFilterBy.SelectedIndex != 1) return;
+
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+
+        }
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            string SearchFor = txtFilter.Text;
+            BindingSource BS = new BindingSource();
+            BS.DataSource = _LDLAppsList;
+
+            if(String.IsNullOrEmpty(SearchFor) || cbFilterBy.SelectedIndex == 0)
+            {
+                BS.RemoveFilter();
+                dgvApplicationsList.DataSource = BS;
+                lblTotalRecords.Text = dgvApplicationsList.Rows.Count.ToString();
+                return;
+            }
+
+            if (cbFilterBy.Text == "L.D.L.AppID")
+            {
+                BS.Filter = $"Convert(LocalDrivingLicenseApplicationID, 'System.String') LIKE '%{SearchFor}%'";
+            }
+            else
+            { 
+                var Column = dgvApplicationsList.Columns[cbFilterBy.Text.Replace(" ", "")];
+                string ColumnName = Column.DataPropertyName;
+                DataColumn DC = _LDLAppsList.Columns[ColumnName];
+
+                if (DC.DataType == typeof(int))
+                    BS.Filter = $"Convert({ColumnName}, 'System.String') LIKE '%{SearchFor}%'";
+                else
+                    BS.Filter = $"{ColumnName} LIKE '%{SearchFor}%'";
+            }
+            dgvApplicationsList.DataSource = BS;
+            lblTotalRecords.Text = BS.List.Count.ToString();
+        }
+
+        private void cbIsStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string Status = cbIsStatus.Text;
+            BindingSource BS = new BindingSource();
+            BS.DataSource = _LDLAppsList;
+
+            if(Status == "All")
+            {
+                BS.RemoveFilter();
+                dgvApplicationsList.DataSource= BS;
+                lblTotalRecords.Text = dgvApplicationsList.Rows.Count.ToString();
+                return;
+            }
+
+            BS.Filter = $"Status = '{Status}'";
+            dgvApplicationsList.DataSource = BS;
+            lblTotalRecords.Text = BS.List.Count.ToString();
+        }
+    }
+}

@@ -57,6 +57,7 @@ namespace DVLD.People
             }
 
             _Person = clsPerson.Find(_PersonID);
+            lblPersonID.Text = _PersonID.ToString();
             lblFormTitle.Text = "Update Person";
             txtFirstName.Text = _Person.FirstName;
             txtSecondName.Text = _Person.SecondName;
