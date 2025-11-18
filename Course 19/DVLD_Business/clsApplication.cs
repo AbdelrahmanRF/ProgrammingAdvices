@@ -54,13 +54,13 @@ namespace DVLD_Business
         public float PaidFees { get; set; }
         public int CreatedByUserID { get; set; }
         public clsUser CreatedByUserInfo;
-        private enMode _Mode = enMode.AddNew;
+        public enMode Mode = enMode.AddNew;
         public enApplicationStatus ApplicationStatus { set; get; }
 
 
         public clsApplication()
         {
-            _Mode = enMode.AddNew;
+            Mode = enMode.AddNew;
 
             this.ApplicationID = -1;
             this.ApplicantPersonID = -1;
@@ -75,7 +75,7 @@ namespace DVLD_Business
         private clsApplication(int ApplicationID, int ApplicantPersonID, int ApplicationTypeID, DateTime ApplicationDate,
             enApplicationStatus ApplicationStatus, DateTime LastStatusDate, float PaidFees, int CreatedByUserID)
         {
-            _Mode = enMode.Update;
+            Mode = enMode.Update;
 
             this.ApplicationID = ApplicationID;
             this.ApplicantPersonID= ApplicantPersonID;
@@ -105,6 +105,45 @@ namespace DVLD_Business
             }
 
             return null;
+        }
+
+        private bool _AddNewBaseApplication()
+        {
+            this.ApplicationID = clsApplicationData.AddNewNewBaseApplication(this.ApplicantPersonID, this.ApplicationTypeID,
+                this.ApplicationDate, (byte)this.ApplicationStatus, this.LastStatusDate, this.PaidFees, this.CreatedByUserID);
+
+            return this.ApplicationID != -1;
+        }
+
+
+
+        public bool Save()
+        {
+            switch(Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewBaseApplication())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                //case enMode.Update:
+                //    return _UpdateBaseApplication();
+            }
+
+            return false;
+        }
+
+
+        public static int GetActiveApplicationIDForLicenseClass(int ApplicantPersonID,
+                enApplicationStatus ApplicationStatus, int LicenseClassID)
+        {
+            return clsApplicationData.GetActiveApplicationIDForLicenseClass(ApplicantPersonID, (byte)ApplicationStatus
+                , LicenseClassID);
         }
     }
 }

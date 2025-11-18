@@ -12,7 +12,7 @@ namespace DVLD_Business
     {
         public enum enMode { AddNew = 0, Update = 1 }
         private enMode _Mode = enMode.AddNew;
-        public int LocalDrivingLicenseApplication {  get; set; }
+        public int LocalDrivingLicenseApplicationID {  get; set; }
         public int LicenseClassID { set; get; }
         public clsLicenseClass LicenseClassInfo;
         public string FullName
@@ -25,19 +25,19 @@ namespace DVLD_Business
 
         public clsLocalDrivingLicenseApplication()
         {
-            this.LocalDrivingLicenseApplication = -1;
+            this.LocalDrivingLicenseApplicationID = -1;
             this.LicenseClassID = -1;
 
             _Mode = enMode.AddNew;
         }
 
-        private clsLocalDrivingLicenseApplication(int LocalDrivingLicenseApplication, int ApplicationID, int ApplicantPersonID,
+        private clsLocalDrivingLicenseApplication(int LocalDrivingLicenseApplicationID, int ApplicationID, int ApplicantPersonID,
             DateTime ApplicationDate, int ApplicationTypeID, enApplicationStatus ApplicationStatus, DateTime LastStatusDate,
              float PaidFees, int CreatedByUserID, int LicenseClassID)
         {
             _Mode = enMode.Update;
 
-            this.LocalDrivingLicenseApplication = LocalDrivingLicenseApplication;
+            this.LocalDrivingLicenseApplicationID = LocalDrivingLicenseApplicationID;
             this.ApplicationID = ApplicationID;
             this.ApplicantPersonID = ApplicantPersonID;
             this.ApplicationDate = ApplicationDate;
@@ -55,6 +55,39 @@ namespace DVLD_Business
         public static DataTable GetAllLocalDrivingLicenseApplications()
         {
             return clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications();
+        }
+
+        private bool _AddNewLDLApplication()
+        {
+            this.LocalDrivingLicenseApplicationID = clsLocalDrivingLicenseApplicationData.
+                AddNewLDLApplication(this.ApplicationID, this.LicenseClassID);
+
+            return this.LocalDrivingLicenseApplicationID != -1;
+        }
+        public bool Save()
+        {
+            base.Mode = (clsApplication.enMode)Mode;
+
+            if (!base.Save()) 
+                return false;
+
+            switch (_Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewLDLApplication())
+                    {
+                        _Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                //case enMode.Update:
+                //    return _UpdateLDLApplication();
+            }
+
+            return false;
         }
     }
 }

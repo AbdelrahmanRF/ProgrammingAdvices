@@ -53,5 +53,85 @@ namespace DVLD_DataAccess
 
             return isFound;
         }
+
+
+        public static int GetActiveApplicationIDForLicenseClass(int ApplicantPersonID, byte ApplicationStatus, 
+            int LicenseClassID)
+        {
+            int ActiveApplicationID = -1;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT A.ApplicationID FROM Applications AS A
+                                JOIN  LocalDrivingLicenseApplications AS LDL 
+                                ON A.ApplicationID = LDL.ApplicationID
+                                WHERE A.ApplicantPersonID = @ApplicantPersonID 
+                                AND A.ApplicationStatus = @ApplicationStatus 
+                                AND LDL.LicenseClassID = @LicenseClassID;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
+            Command.Parameters.AddWithValue("@ApplicationStatus", ApplicationStatus);
+            Command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
+
+            try
+            {
+                Connection.Open();
+                object Result = Command.ExecuteScalar();
+
+                if (Result != null && int.TryParse(Result.ToString(), out int FoundActiveApplicationID))
+                    ActiveApplicationID = FoundActiveApplicationID;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return ActiveApplicationID;
+        }
+
+
+        public static int AddNewNewBaseApplication(int ApplicantPersonID, int ApplicationTypeID, DateTime ApplicationDate
+                , byte ApplicationStatus, DateTime LastStatusDate, float PaidFees, int CreatedByUserID)
+        {
+            int ApplicationID = -1;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"INSERT INTO Applications(ApplicantPersonID, ApplicationDate, ApplicationTypeID, ApplicationStatus,
+                                LastStatusDate, PaidFees, CreatedByUserID)
+                            VALUES (@ApplicantPersonID, @ApplicationDate, @ApplicationTypeID, @ApplicationStatus,
+                                    @LastStatusDate, @PaidFees, @CreatedByUserID);
+                             SELECT SCOPE_IDENTITY();";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
+            Command.Parameters.AddWithValue("@ApplicationDate", ApplicationDate);
+            Command.Parameters.AddWithValue("@ApplicationTypeID", ApplicationTypeID);
+            Command.Parameters.AddWithValue("@ApplicationStatus", ApplicationStatus);
+            Command.Parameters.AddWithValue("@LastStatusDate", LastStatusDate);
+            Command.Parameters.AddWithValue("@PaidFees", PaidFees);
+            Command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+
+            try
+            {
+                Connection.Open();
+                object Result = Command.ExecuteScalar();
+
+                if(Result != null && int.TryParse(Result.ToString(), out int InsertedID))
+                    ApplicationID = InsertedID;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return ApplicationID;
+        }
     }
 }
