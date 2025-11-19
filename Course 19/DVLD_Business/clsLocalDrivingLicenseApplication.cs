@@ -57,6 +57,23 @@ namespace DVLD_Business
             return clsLocalDrivingLicenseApplicationData.GetAllLocalDrivingLicenseApplications();
         }
 
+        public static clsLocalDrivingLicenseApplication FindByLDLApplicationID(int LDLApplicationID)
+        {
+            int ApplicationID = -1, LicenseClassID = -1;
+
+            bool isFound = clsLocalDrivingLicenseApplicationData.GetLDLApplicationInfoByID(LDLApplicationID,
+                ref ApplicationID, ref LicenseClassID);
+
+            if (!isFound)
+                return null;
+
+            clsApplication Application = clsApplication.FindBaseApplication(ApplicationID);
+
+            return new clsLocalDrivingLicenseApplication(LDLApplicationID, Application.ApplicationID, Application.ApplicantPersonID,
+                Application.ApplicationDate, Application.ApplicationTypeID, Application.ApplicationStatus, Application.LastStatusDate,
+                Application.PaidFees, Application.CreatedByUserID, LicenseClassID);
+        }
+
         private bool _AddNewLDLApplication()
         {
             this.LocalDrivingLicenseApplicationID = clsLocalDrivingLicenseApplicationData.
@@ -64,6 +81,13 @@ namespace DVLD_Business
 
             return this.LocalDrivingLicenseApplicationID != -1;
         }
+
+        private bool _UpdateLDLApplication()
+        {
+            return clsLocalDrivingLicenseApplicationData.UpdateLDLApplication(this.LocalDrivingLicenseApplicationID, 
+                this.ApplicationID, this.LicenseClassID);
+        }
+
         public bool Save()
         {
             base.Mode = (clsApplication.enMode)Mode;
@@ -83,8 +107,8 @@ namespace DVLD_Business
                     {
                         return false;
                     }
-                //case enMode.Update:
-                //    return _UpdateLDLApplication();
+                case enMode.Update:
+                    return _UpdateLDLApplication();
             }
 
             return false;

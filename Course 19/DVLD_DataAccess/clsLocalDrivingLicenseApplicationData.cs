@@ -76,5 +76,72 @@ namespace DVLD_DataAccess
 
             return LDLApplicationID;
         }
+
+        public static bool UpdateLDLApplication(int LDLApplicationID, int ApplicationID, int LicenseClassID)
+        {
+            int RowsAffected = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"UPDATE LocalDrivingLicenseApplications
+                                SET ApplicationID = @ApplicationID,
+                                    LicenseClassID = @LicenseClassID
+                                WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
+            Command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+
+            try
+            {
+                Connection.Open();
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+            return RowsAffected > 0;
+        }
+
+        public static bool GetLDLApplicationInfoByID(int LDLApplicationID, ref int ApplicationID, ref int LicenseClassID)
+        {
+            bool isFound = false;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT * FROM LocalDrivingLicenseApplications
+                                WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+
+            try
+            {
+                Connection.Open();
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                if (Reader.Read())
+                {
+                    isFound = true;
+
+                    ApplicationID = Convert.ToInt32(Reader["ApplicationID"]);
+                    LicenseClassID = Convert.ToInt32(Reader["LicenseClassID"]);
+                }
+
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return isFound;
+        }
     }
 }

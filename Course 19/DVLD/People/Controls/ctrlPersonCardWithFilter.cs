@@ -50,8 +50,17 @@ namespace DVLD.People.Controls
         public void LoadPersonInfoForUpdate(int PersonID)
         {
             Person = clsPerson.Find(PersonID);
+
+            if (Person == null)
+            {
+                MessageBox.Show($"No Person with PersonID = {PersonID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             gbFilter.Enabled = false;
             ctrlPersonCard1.FillPersonData(Person);
+            txtFilter.Text = PersonID.ToString();
+            cbFindBy.SelectedIndex = 1;
         }
     }
 }

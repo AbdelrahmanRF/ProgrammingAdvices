@@ -122,5 +122,37 @@ namespace DVLD.Applications.Local_Driving_License
             dgvApplicationsList.DataSource = BS;
             lblTotalRecords.Text = BS.List.Count.ToString();
         }
+
+        private void tsmiEditApplication_Click(object sender, EventArgs e)
+        {
+            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(LDLApplicationID);
+            frm.ShowDialog();
+            _RefreshLDLApplicationsList();
+        }
+
+        private void tsmiCancelApplication_Click(object sender, EventArgs e)
+        {
+            int ApplicationID = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(
+                (int)dgvApplicationsList.CurrentRow.Cells[0].Value).ApplicationID;
+
+            clsApplication Application = clsApplication.FindBaseApplication(ApplicationID);
+
+            if (MessageBox.Show("Are You Sure You Want To Cancel This Application?", "Confirm",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                if (Application.CancelApplication())
+                {
+                    MessageBox.Show("Application Cancelled Successfully", "Cancelled",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _RefreshLDLApplicationsList();
+                }
+                else
+                {
+                    MessageBox.Show("Something Went Wrong", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
     }
 }

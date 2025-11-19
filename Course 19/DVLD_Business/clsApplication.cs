@@ -115,7 +115,11 @@ namespace DVLD_Business
             return this.ApplicationID != -1;
         }
 
-
+        private bool _UpdateBaseApplication()
+        {
+            return clsApplicationData.UpdateBaseApplication(this.ApplicationID, this.ApplicantPersonID, this.ApplicationTypeID,
+                this.ApplicationDate, (byte)this.ApplicationStatus, this.LastStatusDate, this.PaidFees, this.CreatedByUserID);
+        }
 
         public bool Save()
         {
@@ -131,19 +135,23 @@ namespace DVLD_Business
                     {
                         return false;
                     }
-                //case enMode.Update:
-                //    return _UpdateBaseApplication();
+                case enMode.Update:
+                    return _UpdateBaseApplication();
             }
 
             return false;
         }
-
 
         public static int GetActiveApplicationIDForLicenseClass(int ApplicantPersonID,
                 enApplicationStatus ApplicationStatus, int LicenseClassID)
         {
             return clsApplicationData.GetActiveApplicationIDForLicenseClass(ApplicantPersonID, (byte)ApplicationStatus
                 , LicenseClassID);
+        }
+
+        public bool CancelApplication()
+        {
+            return clsApplicationData.SetApplicationStatus(ApplicationID, 2);
         }
     }
 }

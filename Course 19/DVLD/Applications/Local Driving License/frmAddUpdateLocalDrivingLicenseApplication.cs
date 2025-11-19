@@ -1,4 +1,5 @@
 ﻿using DVLD.Global_Classes;
+using DVLD.People.Controls;
 using DVLD_Business;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,17 @@ namespace DVLD.Applications.Local_Driving_License
                 return;
             }
 
+            lblFormTitle.Text = "Update Local Driving License Application";
+            btnSave.Enabled = true;
+            _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_LDLAppID);
+            ctrlPersonCardWithFilter1.LoadPersonInfoForUpdate(clsPerson.Find(_LDLApplication.ApplicantPersonID).PersonID);
+            _SelectedPersonID = ctrlPersonCardWithFilter1.Person.PersonID;
 
+            lblDLApplicationID.Text = _LDLApplication.LocalDrivingLicenseApplicationID.ToString();
+            lblApplicationDate.Text = clsFormat.DateToShort(_LDLApplication.ApplicationDate);
+            lblApplicationFees.Text = _LDLApplication.PaidFees.ToString();
+            lblCreatedBy.Text = clsUser.FindUserByUserID(_LDLApplication.CreatedByUserID).Username;
+            cbLicenseClasses.SelectedIndex = cbLicenseClasses.FindString(_LDLApplication.LicenseClassInfo.ClassName);
         }
 
         private void _FillLicenseClassesComboBox()
@@ -126,8 +137,7 @@ namespace DVLD.Applications.Local_Driving_License
 
             _LDLApplication.ApplicantPersonID = _SelectedPersonID;
             _LDLApplication.ApplicationTypeID = 1;
-            if (_Mode == enMode.AddNew)
-                _LDLApplication.ApplicationDate = DateTime.Now;
+            _LDLApplication.ApplicationDate = DateTime.Now;
             _LDLApplication.ApplicationStatus = enApplicationStatus.New;
             _LDLApplication.LicenseClassID = LicenseClassID;
             _LDLApplication.LastStatusDate = DateTime.Now;
