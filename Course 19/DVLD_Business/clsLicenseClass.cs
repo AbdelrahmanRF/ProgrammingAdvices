@@ -34,6 +34,8 @@ namespace DVLD_Business
         public clsLicenseClass(int LicenseClassID, string ClassName, string ClassDescription, byte MinimumAllowedAge,
             byte DefaultValidityLength, float ClassFees)
         {
+            _Mode = enMode.Update;
+
             this.LicenseClassID = LicenseClassID;
             this.ClassName = ClassName;
             this.ClassDescription = ClassDescription;

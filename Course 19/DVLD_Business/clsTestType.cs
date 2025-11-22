@@ -13,7 +13,8 @@ namespace DVLD_Business
     {
         public enum enMode { AddNew = 0, Update = 1 }
         private enMode _Mode = enMode.AddNew;
-        public int TestTypeID { get; set; }
+        public enum enTestType { VisionTest = 1, WrittenTest = 2, StreetTest = 3 };
+        public enTestType TestTypeID { set; get; }
         public string Title { get; set; }
         public string Description { get; set; }
         public float Fees { get; set; }
@@ -22,13 +23,13 @@ namespace DVLD_Business
         {
             _Mode = enMode.AddNew;
 
-            this.TestTypeID = -1;
+            this.TestTypeID = enTestType.VisionTest;
             this.Title = "";
             this.Description = "";
             this.Fees = 0;
         }
 
-        public clsTestType(int TestTypeID, string Title, string Description, float Fees)
+        public clsTestType(enTestType TestTypeID, string Title, string Description, float Fees)
         {
             _Mode = enMode.Update;
 
@@ -43,12 +44,12 @@ namespace DVLD_Business
             return clsTestTypeData.GetAllTestTypes();
         }
 
-        public static clsTestType Find(int TestTypeID)
+        public static clsTestType Find(enTestType TestTypeID)
         {
             string Title = "", Description = "";
             float Fees = 0;
 
-            if (clsTestTypeData.GetTestTypeDataByID(TestTypeID, ref Title, ref Description, ref Fees))
+            if (clsTestTypeData.GetTestTypeDataByID((int)TestTypeID, ref Title, ref Description, ref Fees))
                 return new clsTestType(TestTypeID, Title, Description, Fees);
 
             return null;
@@ -56,7 +57,7 @@ namespace DVLD_Business
 
         public bool _UpdateTestType()
         {
-            return clsTestTypeData.UpdateTestType(this.TestTypeID, this.Title, this.Description, this.Fees);
+            return clsTestTypeData.UpdateTestType((int)this.TestTypeID, this.Title, this.Description, this.Fees);
         }
 
         public bool Save()

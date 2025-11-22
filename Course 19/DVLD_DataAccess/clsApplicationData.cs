@@ -204,5 +204,31 @@ namespace DVLD_DataAccess
 
             return RowsAffected > 0;
         }
+
+        public static bool DeleteApplication(int ApplicationID)
+        {
+            int RowsAffected = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"DELETE Applications
+                                WHERE ApplicationID = @ApplicationID;";
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@ApplicationID", ApplicationID);
+
+            try
+            {
+                Connection.Open();
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception (ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return RowsAffected > 0;
+        }
     }
 }

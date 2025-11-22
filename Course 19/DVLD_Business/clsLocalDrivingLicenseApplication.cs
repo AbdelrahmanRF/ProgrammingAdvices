@@ -113,5 +113,18 @@ namespace DVLD_Business
 
             return false;
         }
+
+        public static bool DeleteLDLApplication(int LDLApplicationID)
+        {
+            int ApplicationID = FindByLDLApplicationID(LDLApplicationID).ApplicationID;
+
+            return clsLocalDrivingLicenseApplicationData.DeleteLDLApplication(LDLApplicationID)
+                 && clsApplication.DeleteApplication(ApplicationID);
+        }
+
+        public int GetActiveLicenseID()
+        {
+            return clsLicense.GetActiveLicenseIDByPersonID(this.ApplicantPersonID, this.LicenseClassID);
+        }
     }
 }

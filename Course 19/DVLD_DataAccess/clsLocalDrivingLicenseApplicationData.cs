@@ -143,5 +143,32 @@ namespace DVLD_DataAccess
 
             return isFound;
         }
+
+        public static bool DeleteLDLApplication(int LDLApplicationID)
+        {
+            int RowsAffected = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"DELETE LocalDrivingLicenseApplications
+                                WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+
+            try
+            {
+                Connection.Open();
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return RowsAffected > 0;
+        }
     }
 }

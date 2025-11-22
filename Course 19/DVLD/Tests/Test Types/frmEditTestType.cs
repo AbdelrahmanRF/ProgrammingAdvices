@@ -13,9 +13,9 @@ namespace DVLD.Tests.Test_Types
 {
     public partial class frmEditTestType : Form
     {
-        int _TestTypeID = -1;
         clsTestType _TestType;
-        public frmEditTestType(int TestTypeID)
+        clsTestType.enTestType _TestTypeID = clsTestType.enTestType.VisionTest;
+        public frmEditTestType(clsTestType.enTestType TestTypeID)
         {
             InitializeComponent();
             this.MinimizeBox = false;
