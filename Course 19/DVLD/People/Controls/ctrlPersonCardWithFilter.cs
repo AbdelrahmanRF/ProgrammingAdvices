@@ -47,7 +47,7 @@ namespace DVLD.People.Controls
             Person = clsPerson.Find(ctrlPersonCard1.PersonID);
         }
 
-        public void LoadPersonInfoForUpdate(int PersonID)
+        public void DisplayPersonInfo(int PersonID)
         {
             Person = clsPerson.Find(PersonID);
 

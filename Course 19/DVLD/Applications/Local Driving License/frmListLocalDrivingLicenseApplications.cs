@@ -164,17 +164,13 @@ namespace DVLD.Applications.Local_Driving_License
             int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
             clsTestAppointment LatestTestAppointment;
 
-            for(int i = 3; i >= 0;  i--)
-            {
-                LatestTestAppointment = clsTestAppointment.GetLatestTestAppointment(LDLApplicationID, 
-                    (clsTestType.enTestType)i);
+            LatestTestAppointment = clsTestAppointment.GetLatestTestAppointment(LDLApplicationID);
 
-                if (LatestTestAppointment != null)
-                {
-                    _LatestTestAppointmentID = LatestTestAppointment.TestAppointmentID;
-                    _CurrentTestTypeID = i;
-                    return;
-                }
+            if (LatestTestAppointment != null)
+            {
+                _LatestTestAppointmentID = LatestTestAppointment.TestAppointmentID;
+                _CurrentTestTypeID = (int)LatestTestAppointment.TestTypeId;
+                return;
             }
         }
 
@@ -261,6 +257,28 @@ namespace DVLD.Applications.Local_Driving_License
 
             frmShowLicenseInfo frm = new frmShowLicenseInfo(LicenseID);
             frm.ShowDialog();
+        }
+
+
+        private void _OpenTestAppointmentsForm()
+        {
+
+            _RefreshLDLApplicationsList();
+        }
+
+        private void tsmiScheduleVision_Click(object sender, EventArgs e)
+        {
+            _OpenTestAppointmentsForm();
+        }
+
+        private void tsmiScheduleWritten_Click(object sender, EventArgs e)
+        {
+            _OpenTestAppointmentsForm();
+        }
+
+        private void tsmiScheduleStreet_Click(object sender, EventArgs e)
+        {
+            _OpenTestAppointmentsForm();
         }
     }
 }

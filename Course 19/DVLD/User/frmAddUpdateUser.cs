@@ -62,7 +62,7 @@ namespace DVLD.User
             txtPassword.Text = _User.Password;
             txtConfirmPassword.Text = _User.Password;
             chkIsActive.Checked = _User.isActive;
-            ctrlPersonCardWithFilter1.LoadPersonInfoForUpdate(_User.PersonID);
+            ctrlPersonCardWithFilter1.DisplayPersonInfo(_User.PersonID);
             btnSave.Enabled = true;
         }
 

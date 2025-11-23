@@ -80,6 +80,24 @@ namespace DVLD_Business
             return null;
         }
 
+        public static clsTestAppointment GetLatestTestAppointment(int LocalDrivingLicenseApplicationID)
+        {
+            int CreatedByUserID = -1, RetakeTestApplicationID = -1, TestAppointmentID = -1, TestTypeID = -1;
+            DateTime AppointmentDate = DateTime.Now;
+            float PaidFees = 0;
+            bool IsLocked = false;
+
+            if (clsTestAppointmentData.GetLatestTestAppointment(LocalDrivingLicenseApplicationID, ref TestTypeID,
+                ref TestAppointmentID, ref AppointmentDate, ref PaidFees, ref CreatedByUserID,
+                ref IsLocked, ref RetakeTestApplicationID))
+            {
+                return new clsTestAppointment(TestAppointmentID, (clsTestType.enTestType)TestTypeID, LocalDrivingLicenseApplicationID,
+                     AppointmentDate, PaidFees, CreatedByUserID, IsLocked, RetakeTestApplicationID);
+            }
+
+            return null;
+        }
+
         public static clsTestAppointment GetLatestTestAppointment(int LocalDrivingLicenseApplicationID, 
             clsTestType.enTestType TestTypeID)
         {

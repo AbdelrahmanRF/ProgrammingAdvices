@@ -31,7 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.ctrlDriverLicenses1 = new DVLD.License.Controls.ctrlDriverLicenses();
+            this.ctrlDriverLicenses1 = new DVLD.License.Controls.ctrlDriverLicenseInfo();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -98,7 +98,7 @@
 
         #endregion
 
-        private Controls.ctrlDriverLicenses ctrlDriverLicenses1;
+        private Controls.ctrlDriverLicenseInfo ctrlDriverLicenses1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;

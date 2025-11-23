@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace DVLD.License.Controls
+namespace DVLD.License.Local_Licenses
 {
-    public partial class ctrlDriverLicenses : UserControl
+    public partial class frmIssueDriverLicenseFirstTime : Form
     {
-        public ctrlDriverLicenses()
+        public frmIssueDriverLicenseFirstTime()
         {
             InitializeComponent();
         }

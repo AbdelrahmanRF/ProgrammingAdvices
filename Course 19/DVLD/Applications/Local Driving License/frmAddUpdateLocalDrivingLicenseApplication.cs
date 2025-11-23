@@ -49,7 +49,7 @@ namespace DVLD.Applications.Local_Driving_License
             lblFormTitle.Text = "Update Local Driving License Application";
             btnSave.Enabled = true;
             _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_LDLAppID);
-            ctrlPersonCardWithFilter1.LoadPersonInfoForUpdate(clsPerson.Find(_LDLApplication.ApplicantPersonID).PersonID);
+            ctrlPersonCardWithFilter1.DisplayPersonInfo(clsPerson.Find(_LDLApplication.ApplicantPersonID).PersonID);
             _SelectedPersonID = ctrlPersonCardWithFilter1.Person.PersonID;
 
             lblDLApplicationID.Text = _LDLApplication.LocalDrivingLicenseApplicationID.ToString();
