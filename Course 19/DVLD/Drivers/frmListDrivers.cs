@@ -1,4 +1,5 @@
-﻿using DVLD.People;
+﻿using DVLD.License;
+using DVLD.People;
 using DVLD_Business;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,9 @@ namespace DVLD.Drivers
 
         private void tsmiShowPersonLicenseHistory_Click(object sender, EventArgs e)
         {
-
+            int PersonID = (int)dgvDriversList.CurrentRow.Cells["PersonID"].Value;
+            frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
+            frm.ShowDialog();
         }
     }
 }

@@ -28,12 +28,47 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.crlScheduleTest1 = new DVLD.Tests.Controls.crlScheduleTest();
+            this.SuspendLayout();
+            // 
+            // btnClose
+            // 
+            this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
+            this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnClose.Location = new System.Drawing.Point(450, 728);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(82, 38);
+            this.btnClose.TabIndex = 142;
+            this.btnClose.Text = "Close";
+            this.btnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // crlScheduleTest1
+            // 
+            this.crlScheduleTest1.Location = new System.Drawing.Point(12, 12);
+            this.crlScheduleTest1.Name = "crlScheduleTest1";
+            this.crlScheduleTest1.Size = new System.Drawing.Size(530, 713);
+            this.crlScheduleTest1.TabIndex = 0;
+            // 
+            // frmScheduleTest
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "frmScheduleTest";
+            this.ClientSize = new System.Drawing.Size(545, 782);
+            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.crlScheduleTest1);
+            this.Name = "frmScheduleTest";
+            this.Text = "Schedule Test";
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private Controls.crlScheduleTest crlScheduleTest1;
+        private System.Windows.Forms.Button btnClose;
     }
 }

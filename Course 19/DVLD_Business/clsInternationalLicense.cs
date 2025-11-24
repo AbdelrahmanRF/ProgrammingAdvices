@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DVLD_DataAccess;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +55,11 @@ namespace DVLD_Business
             this.IsActive = IsActive;
 
             this.DriveInfo = clsDriver.FindByDriverID(this.DriverID);
+        }
+
+        public static DataTable GetAllDriverInternationalLicenses(int DriverID)
+        {
+            return clsInternationalLicenseData.GetAllDriverInternationalLicenses(DriverID);
         }
     }
 }

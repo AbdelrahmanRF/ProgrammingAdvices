@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -94,7 +95,7 @@ namespace DVLD_DataAccess
             string Query = @"SELECT TOP 1 *
                             FROM TestAppointments
                             WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID
-                            ORDER BY AppointmentDate DESC;";
+                            ORDER BY TestAppointmentID DESC;";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@LDLApplicationID", LocalDrivingLicenseApplicationID);
 
@@ -140,7 +141,7 @@ namespace DVLD_DataAccess
             string Query = @"SELECT TOP 1 * FROM TestAppointments
                                 WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID 
                                       AND TestTypeID = @TestTypeID
-                                ORDER BY AppointmentDate DESC;";
+                                ORDER BY TestAppointmentID DESC;";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@LDLApplicationID", LocalDrivingLicenseApplicationID);
             Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
@@ -175,6 +176,43 @@ namespace DVLD_DataAccess
             }
 
             return isFound;
+        }
+
+        public static DataTable GetApplicationTestAppointmentsByTestType(int LocalDrivingLicenseApplicationID, int TestTypeID)
+        {
+            DataTable DT = new DataTable();
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT TestAppointmentID, AppointmentDate, PaidFees, IsLocked 
+                                FROM TestAppointments
+                                WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID 
+                                      AND TestTypeID = @TestTypeID
+                                ORDER BY TestAppointmentID DESC;";
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LocalDrivingLicenseApplicationID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                if (Reader.HasRows) 
+                {
+                    DT.Load(Reader);
+                }
+
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return DT;
         }
     }
 }

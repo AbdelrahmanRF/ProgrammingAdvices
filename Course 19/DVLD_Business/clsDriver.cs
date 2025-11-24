@@ -56,5 +56,16 @@ namespace DVLD_Business
 
             return null;
         }
+
+        public static clsDriver FindByPersonID(int PersonID)
+        {
+            int DriverID = -1, CreatedByUserID = -1;
+            DateTime CreatedDate = DateTime.Now;
+
+            if (clsDriverData.GetDriverInfoByPersonID(PersonID, ref DriverID, ref CreatedByUserID, ref CreatedDate))
+                return new clsDriver(DriverID, PersonID, CreatedByUserID, CreatedDate);
+
+            return null;
+        }
     }
 }

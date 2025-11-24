@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DVLD_Business;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,21 @@ namespace DVLD.License
 {
     public partial class frmShowPersonLicenseHistory : Form
     {
-        public frmShowPersonLicenseHistory()
+        int _PersonID;
+        clsDriver _Driver;
+        public frmShowPersonLicenseHistory(int PersonID)
         {
             InitializeComponent();
+            _PersonID = PersonID;
+
+            _Driver = clsDriver.FindByPersonID(PersonID);
+        }
+        private void frmShowPersonLicenseHistory_Load(object sender, EventArgs e)
+        {
+            ctrlPersonCardWithFilter1.DisplayPersonInfo(this._PersonID);
+
+            if (_Driver == null) return;
+                ctrlDriverLicenses1.FillDriverLicensesHistory(this._Driver.DriverID);
         }
     }
 }

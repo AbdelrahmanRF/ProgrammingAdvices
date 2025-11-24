@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -88,6 +89,47 @@ namespace DVLD_DataAccess
                 Connection.Close();
             }
             return ActiveLicenseID;
+        }
+        public static DataTable GetAllDriverLicenses(int DriverID)
+        {
+            DataTable DT = new DataTable();
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT 
+                                L.LicenseID, 
+                                L.ApplicationID,
+                                LC.ClassName,
+                                L.IssueDate,
+                                L.ExpirationDate,
+                                L.IsActive
+                            FROM Licenses AS L
+                            JOIN LicenseClasses AS LC
+                            ON L.LicenseClass = LC.LicenseClassID
+                            WHERE DriverID = @DriverID;";
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@DriverID", DriverID);
+
+            try
+            {
+                Connection.Open();
+
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                if (Reader.HasRows)
+                {
+                    DT.Load(Reader);
+                }
+
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+            return DT;
         }
     }
 }

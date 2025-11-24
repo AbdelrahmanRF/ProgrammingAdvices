@@ -28,7 +28,7 @@ namespace DVLD_DataAccess
                 {
                     DT.Load(Reader);
                 }
-                    
+                Reader.Close();
             }
             catch (Exception ex)
             {
@@ -38,8 +38,6 @@ namespace DVLD_DataAccess
             {
                 Connection.Close();
             }
-
-
             return DT;
         }
 
@@ -169,6 +167,68 @@ namespace DVLD_DataAccess
             }
 
             return RowsAffected > 0;
+        }
+
+        public static bool IsThereAnActiveScheduledTest(int LDLApplicationID, int TestTypeID)
+        {
+            bool isFound = false;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT 
+                                CASE WHEN EXISTS (
+                                    SELECT TOP 1 1 FROM TestAppointments
+                                           WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID
+                                                 AND TestTypeID = @TestTypeID AND IsLocked = 0
+                                           ORDER BY TestAppointmentID DESC)
+                                THEN CAST (1 AS BIT) ELSE CAST (0 AS BIT) END;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                isFound = (bool)Command.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return isFound;
+        }
+
+        public static byte TotalTrialsPerTest(int LDLApplicationID, int TestTypeID)
+        {
+            byte TotalTrials = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT Count(*) FROM TestAppointments
+                                WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID 
+                                AND TestTypeID = @TestTypeID;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                TotalTrials = Convert.ToByte(Command.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return TotalTrials;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace DVLD.Tests.Controls
 {
     public partial class crlScheduleTest : UserControl
     {
+        enum enMode { AddNew = 0, Update = 1 }
+        enMode _Mode = enMode.AddNew;
         public crlScheduleTest()
         {
             InitializeComponent();

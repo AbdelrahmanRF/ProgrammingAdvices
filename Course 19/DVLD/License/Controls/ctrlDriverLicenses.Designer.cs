@@ -28,17 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tcDriverLicenses = new System.Windows.Forms.TabControl();
             this.tpLocalLicenses = new System.Windows.Forms.TabPage();
-            this.lblTotalRecords = new System.Windows.Forms.Label();
+            this.lblTotalLocalLicensesRecords = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dgvLocalLicensesHistory = new System.Windows.Forms.DataGridView();
             this.tbInternationalLicenses = new System.Windows.Forms.TabPage();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblTotalInternationalLicensesRecords = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.dgvInternationalLicensesHistory = new System.Windows.Forms.DataGridView();
@@ -73,7 +73,7 @@
             // 
             // tpLocalLicenses
             // 
-            this.tpLocalLicenses.Controls.Add(this.lblTotalRecords);
+            this.tpLocalLicenses.Controls.Add(this.lblTotalLocalLicensesRecords);
             this.tpLocalLicenses.Controls.Add(this.label2);
             this.tpLocalLicenses.Controls.Add(this.label1);
             this.tpLocalLicenses.Controls.Add(this.dgvLocalLicensesHistory);
@@ -85,16 +85,16 @@
             this.tpLocalLicenses.Text = "Local";
             this.tpLocalLicenses.UseVisualStyleBackColor = true;
             // 
-            // lblTotalRecords
+            // lblTotalLocalLicensesRecords
             // 
-            this.lblTotalRecords.AutoSize = true;
-            this.lblTotalRecords.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalRecords.ForeColor = System.Drawing.Color.Black;
-            this.lblTotalRecords.Location = new System.Drawing.Point(100, 221);
-            this.lblTotalRecords.Name = "lblTotalRecords";
-            this.lblTotalRecords.Size = new System.Drawing.Size(14, 16);
-            this.lblTotalRecords.TabIndex = 137;
-            this.lblTotalRecords.Text = "0";
+            this.lblTotalLocalLicensesRecords.AutoSize = true;
+            this.lblTotalLocalLicensesRecords.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalLocalLicensesRecords.ForeColor = System.Drawing.Color.Black;
+            this.lblTotalLocalLicensesRecords.Location = new System.Drawing.Point(100, 221);
+            this.lblTotalLocalLicensesRecords.Name = "lblTotalLocalLicensesRecords";
+            this.lblTotalLocalLicensesRecords.Size = new System.Drawing.Size(14, 16);
+            this.lblTotalLocalLicensesRecords.TabIndex = 137;
+            this.lblTotalLocalLicensesRecords.Text = "0";
             // 
             // label2
             // 
@@ -122,6 +122,7 @@
             this.dgvLocalLicensesHistory.AllowUserToAddRows = false;
             this.dgvLocalLicensesHistory.AllowUserToDeleteRows = false;
             this.dgvLocalLicensesHistory.AllowUserToResizeRows = false;
+            this.dgvLocalLicensesHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvLocalLicensesHistory.BackgroundColor = System.Drawing.Color.White;
             this.dgvLocalLicensesHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLocalLicensesHistory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
@@ -130,14 +131,14 @@
             this.dgvLocalLicensesHistory.MultiSelect = false;
             this.dgvLocalLicensesHistory.Name = "dgvLocalLicensesHistory";
             this.dgvLocalLicensesHistory.ReadOnly = true;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvLocalLicensesHistory.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvLocalLicensesHistory.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvLocalLicensesHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvLocalLicensesHistory.Size = new System.Drawing.Size(996, 168);
             this.dgvLocalLicensesHistory.TabIndex = 132;
@@ -145,7 +146,7 @@
             // 
             // tbInternationalLicenses
             // 
-            this.tbInternationalLicenses.Controls.Add(this.label3);
+            this.tbInternationalLicenses.Controls.Add(this.lblTotalInternationalLicensesRecords);
             this.tbInternationalLicenses.Controls.Add(this.label4);
             this.tbInternationalLicenses.Controls.Add(this.label5);
             this.tbInternationalLicenses.Controls.Add(this.dgvInternationalLicensesHistory);
@@ -157,16 +158,16 @@
             this.tbInternationalLicenses.Text = "International";
             this.tbInternationalLicenses.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // lblTotalInternationalLicensesRecords
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(103, 226);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 16);
-            this.label3.TabIndex = 141;
-            this.label3.Text = "0";
+            this.lblTotalInternationalLicensesRecords.AutoSize = true;
+            this.lblTotalInternationalLicensesRecords.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalInternationalLicensesRecords.ForeColor = System.Drawing.Color.Black;
+            this.lblTotalInternationalLicensesRecords.Location = new System.Drawing.Point(103, 226);
+            this.lblTotalInternationalLicensesRecords.Name = "lblTotalInternationalLicensesRecords";
+            this.lblTotalInternationalLicensesRecords.Size = new System.Drawing.Size(14, 16);
+            this.lblTotalInternationalLicensesRecords.TabIndex = 141;
+            this.lblTotalInternationalLicensesRecords.Text = "0";
             // 
             // label4
             // 
@@ -194,6 +195,7 @@
             this.dgvInternationalLicensesHistory.AllowUserToAddRows = false;
             this.dgvInternationalLicensesHistory.AllowUserToDeleteRows = false;
             this.dgvInternationalLicensesHistory.AllowUserToResizeRows = false;
+            this.dgvInternationalLicensesHistory.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvInternationalLicensesHistory.BackgroundColor = System.Drawing.Color.White;
             this.dgvInternationalLicensesHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInternationalLicensesHistory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
@@ -202,14 +204,14 @@
             this.dgvInternationalLicensesHistory.MultiSelect = false;
             this.dgvInternationalLicensesHistory.Name = "dgvInternationalLicensesHistory";
             this.dgvInternationalLicensesHistory.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvInternationalLicensesHistory.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvInternationalLicensesHistory.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvInternationalLicensesHistory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvInternationalLicensesHistory.Size = new System.Drawing.Size(996, 168);
             this.dgvInternationalLicensesHistory.TabIndex = 138;
@@ -243,9 +245,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dgvLocalLicensesHistory;
         private System.Windows.Forms.TabPage tbInternationalLicenses;
-        private System.Windows.Forms.Label lblTotalRecords;
+        private System.Windows.Forms.Label lblTotalLocalLicensesRecords;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblTotalInternationalLicensesRecords;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.DataGridView dgvInternationalLicensesHistory;

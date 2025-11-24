@@ -1,4 +1,6 @@
-﻿using DVLD.License.Local_Licenses;
+﻿using DVLD.License;
+using DVLD.License.Local_Licenses;
+using DVLD.Tests;
 using DVLD_Business;
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,7 @@ namespace DVLD.Applications.Local_Driving_License
     {
         DataTable _LDLAppsList;
         int _LatestTestAppointmentID = -1;
-        int _CurrentTestTypeID = 1;
+        clsTestType.enTestType _CurrentTestTypeID = clsTestType.enTestType.VisionTest;
 
         public frmListLocalDrivingLicenseApplications()
         {
@@ -169,7 +171,7 @@ namespace DVLD.Applications.Local_Driving_License
             if (LatestTestAppointment != null)
             {
                 _LatestTestAppointmentID = LatestTestAppointment.TestAppointmentID;
-                _CurrentTestTypeID = (int)LatestTestAppointment.TestTypeId;
+                _CurrentTestTypeID = LatestTestAppointment.TestTypeId;
                 return;
             }
         }
@@ -194,9 +196,9 @@ namespace DVLD.Applications.Local_Driving_License
                 tsmiShowLicense.Enabled = false;
                 tsmiIssueDrivingLicenseFirstTime.Enabled = false;
 
-                if(_CurrentTestTypeID == 1)
+                if(_CurrentTestTypeID == clsTestType.enTestType.VisionTest)
                     tsmiScheduleVision.Enabled = true;
-                else if (_CurrentTestTypeID == 2)
+                else if (_CurrentTestTypeID == clsTestType.enTestType.WrittenTest)
                     tsmiScheduleWritten.Enabled = true;
                 else
                     tsmiScheduleStreet.Enabled = true;
@@ -262,7 +264,10 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void _OpenTestAppointmentsForm()
         {
+            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
 
+            frmListTestAppointments frm = new frmListTestAppointments(LDLApplicationID, _CurrentTestTypeID);
+            frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
 
@@ -279,6 +284,13 @@ namespace DVLD.Applications.Local_Driving_License
         private void tsmiScheduleStreet_Click(object sender, EventArgs e)
         {
             _OpenTestAppointmentsForm();
+        }
+
+        private void tsmiShowPersonLicenseHistory_Click(object sender, EventArgs e)
+        {
+            int PersonID = clsPerson.Find(dgvApplicationsList.CurrentRow.Cells["NationalNo"].Value.ToString()).PersonID;
+            frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
+            frm.ShowDialog();
         }
     }
 }

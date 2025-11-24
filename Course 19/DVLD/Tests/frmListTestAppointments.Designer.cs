@@ -30,8 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.label1 = new System.Windows.Forms.Label();
-            this.ctrlDrivingLicenseApplicationInfo1 = new DVLD.Applications.Local_Driving_License.Controls.ctrlDrivingLicenseApplicationInfo();
+            this.lblTestType = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.dgvLicenseTestAppointments = new System.Windows.Forms.DataGridView();
             this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -41,29 +40,23 @@
             this.btnAddNewAppointment = new System.Windows.Forms.Button();
             this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTakeTest = new System.Windows.Forms.ToolStripMenuItem();
-            this.bpTestTypeImage = new System.Windows.Forms.PictureBox();
+            this.pbTestTypeImage = new System.Windows.Forms.PictureBox();
+            this.ctrlDrivingLicenseApplicationInfo1 = new DVLD.Applications.Local_Driving_License.Controls.ctrlDrivingLicenseApplicationInfo();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLicenseTestAppointments)).BeginInit();
             this.cmsRecordOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // lblTestType
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(333, 155);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(283, 26);
-            this.label1.TabIndex = 24;
-            this.label1.Text = "Vision Test Appointments";
-            // 
-            // ctrlDrivingLicenseApplicationInfo1
-            // 
-            this.ctrlDrivingLicenseApplicationInfo1.Location = new System.Drawing.Point(12, 194);
-            this.ctrlDrivingLicenseApplicationInfo1.Name = "ctrlDrivingLicenseApplicationInfo1";
-            this.ctrlDrivingLicenseApplicationInfo1.Size = new System.Drawing.Size(929, 340);
-            this.ctrlDrivingLicenseApplicationInfo1.TabIndex = 25;
+            this.lblTestType.AutoSize = true;
+            this.lblTestType.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTestType.ForeColor = System.Drawing.Color.Maroon;
+            this.lblTestType.Location = new System.Drawing.Point(333, 155);
+            this.lblTestType.Name = "lblTestType";
+            this.lblTestType.Size = new System.Drawing.Size(283, 26);
+            this.lblTestType.TabIndex = 24;
+            this.lblTestType.Text = "Vision Test Appointments";
             // 
             // label2
             // 
@@ -79,7 +72,9 @@
             // 
             this.dgvLicenseTestAppointments.AllowUserToAddRows = false;
             this.dgvLicenseTestAppointments.AllowUserToDeleteRows = false;
+            this.dgvLicenseTestAppointments.AllowUserToOrderColumns = true;
             this.dgvLicenseTestAppointments.AllowUserToResizeRows = false;
+            this.dgvLicenseTestAppointments.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvLicenseTestAppointments.BackgroundColor = System.Drawing.Color.White;
             this.dgvLicenseTestAppointments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvLicenseTestAppointments.ContextMenuStrip = this.cmsRecordOptions;
@@ -154,6 +149,7 @@
             this.btnAddNewAppointment.Size = new System.Drawing.Size(49, 36);
             this.btnAddNewAppointment.TabIndex = 140;
             this.btnAddNewAppointment.UseVisualStyleBackColor = true;
+            this.btnAddNewAppointment.Click += new System.EventHandler(this.btnAddNewAppointment_Click);
             // 
             // tsmiEdit
             // 
@@ -171,16 +167,23 @@
             this.tsmiTakeTest.Size = new System.Drawing.Size(138, 38);
             this.tsmiTakeTest.Text = "Take Test";
             // 
-            // bpTestTypeImage
+            // pbTestTypeImage
             // 
-            this.bpTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.bpTestTypeImage.Image = global::DVLD.Properties.Resources.Vision_512;
-            this.bpTestTypeImage.Location = new System.Drawing.Point(398, 12);
-            this.bpTestTypeImage.Name = "bpTestTypeImage";
-            this.bpTestTypeImage.Size = new System.Drawing.Size(153, 140);
-            this.bpTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.bpTestTypeImage.TabIndex = 23;
-            this.bpTestTypeImage.TabStop = false;
+            this.pbTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbTestTypeImage.Image = global::DVLD.Properties.Resources.Vision_512;
+            this.pbTestTypeImage.Location = new System.Drawing.Point(398, 12);
+            this.pbTestTypeImage.Name = "pbTestTypeImage";
+            this.pbTestTypeImage.Size = new System.Drawing.Size(153, 140);
+            this.pbTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbTestTypeImage.TabIndex = 23;
+            this.pbTestTypeImage.TabStop = false;
+            // 
+            // ctrlDrivingLicenseApplicationInfo1
+            // 
+            this.ctrlDrivingLicenseApplicationInfo1.Location = new System.Drawing.Point(12, 194);
+            this.ctrlDrivingLicenseApplicationInfo1.Name = "ctrlDrivingLicenseApplicationInfo1";
+            this.ctrlDrivingLicenseApplicationInfo1.Size = new System.Drawing.Size(929, 340);
+            this.ctrlDrivingLicenseApplicationInfo1.TabIndex = 25;
             // 
             // frmListTestAppointments
             // 
@@ -194,13 +197,14 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dgvLicenseTestAppointments);
             this.Controls.Add(this.ctrlDrivingLicenseApplicationInfo1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.bpTestTypeImage);
+            this.Controls.Add(this.lblTestType);
+            this.Controls.Add(this.pbTestTypeImage);
             this.Name = "frmListTestAppointments";
             this.Text = "Vision Test Appointments";
+            this.Load += new System.EventHandler(this.frmListTestAppointments_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvLicenseTestAppointments)).EndInit();
             this.cmsRecordOptions.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -208,8 +212,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox bpTestTypeImage;
+        private System.Windows.Forms.Label lblTestType;
+        private System.Windows.Forms.PictureBox pbTestTypeImage;
         private Applications.Local_Driving_License.Controls.ctrlDrivingLicenseApplicationInfo ctrlDrivingLicenseApplicationInfo1;
         private System.Windows.Forms.Button btnAddNewAppointment;
         private System.Windows.Forms.Label label2;

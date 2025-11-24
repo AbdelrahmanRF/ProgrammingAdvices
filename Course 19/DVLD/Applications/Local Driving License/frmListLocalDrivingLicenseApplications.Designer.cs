@@ -35,27 +35,27 @@
             this.label3 = new System.Windows.Forms.Label();
             this.dgvApplicationsList = new System.Windows.Forms.DataGridView();
             this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmiShowApplicationDetails = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiEditApplication = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiDeleteApplication = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiCancelApplication = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiScheduleTests = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiScheduleVision = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiScheduleWritten = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiScheduleStreet = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiIssueDrivingLicenseFirstTime = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiShowLicense = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiShowPersonLicenseHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTotalRecords = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.tsmiShowApplicationDetails = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEditApplication = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDeleteApplication = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiCancelApplication = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiScheduleTests = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiScheduleVision = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiScheduleWritten = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiScheduleStreet = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiIssueDrivingLicenseFirstTime = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShowLicense = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShowPersonLicenseHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnAddNewApplication = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -155,132 +155,35 @@
             this.cmsRecordOptions.Size = new System.Drawing.Size(275, 254);
             this.cmsRecordOptions.Opening += new System.ComponentModel.CancelEventHandler(this.cmsRecordOptions_Opening);
             // 
-            // tsmiShowApplicationDetails
-            // 
-            this.tsmiShowApplicationDetails.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiShowApplicationDetails.Image = global::DVLD.Properties.Resources.PersonDetails_32;
-            this.tsmiShowApplicationDetails.Name = "tsmiShowApplicationDetails";
-            this.tsmiShowApplicationDetails.Size = new System.Drawing.Size(274, 24);
-            this.tsmiShowApplicationDetails.Text = "Show Application Details";
-            this.tsmiShowApplicationDetails.Click += new System.EventHandler(this.tsmiShowApplicationDetails_Click);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(271, 6);
-            // 
-            // tsmiEditApplication
-            // 
-            this.tsmiEditApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiEditApplication.Image = global::DVLD.Properties.Resources.edit_32;
-            this.tsmiEditApplication.Name = "tsmiEditApplication";
-            this.tsmiEditApplication.Size = new System.Drawing.Size(274, 24);
-            this.tsmiEditApplication.Text = "Edit Application";
-            this.tsmiEditApplication.Click += new System.EventHandler(this.tsmiEditApplication_Click);
-            // 
-            // tsmiDeleteApplication
-            // 
-            this.tsmiDeleteApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiDeleteApplication.Image = global::DVLD.Properties.Resources.Delete_32_2;
-            this.tsmiDeleteApplication.Name = "tsmiDeleteApplication";
-            this.tsmiDeleteApplication.Size = new System.Drawing.Size(274, 24);
-            this.tsmiDeleteApplication.Text = "Delete Application";
-            this.tsmiDeleteApplication.Click += new System.EventHandler(this.tsmiDeleteApplication_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(271, 6);
             // 
-            // tsmiCancelApplication
-            // 
-            this.tsmiCancelApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiCancelApplication.Image = global::DVLD.Properties.Resources.Delete_32;
-            this.tsmiCancelApplication.Name = "tsmiCancelApplication";
-            this.tsmiCancelApplication.Size = new System.Drawing.Size(274, 24);
-            this.tsmiCancelApplication.Text = "Cancel Application";
-            this.tsmiCancelApplication.Click += new System.EventHandler(this.tsmiCancelApplication_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(271, 6);
-            // 
-            // tsmiScheduleTests
-            // 
-            this.tsmiScheduleTests.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiScheduleVision,
-            this.tsmiScheduleWritten,
-            this.tsmiScheduleStreet});
-            this.tsmiScheduleTests.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiScheduleTests.Image = global::DVLD.Properties.Resources.Schedule_Test_32;
-            this.tsmiScheduleTests.Name = "tsmiScheduleTests";
-            this.tsmiScheduleTests.Size = new System.Drawing.Size(274, 24);
-            this.tsmiScheduleTests.Text = "Schedule Tests";
-            // 
-            // tsmiScheduleVision
-            // 
-            this.tsmiScheduleVision.Image = global::DVLD.Properties.Resources.Vision_Test_32;
-            this.tsmiScheduleVision.Name = "tsmiScheduleVision";
-            this.tsmiScheduleVision.Size = new System.Drawing.Size(210, 24);
-            this.tsmiScheduleVision.Text = "Schedule Vision Test";
-            this.tsmiScheduleVision.Click += new System.EventHandler(this.tsmiScheduleVision_Click);
-            // 
-            // tsmiScheduleWritten
-            // 
-            this.tsmiScheduleWritten.Image = global::DVLD.Properties.Resources.Written_Test_32;
-            this.tsmiScheduleWritten.Name = "tsmiScheduleWritten";
-            this.tsmiScheduleWritten.Size = new System.Drawing.Size(210, 24);
-            this.tsmiScheduleWritten.Text = "Schedule Written Test";
-            this.tsmiScheduleWritten.Click += new System.EventHandler(this.tsmiScheduleWritten_Click);
-            // 
-            // tsmiScheduleStreet
-            // 
-            this.tsmiScheduleStreet.Image = global::DVLD.Properties.Resources.Street_Test_32;
-            this.tsmiScheduleStreet.Name = "tsmiScheduleStreet";
-            this.tsmiScheduleStreet.Size = new System.Drawing.Size(210, 24);
-            this.tsmiScheduleStreet.Text = "Schedule Street Test";
-            this.tsmiScheduleStreet.Click += new System.EventHandler(this.tsmiScheduleStreet_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(271, 6);
             // 
-            // tsmiIssueDrivingLicenseFirstTime
-            // 
-            this.tsmiIssueDrivingLicenseFirstTime.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiIssueDrivingLicenseFirstTime.Image = global::DVLD.Properties.Resources.IssueDrivingLicense_32;
-            this.tsmiIssueDrivingLicenseFirstTime.Name = "tsmiIssueDrivingLicenseFirstTime";
-            this.tsmiIssueDrivingLicenseFirstTime.Size = new System.Drawing.Size(274, 24);
-            this.tsmiIssueDrivingLicenseFirstTime.Text = "Issue Driving License (First Time)";
-            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(271, 6);
             // 
-            // tsmiShowLicense
-            // 
-            this.tsmiShowLicense.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiShowLicense.Image = global::DVLD.Properties.Resources.License_View_32;
-            this.tsmiShowLicense.Name = "tsmiShowLicense";
-            this.tsmiShowLicense.Size = new System.Drawing.Size(274, 24);
-            this.tsmiShowLicense.Text = "Show License";
-            this.tsmiShowLicense.Click += new System.EventHandler(this.tsmiShowLicense_Click);
-            // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(271, 6);
-            // 
-            // tsmiShowPersonLicenseHistory
-            // 
-            this.tsmiShowPersonLicenseHistory.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiShowPersonLicenseHistory.Image = global::DVLD.Properties.Resources.PersonLicenseHistory_32;
-            this.tsmiShowPersonLicenseHistory.Name = "tsmiShowPersonLicenseHistory";
-            this.tsmiShowPersonLicenseHistory.Size = new System.Drawing.Size(274, 24);
-            this.tsmiShowPersonLicenseHistory.Text = "Show Person License History";
             // 
             // lblTotalRecords
             // 
@@ -325,6 +228,104 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 32;
             this.pictureBox2.TabStop = false;
+            // 
+            // tsmiShowApplicationDetails
+            // 
+            this.tsmiShowApplicationDetails.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiShowApplicationDetails.Image = global::DVLD.Properties.Resources.PersonDetails_32;
+            this.tsmiShowApplicationDetails.Name = "tsmiShowApplicationDetails";
+            this.tsmiShowApplicationDetails.Size = new System.Drawing.Size(274, 24);
+            this.tsmiShowApplicationDetails.Text = "Show Application Details";
+            this.tsmiShowApplicationDetails.Click += new System.EventHandler(this.tsmiShowApplicationDetails_Click);
+            // 
+            // tsmiEditApplication
+            // 
+            this.tsmiEditApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiEditApplication.Image = global::DVLD.Properties.Resources.edit_32;
+            this.tsmiEditApplication.Name = "tsmiEditApplication";
+            this.tsmiEditApplication.Size = new System.Drawing.Size(274, 24);
+            this.tsmiEditApplication.Text = "Edit Application";
+            this.tsmiEditApplication.Click += new System.EventHandler(this.tsmiEditApplication_Click);
+            // 
+            // tsmiDeleteApplication
+            // 
+            this.tsmiDeleteApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiDeleteApplication.Image = global::DVLD.Properties.Resources.Delete_32_2;
+            this.tsmiDeleteApplication.Name = "tsmiDeleteApplication";
+            this.tsmiDeleteApplication.Size = new System.Drawing.Size(274, 24);
+            this.tsmiDeleteApplication.Text = "Delete Application";
+            this.tsmiDeleteApplication.Click += new System.EventHandler(this.tsmiDeleteApplication_Click);
+            // 
+            // tsmiCancelApplication
+            // 
+            this.tsmiCancelApplication.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiCancelApplication.Image = global::DVLD.Properties.Resources.Delete_32;
+            this.tsmiCancelApplication.Name = "tsmiCancelApplication";
+            this.tsmiCancelApplication.Size = new System.Drawing.Size(274, 24);
+            this.tsmiCancelApplication.Text = "Cancel Application";
+            this.tsmiCancelApplication.Click += new System.EventHandler(this.tsmiCancelApplication_Click);
+            // 
+            // tsmiScheduleTests
+            // 
+            this.tsmiScheduleTests.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiScheduleVision,
+            this.tsmiScheduleWritten,
+            this.tsmiScheduleStreet});
+            this.tsmiScheduleTests.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiScheduleTests.Image = global::DVLD.Properties.Resources.Schedule_Test_32;
+            this.tsmiScheduleTests.Name = "tsmiScheduleTests";
+            this.tsmiScheduleTests.Size = new System.Drawing.Size(274, 24);
+            this.tsmiScheduleTests.Text = "Schedule Tests";
+            // 
+            // tsmiScheduleVision
+            // 
+            this.tsmiScheduleVision.Image = global::DVLD.Properties.Resources.Vision_Test_32;
+            this.tsmiScheduleVision.Name = "tsmiScheduleVision";
+            this.tsmiScheduleVision.Size = new System.Drawing.Size(210, 24);
+            this.tsmiScheduleVision.Text = "Schedule Vision Test";
+            this.tsmiScheduleVision.Click += new System.EventHandler(this.tsmiScheduleVision_Click);
+            // 
+            // tsmiScheduleWritten
+            // 
+            this.tsmiScheduleWritten.Image = global::DVLD.Properties.Resources.Written_Test_32;
+            this.tsmiScheduleWritten.Name = "tsmiScheduleWritten";
+            this.tsmiScheduleWritten.Size = new System.Drawing.Size(210, 24);
+            this.tsmiScheduleWritten.Text = "Schedule Written Test";
+            this.tsmiScheduleWritten.Click += new System.EventHandler(this.tsmiScheduleWritten_Click);
+            // 
+            // tsmiScheduleStreet
+            // 
+            this.tsmiScheduleStreet.Image = global::DVLD.Properties.Resources.Street_Test_32;
+            this.tsmiScheduleStreet.Name = "tsmiScheduleStreet";
+            this.tsmiScheduleStreet.Size = new System.Drawing.Size(210, 24);
+            this.tsmiScheduleStreet.Text = "Schedule Street Test";
+            this.tsmiScheduleStreet.Click += new System.EventHandler(this.tsmiScheduleStreet_Click);
+            // 
+            // tsmiIssueDrivingLicenseFirstTime
+            // 
+            this.tsmiIssueDrivingLicenseFirstTime.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiIssueDrivingLicenseFirstTime.Image = global::DVLD.Properties.Resources.IssueDrivingLicense_32;
+            this.tsmiIssueDrivingLicenseFirstTime.Name = "tsmiIssueDrivingLicenseFirstTime";
+            this.tsmiIssueDrivingLicenseFirstTime.Size = new System.Drawing.Size(274, 24);
+            this.tsmiIssueDrivingLicenseFirstTime.Text = "Issue Driving License (First Time)";
+            // 
+            // tsmiShowLicense
+            // 
+            this.tsmiShowLicense.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiShowLicense.Image = global::DVLD.Properties.Resources.License_View_32;
+            this.tsmiShowLicense.Name = "tsmiShowLicense";
+            this.tsmiShowLicense.Size = new System.Drawing.Size(274, 24);
+            this.tsmiShowLicense.Text = "Show License";
+            this.tsmiShowLicense.Click += new System.EventHandler(this.tsmiShowLicense_Click);
+            // 
+            // tsmiShowPersonLicenseHistory
+            // 
+            this.tsmiShowPersonLicenseHistory.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiShowPersonLicenseHistory.Image = global::DVLD.Properties.Resources.PersonLicenseHistory_32;
+            this.tsmiShowPersonLicenseHistory.Name = "tsmiShowPersonLicenseHistory";
+            this.tsmiShowPersonLicenseHistory.Size = new System.Drawing.Size(274, 24);
+            this.tsmiShowPersonLicenseHistory.Text = "Show Person License History";
+            this.tsmiShowPersonLicenseHistory.Click += new System.EventHandler(this.tsmiShowPersonLicenseHistory_Click);
             // 
             // btnClose
             // 

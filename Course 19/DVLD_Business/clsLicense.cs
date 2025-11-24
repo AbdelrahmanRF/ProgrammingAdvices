@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +108,11 @@ namespace DVLD_Business
         public static int GetActiveLicenseIDByPersonID(int PersonID, int LicenseClassID)
         {
             return clsLicenseData.GetActiveLicenseIDByPersonID(PersonID, LicenseClassID);
+        }
+
+        public static DataTable GetAllDriverLicenses(int DriverID)
+        {
+            return clsLicenseData.GetAllDriverLicenses(DriverID);
         }
 
         public static string GetIssueReasonText(enIssueReason IssueReason)

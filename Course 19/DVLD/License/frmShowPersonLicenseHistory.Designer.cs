@@ -70,7 +70,7 @@
             this.ctrlDriverLicenses1.AutoSize = true;
             this.ctrlDriverLicenses1.Location = new System.Drawing.Point(15, 489);
             this.ctrlDriverLicenses1.Name = "ctrlDriverLicenses1";
-            this.ctrlDriverLicenses1.Size = new System.Drawing.Size(1061, 340);
+            this.ctrlDriverLicenses1.Size = new System.Drawing.Size(1061, 349);
             this.ctrlDriverLicenses1.TabIndex = 28;
             // 
             // btnClose
@@ -98,6 +98,7 @@
             this.Controls.Add(this.label1);
             this.Name = "frmShowPersonLicenseHistory";
             this.Text = "License History";
+            this.Load += new System.EventHandler(this.frmShowPersonLicenseHistory_Load);
             ((System.ComponentModel.ISupportInitialize)(this.bpFormImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

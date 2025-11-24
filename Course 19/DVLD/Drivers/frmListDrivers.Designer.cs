@@ -33,14 +33,14 @@
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.dgvDriversList = new System.Windows.Forms.DataGridView();
+            this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiShowPersonInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiShowPersonLicenseHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTotalRecords = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnClose = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.tsmiShowPersonInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiShowPersonLicenseHistory = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDriversList)).BeginInit();
             this.cmsRecordOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -98,6 +98,31 @@
             this.dgvDriversList.Size = new System.Drawing.Size(1119, 278);
             this.dgvDriversList.TabIndex = 39;
             // 
+            // cmsRecordOptions
+            // 
+            this.cmsRecordOptions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiShowPersonInfo,
+            this.tsmiShowPersonLicenseHistory});
+            this.cmsRecordOptions.Name = "cmsRecordOptions";
+            this.cmsRecordOptions.Size = new System.Drawing.Size(226, 52);
+            // 
+            // tsmiShowPersonInfo
+            // 
+            this.tsmiShowPersonInfo.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiShowPersonInfo.Image = global::DVLD.Properties.Resources.PersonDetails_32;
+            this.tsmiShowPersonInfo.Name = "tsmiShowPersonInfo";
+            this.tsmiShowPersonInfo.Size = new System.Drawing.Size(225, 24);
+            this.tsmiShowPersonInfo.Text = "Show Person Info";
+            this.tsmiShowPersonInfo.Click += new System.EventHandler(this.tsmiShowPersonInfo_Click);
+            // 
+            // tsmiShowPersonLicenseHistory
+            // 
+            this.tsmiShowPersonLicenseHistory.Image = global::DVLD.Properties.Resources.PersonLicenseHistory_321;
+            this.tsmiShowPersonLicenseHistory.Name = "tsmiShowPersonLicenseHistory";
+            this.tsmiShowPersonLicenseHistory.Size = new System.Drawing.Size(225, 24);
+            this.tsmiShowPersonLicenseHistory.Text = "Show Person License History";
+            this.tsmiShowPersonLicenseHistory.Click += new System.EventHandler(this.tsmiShowPersonLicenseHistory_Click);
+            // 
             // lblTotalRecords
             // 
             this.lblTotalRecords.AutoSize = true;
@@ -131,14 +156,6 @@
             this.label1.TabIndex = 34;
             this.label1.Text = "Manage Drivers";
             // 
-            // cmsRecordOptions
-            // 
-            this.cmsRecordOptions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiShowPersonInfo,
-            this.tsmiShowPersonLicenseHistory});
-            this.cmsRecordOptions.Name = "cmsRecordOptions";
-            this.cmsRecordOptions.Size = new System.Drawing.Size(226, 48);
-            // 
             // btnClose
             // 
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -163,22 +180,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 33;
             this.pictureBox1.TabStop = false;
-            // 
-            // tsmiShowPersonInfo
-            // 
-            this.tsmiShowPersonInfo.Image = global::DVLD.Properties.Resources.PersonDetails_32;
-            this.tsmiShowPersonInfo.Name = "tsmiShowPersonInfo";
-            this.tsmiShowPersonInfo.Size = new System.Drawing.Size(225, 22);
-            this.tsmiShowPersonInfo.Text = "Show Person Info";
-            this.tsmiShowPersonInfo.Click += new System.EventHandler(this.tsmiShowPersonInfo_Click);
-            // 
-            // tsmiShowPersonLicenseHistory
-            // 
-            this.tsmiShowPersonLicenseHistory.Image = global::DVLD.Properties.Resources.PersonLicenseHistory_321;
-            this.tsmiShowPersonLicenseHistory.Name = "tsmiShowPersonLicenseHistory";
-            this.tsmiShowPersonLicenseHistory.Size = new System.Drawing.Size(225, 22);
-            this.tsmiShowPersonLicenseHistory.Text = "Show Person License History";
-            this.tsmiShowPersonLicenseHistory.Click += new System.EventHandler(this.tsmiShowPersonLicenseHistory_Click);
             // 
             // frmListDrivers
             // 
