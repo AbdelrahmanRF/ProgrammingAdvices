@@ -17,8 +17,6 @@ namespace DVLD.Applications.Local_Driving_License
     public partial class frmListLocalDrivingLicenseApplications : Form
     {
         DataTable _LDLAppsList;
-        int _LatestTestAppointmentID = -1;
-        clsTestType.enTestType _CurrentTestTypeID = clsTestType.enTestType.VisionTest;
 
         public frmListLocalDrivingLicenseApplications()
         {
@@ -59,6 +57,10 @@ namespace DVLD.Applications.Local_Driving_License
                 dgvApplicationsList.Columns[4].HeaderText = "Application Date";
                 dgvApplicationsList.Columns[5].HeaderText = "Passed Tests";
             }
+
+            tsmiScheduleVision.Tag = clsTestType.enTestType.VisionTest;
+            tsmiScheduleWritten.Tag = clsTestType.enTestType.WrittenTest;
+            tsmiScheduleStreet.Tag = clsTestType.enTestType.StreetTest;
         }
 
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
@@ -161,47 +163,38 @@ namespace DVLD.Applications.Local_Driving_License
             }
         }
 
-        private void _SetLatestTestAppointmentID()
-        {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-            clsTestAppointment LatestTestAppointment;
-
-            LatestTestAppointment = clsTestAppointment.GetLatestTestAppointment(LDLApplicationID);
-
-            if (LatestTestAppointment != null)
-            {
-                _LatestTestAppointmentID = LatestTestAppointment.TestAppointmentID;
-                _CurrentTestTypeID = LatestTestAppointment.TestTypeId;
-                return;
-            }
-        }
-
         private void cmsRecordOptions_Opening(object sender, CancelEventArgs e)
         {
             string ApplicationStatus = dgvApplicationsList.CurrentRow.Cells["Status"].Value.ToString();
-            _SetLatestTestAppointmentID();
+            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
+            clsLocalDrivingLicenseApplication LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
 
             foreach (ToolStripMenuItem item in cmsRecordOptions.Items.OfType<ToolStripMenuItem>())
             {
                 item.Enabled = true;
             }
 
-            foreach (ToolStripMenuItem childItem in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
+            tsmiScheduleTests.Enabled = false;
+
+            if (!clsTest.PassedAllTests(LDLApplication.LocalDrivingLicenseApplicationID))
             {
-                childItem.Enabled = false;
+                tsmiScheduleTests.Enabled = true;
+
+                foreach (ToolStripMenuItem item in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
+                {
+                    if (item.Tag is clsTestType.enTestType testType)
+                    {
+                        item.Enabled =
+                            !LDLApplication.DoesPassTestType(testType) &&
+                             LDLApplication.DoesPassPrevTestType(testType);
+                    }
+                }
             }
 
             if (ApplicationStatus == "New")
             {
                 tsmiShowLicense.Enabled = false;
-                tsmiIssueDrivingLicenseFirstTime.Enabled = false;
-
-                if(_CurrentTestTypeID == clsTestType.enTestType.VisionTest)
-                    tsmiScheduleVision.Enabled = true;
-                else if (_CurrentTestTypeID == clsTestType.enTestType.WrittenTest)
-                    tsmiScheduleWritten.Enabled = true;
-                else
-                    tsmiScheduleStreet.Enabled = true;
+                tsmiIssueDrivingLicenseFirstTime.Enabled = clsTest.PassedAllTests(LDLApplication.LocalDrivingLicenseApplicationID);
             }
             else if (ApplicationStatus == "Cancelled")
             {
@@ -262,34 +255,50 @@ namespace DVLD.Applications.Local_Driving_License
         }
 
 
-        private void _OpenTestAppointmentsForm()
+        private void _OpenTestAppointmentsForm(clsTestType.enTestType TestTypeID)
         {
             int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
 
-            frmListTestAppointments frm = new frmListTestAppointments(LDLApplicationID, _CurrentTestTypeID);
+            frmListTestAppointments frm = new frmListTestAppointments(LDLApplicationID, TestTypeID);
             frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
 
         private void tsmiScheduleVision_Click(object sender, EventArgs e)
         {
-            _OpenTestAppointmentsForm();
+            _OpenTestAppointmentsForm(clsTestType.enTestType.VisionTest);
         }
 
         private void tsmiScheduleWritten_Click(object sender, EventArgs e)
         {
-            _OpenTestAppointmentsForm();
+            _OpenTestAppointmentsForm(clsTestType.enTestType.WrittenTest);
         }
 
         private void tsmiScheduleStreet_Click(object sender, EventArgs e)
         {
-            _OpenTestAppointmentsForm();
+            _OpenTestAppointmentsForm(clsTestType.enTestType.StreetTest);
         }
 
         private void tsmiShowPersonLicenseHistory_Click(object sender, EventArgs e)
         {
             int PersonID = clsPerson.Find(dgvApplicationsList.CurrentRow.Cells["NationalNo"].Value.ToString()).PersonID;
             frmShowPersonLicenseHistory frm = new frmShowPersonLicenseHistory(PersonID);
+            frm.ShowDialog();
+        }
+
+        private void tsmiIssueDrivingLicenseFirstTime_Click(object sender, EventArgs e)
+        {
+            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
+            clsLocalDrivingLicenseApplication LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
+
+            frmIssueDriverLicenseFirstTime frm = new frmIssueDriverLicenseFirstTime(LDLApplicationID);
+
+            frm.LicenseCreated += (s, args) =>
+            {
+                LDLApplication.SetComplete();
+                _RefreshLDLApplicationsList();
+            };
+
             frm.ShowDialog();
         }
     }

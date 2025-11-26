@@ -154,6 +154,11 @@ namespace DVLD_Business
             return clsApplicationData.SetApplicationStatus(ApplicationID, 2);
         }
 
+        public bool SetComplete()
+        {
+            return clsApplicationData.SetApplicationStatus(ApplicationID, 3);
+        }
+
         public static bool DeleteApplication(int ApplicationID)
         {
             return clsApplicationData.DeleteApplication(ApplicationID);

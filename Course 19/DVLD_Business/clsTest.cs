@@ -46,6 +46,55 @@ namespace DVLD_Business
         {
             return clsTestData.GetPassedTestCount(LDLApplicationID);
         }
+        public static bool PassedAllTests(int LDLApplicationID)
+        {
+            return GetPassedTestCount(LDLApplicationID) == 3;
+        }
+
+        public static clsTest Find(int TestID)
+        {
+            int TestAppointmentID = -1, CreatedByUserID = -1;
+            bool TestResult = false;
+            string Notes = "";
+
+            if (clsTestData.GetTestInfoByID(TestID, ref TestAppointmentID, ref TestResult, ref Notes, ref CreatedByUserID))
+                return new clsTest(TestID, TestAppointmentID, TestResult, Notes, CreatedByUserID);
+
+            return null;
+        }
+
+        private bool _AddNewTest()
+        {
+            this.TestID = clsTestData.AddNewTest(this.TestAppointmentID, this.TestResult, this.Notes, this.CreatedByUserID);
+
+            return this.TestID != -1;
+        }
+
+        private bool _UpdateTest()
+        {
+            return clsTestData.UpdateTest(this.TestID, this.TestAppointmentID, this.TestResult, this.Notes, 
+                this.CreatedByUserID);
+        }
+
+        public bool Save()
+        {
+            switch(Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewTest())
+                    {
+                        this.Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                        return false;
+                case enMode.Update:
+                    return _UpdateTest();
+            }
+
+
+            return false;
+        }
 
     }
 }

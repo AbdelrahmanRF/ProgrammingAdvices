@@ -62,6 +62,7 @@
             this.Controls.Add(this.crlScheduleTest1);
             this.Name = "frmScheduleTest";
             this.Text = "Schedule Test";
+            this.Load += new System.EventHandler(this.frmScheduleTest_Load);
             this.ResumeLayout(false);
 
         }

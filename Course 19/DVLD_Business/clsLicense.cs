@@ -132,5 +132,43 @@ namespace DVLD_Business
                     return "First Time";
             }
         }
+
+        private bool _AddNewLicense()
+        {
+            this.LicenseID = clsLicenseData.AddNewLicense(this.ApplicationID, this.DriverID, this.LicenseClass,
+               this.IssueDate, this.ExpirationDate, this.Notes, this.PaidFees,
+               this.IsActive, (byte)this.IssueReason, this.CreatedByUserID);
+
+            return (this.LicenseID != -1);
+        }
+
+        private bool _UpdateLicense()
+        {
+            return clsLicenseData.UpdateLicense(this.ApplicationID, this.LicenseID, this.DriverID, this.LicenseClass,
+               this.IssueDate, this.ExpirationDate, this.Notes, this.PaidFees,
+               this.IsActive, (byte)this.IssueReason, this.CreatedByUserID);
+        }
+
+        public bool Save()
+        {
+            switch (Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewLicense())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case enMode.Update:
+                    return _UpdateLicense();
+            }
+
+            return false;
+        }
     }
 }

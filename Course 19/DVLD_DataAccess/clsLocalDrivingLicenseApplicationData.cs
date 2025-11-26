@@ -208,7 +208,7 @@ namespace DVLD_DataAccess
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
             string Query = @"SELECT Count(*) FROM TestAppointments
                                 WHERE LocalDrivingLicenseApplicationID = @LDLApplicationID 
-                                AND TestTypeID = @TestTypeID;";
+                                AND TestTypeID = @TestTypeID AND IsLocked = 1;";
 
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
@@ -229,6 +229,44 @@ namespace DVLD_DataAccess
             }
 
             return TotalTrials;
+        }
+
+        public static bool DoesPassTestType(int LDLApplicationID, int TestTypeID)
+        {
+            bool isPassed = false;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT 
+                            CASE WHEN EXISTS 
+                            (
+                                SELECT 1 
+                                FROM TestAppointments TA 
+                                JOIN Tests T ON TA.TestAppointmentID = T.TestAppointmentID
+                                WHERE TA.LocalDrivingLicenseApplicationID = @LDLApplicationID 
+                                      AND TA.TestTypeID = @TestTypeID 
+                                      AND T.TestResult = 1
+                            )
+                            THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) 
+                        END;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                isPassed = (bool)Command.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return isPassed;
         }
     }
 }

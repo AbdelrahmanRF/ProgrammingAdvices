@@ -15,6 +15,7 @@ namespace DVLD.Tests
     {
         int _LDLApplicationID;
         int _RetakeTestID;
+        int _TestAppointmentID;
         clsTestType.enTestType _TestTypeID;
         clsLocalDrivingLicenseApplication _LDLApplication;
         clsApplication _RetakeTestApplication;
@@ -30,9 +31,20 @@ namespace DVLD.Tests
             this._TestTypeID = TestTypeID;
         }
 
+        public frmScheduleTest(int LDLApplicationID, clsTestType.enTestType TestTypeID, int TestAppointmentID)
+                : this(LDLApplicationID, TestTypeID)
+        {
+            this._TestAppointmentID = TestAppointmentID;
+        }
+
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void frmScheduleTest_Load(object sender, EventArgs e)
+        {
+            crlScheduleTest1.FillTestInfo(_LDLApplicationID, _TestTypeID, _TestAppointmentID);
         }
     }
 }

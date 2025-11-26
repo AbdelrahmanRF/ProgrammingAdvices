@@ -38,7 +38,7 @@
             this.btnClose = new System.Windows.Forms.Button();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.ctrlSecheduledTest1 = new DVLD.Tests.Controls.ctrlSecheduledTest();
+            this.ctrlSecheduledTest1 = new DVLD.Tests.Controls.ctrlScheduledTest();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
@@ -122,6 +122,7 @@
             this.btnSave.Text = "Save";
             this.btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnClose
             // 
@@ -136,6 +137,7 @@
             this.btnClose.Text = "Close";
             this.btnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // pictureBox7
             // 
@@ -184,6 +186,7 @@
             this.Controls.Add(this.ctrlSecheduledTest1);
             this.Name = "frmTakeTest";
             this.Text = "Take Test";
+            this.Load += new System.EventHandler(this.frmTakeTest_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.ResumeLayout(false);
@@ -193,7 +196,7 @@
 
         #endregion
 
-        private Controls.ctrlSecheduledTest ctrlSecheduledTest1;
+        private Controls.ctrlScheduledTest ctrlSecheduledTest1;
         private System.Windows.Forms.Label lblUserMessage;
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.RadioButton rbFail;

@@ -38,10 +38,5 @@ namespace DVLD.Applications.Local_Driving_License
             ctrlDrivingLicenseApplicationInfo1
                 .FillDrivingApplicationData(_LDLApplication.LocalDrivingLicenseApplicationID, _LDLApplication.ApplicationID);
         }
-
-        private void linkShowLicenseInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-
-        }
     }
 }

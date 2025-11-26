@@ -34,12 +34,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.dgvLicenseTestAppointments = new System.Windows.Forms.DataGridView();
             this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTakeTest = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTotalRecords = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnAddNewAppointment = new System.Windows.Forms.Button();
-            this.tsmiEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiTakeTest = new System.Windows.Forms.ToolStripMenuItem();
             this.pbTestTypeImage = new System.Windows.Forms.PictureBox();
             this.ctrlDrivingLicenseApplicationInfo1 = new DVLD.Applications.Local_Driving_License.Controls.ctrlDrivingLicenseApplicationInfo();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLicenseTestAppointments)).BeginInit();
@@ -105,6 +105,24 @@
             this.cmsRecordOptions.Name = "contextMenuStrip1";
             this.cmsRecordOptions.Size = new System.Drawing.Size(139, 80);
             // 
+            // tsmiEdit
+            // 
+            this.tsmiEdit.Image = global::DVLD.Properties.Resources.edit_32;
+            this.tsmiEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsmiEdit.Name = "tsmiEdit";
+            this.tsmiEdit.Size = new System.Drawing.Size(138, 38);
+            this.tsmiEdit.Text = "&Edit";
+            this.tsmiEdit.Click += new System.EventHandler(this.tsmiEdit_Click);
+            // 
+            // tsmiTakeTest
+            // 
+            this.tsmiTakeTest.Image = global::DVLD.Properties.Resources.Test_32;
+            this.tsmiTakeTest.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.tsmiTakeTest.Name = "tsmiTakeTest";
+            this.tsmiTakeTest.Size = new System.Drawing.Size(138, 38);
+            this.tsmiTakeTest.Text = "Take Test";
+            this.tsmiTakeTest.Click += new System.EventHandler(this.tsmiTakeTest_Click);
+            // 
             // lblTotalRecords
             // 
             this.lblTotalRecords.AutoSize = true;
@@ -139,6 +157,7 @@
             this.btnClose.Text = "Close";
             this.btnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnAddNewAppointment
             // 
@@ -150,22 +169,6 @@
             this.btnAddNewAppointment.TabIndex = 140;
             this.btnAddNewAppointment.UseVisualStyleBackColor = true;
             this.btnAddNewAppointment.Click += new System.EventHandler(this.btnAddNewAppointment_Click);
-            // 
-            // tsmiEdit
-            // 
-            this.tsmiEdit.Image = global::DVLD.Properties.Resources.edit_32;
-            this.tsmiEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsmiEdit.Name = "tsmiEdit";
-            this.tsmiEdit.Size = new System.Drawing.Size(138, 38);
-            this.tsmiEdit.Text = "&Edit";
-            // 
-            // tsmiTakeTest
-            // 
-            this.tsmiTakeTest.Image = global::DVLD.Properties.Resources.Test_32;
-            this.tsmiTakeTest.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.tsmiTakeTest.Name = "tsmiTakeTest";
-            this.tsmiTakeTest.Size = new System.Drawing.Size(138, 38);
-            this.tsmiTakeTest.Text = "Take Test";
             // 
             // pbTestTypeImage
             // 

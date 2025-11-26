@@ -112,5 +112,78 @@ namespace DVLD_DataAccess
 
             return isFound;
         }
+
+        public static int AddNewDriver(int PersonID, int CreatedByUserID, DateTime CreatedDate)
+        {
+            int DriverID = -1;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"INSERT INTO Drivers (PersonID, CreatedByUserID, CreatedDate)
+                            VALUES
+                                (@PersonID, @CreatedByUserID, @CreatedDate);
+                            SELECT SCOPE_IDENTITY();";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@PersonID", PersonID);
+            Command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+            Command.Parameters.AddWithValue("@CreatedDate", CreatedDate);
+
+            try
+            {
+                Connection.Open();
+
+                object Result = Command.ExecuteScalar();
+
+                if (Result != null && int.TryParse(Result.ToString(), out int InsertedID))
+                {
+                    DriverID = InsertedID;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return DriverID;
+        }
+
+        public static bool UpdateDriver(int DriverID, int PersonID, int CreatedByUserID, DateTime CreatedDate)
+        {
+            int RowsAffected = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"UPDATE Drivers
+                                SET
+                                    PersonID = @PersonID,
+                                    CreatedByUserID = @CreatedByUserID,
+                                    CreatedDate = @CreatedDate
+    
+                                WHERE DriverID = @DriverID;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@DriverID", DriverID);
+            Command.Parameters.AddWithValue("@PersonID", PersonID);
+            Command.Parameters.AddWithValue("@CreatedByUserID", CreatedByUserID);
+            Command.Parameters.AddWithValue("@CreatedDate", CreatedDate);
+
+            try
+            {
+                Connection.Open();
+
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return RowsAffected > 0;
+        }
     }
 }

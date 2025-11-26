@@ -574,13 +574,13 @@
             this.pictureBox13.TabIndex = 147;
             this.pictureBox13.TabStop = false;
             // 
-            // ctrlDriverLicenses
+            // ctrlDriverLicenseInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.gbDriverLicenseInfo);
             this.Controls.Add(this.pictureBox6);
-            this.Name = "ctrlDriverLicenses";
+            this.Name = "ctrlDriverLicenseInfo";
             this.Size = new System.Drawing.Size(894, 395);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).EndInit();

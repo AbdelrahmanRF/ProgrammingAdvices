@@ -14,7 +14,7 @@ namespace DVLD_Business
         public enMode Mode = enMode.AddNew;
 
         public int TestAppointmentID { get; set; }
-        public clsTestType.enTestType TestTypeId { get; set; }
+        public clsTestType.enTestType TestTypeID { get; set; }
         public int LocalDrivingLicenseApplicationID { get; set; }
         public DateTime AppointmentDate { get; set; }
         public float PaidFees { get; set; }
@@ -32,7 +32,7 @@ namespace DVLD_Business
             Mode = enMode.AddNew;
 
             this.TestAppointmentID = -1;
-            this.TestTypeId = clsTestType.enTestType.VisionTest;
+            this.TestTypeID = clsTestType.enTestType.VisionTest;
             this.AppointmentDate = DateTime.Now;
             this.PaidFees = 0;
             this.CreatedByUserID = -1;
@@ -46,7 +46,7 @@ namespace DVLD_Business
             Mode = enMode.Update;
             
             this.TestAppointmentID = TestAppointmentID;
-            this.TestTypeId = TestTypeID;
+            this.TestTypeID = TestTypeID;
             this.LocalDrivingLicenseApplicationID = LocalDrivingLicenseApplicationID;
             this.AppointmentDate = AppointmentDate;
             this.PaidFees = PaidFees;
@@ -129,6 +129,41 @@ namespace DVLD_Business
         {
             return clsTestAppointmentData.GetApplicationTestAppointmentsByTestType(this.LocalDrivingLicenseApplicationID,
                 (int)TestTypeID);
+        }
+
+        private bool _AddNewTestAppointment()
+        {
+            this.TestAppointmentID = clsTestAppointmentData.AddNewTestAppointment((int)this.TestTypeID, this.LocalDrivingLicenseApplicationID,
+                     this.AppointmentDate, this.PaidFees, this.CreatedByUserID, this.IsLocked, this.RetakeTestApplicationID);
+
+            return this.TestAppointmentID != -1;
+        }
+
+        private bool _UpdateTestAppointment()
+        {
+            return clsTestAppointmentData.UpdateTestAppointment(this.TestAppointmentID, (int)this.TestTypeID, this.LocalDrivingLicenseApplicationID,
+                     this.AppointmentDate, this.PaidFees, this.CreatedByUserID, this.IsLocked, this.RetakeTestApplicationID);
+        }
+
+        public bool Save()
+        {
+            switch (Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewTestAppointment())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                case enMode.Update:
+                    return _UpdateTestAppointment();
+            }
+
+            return false;
         }
     }
 }

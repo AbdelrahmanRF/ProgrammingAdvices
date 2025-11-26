@@ -144,6 +144,27 @@ namespace DVLD_Business
             return clsLicense.GetActiveLicenseIDByPersonID(this.ApplicantPersonID, this.LicenseClassID);
         }
 
+        public bool DoesPassTestType(clsTestType.enTestType TestTypeID)
+        {
+            return clsLocalDrivingLicenseApplicationData.DoesPassTestType(this.LocalDrivingLicenseApplicationID, (int)TestTypeID);
+        }
 
+        public bool DoesPassPrevTestType(clsTestType.enTestType TestTypeID)
+        {
+            switch(TestTypeID)
+            {
+                case clsTestType.enTestType.StreetTest:
+                    return DoesPassTestType(clsTestType.enTestType.WrittenTest);
+
+                case clsTestType.enTestType.WrittenTest:
+                    return DoesPassTestType(clsTestType.enTestType.VisionTest);
+
+                case clsTestType.enTestType.VisionTest:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
     }
 }

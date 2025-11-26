@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.gbTestType = new System.Windows.Forms.GroupBox();
-            this.bpTestTypeImage = new System.Windows.Forms.PictureBox();
+            this.pbTestTypeImage = new System.Windows.Forms.PictureBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.gbRetakeTestInfo = new System.Windows.Forms.GroupBox();
             this.lblTotalFees = new System.Windows.Forms.Label();
@@ -62,7 +62,7 @@
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.gbTestType.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).BeginInit();
             this.gbRetakeTestInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
@@ -77,7 +77,7 @@
             // 
             // gbTestType
             // 
-            this.gbTestType.Controls.Add(this.bpTestTypeImage);
+            this.gbTestType.Controls.Add(this.pbTestTypeImage);
             this.gbTestType.Controls.Add(this.btnSave);
             this.gbTestType.Controls.Add(this.gbRetakeTestInfo);
             this.gbTestType.Controls.Add(this.lblUserMessage);
@@ -109,16 +109,16 @@
             this.gbTestType.TabStop = false;
             this.gbTestType.Text = "Test Type";
             // 
-            // bpTestTypeImage
+            // pbTestTypeImage
             // 
-            this.bpTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.bpTestTypeImage.Image = global::DVLD.Properties.Resources.driving_test_5121;
-            this.bpTestTypeImage.Location = new System.Drawing.Point(179, 31);
-            this.bpTestTypeImage.Name = "bpTestTypeImage";
-            this.bpTestTypeImage.Size = new System.Drawing.Size(153, 140);
-            this.bpTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.bpTestTypeImage.TabIndex = 208;
-            this.bpTestTypeImage.TabStop = false;
+            this.pbTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbTestTypeImage.Image = global::DVLD.Properties.Resources.driving_test_5121;
+            this.pbTestTypeImage.Location = new System.Drawing.Point(179, 31);
+            this.pbTestTypeImage.Name = "pbTestTypeImage";
+            this.pbTestTypeImage.Size = new System.Drawing.Size(153, 140);
+            this.pbTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbTestTypeImage.TabIndex = 208;
+            this.pbTestTypeImage.TabStop = false;
             // 
             // btnSave
             // 
@@ -133,6 +133,7 @@
             this.btnSave.Text = "Save";
             this.btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // gbRetakeTestInfo
             // 
@@ -483,7 +484,7 @@
             this.Size = new System.Drawing.Size(530, 708);
             this.gbTestType.ResumeLayout(false);
             this.gbTestType.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).EndInit();
             this.gbRetakeTestInfo.ResumeLayout(false);
             this.gbRetakeTestInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
@@ -533,6 +534,6 @@
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.PictureBox bpTestTypeImage;
+        private System.Windows.Forms.PictureBox pbTestTypeImage;
     }
 }

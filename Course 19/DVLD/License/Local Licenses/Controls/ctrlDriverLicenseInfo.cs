@@ -36,7 +36,7 @@ namespace DVLD.License.Controls
 
             if (_PersonInfo.ImagePath != "")
             {
-                pbImage.ImageLocation = _PersonInfo.ImagePath;
+                pbImage.Load(_PersonInfo.ImagePath);
             }
             else
             {

@@ -1,6 +1,6 @@
 ﻿namespace DVLD.Tests.Controls
 {
-    partial class ctrlSecheduledTest
+    partial class ctrlScheduledTest
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.gbTestType = new System.Windows.Forms.GroupBox();
-            this.bpTestTypeImage = new System.Windows.Forms.PictureBox();
+            this.pbTestTypeImage = new System.Windows.Forms.PictureBox();
             this.lblTestID = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
@@ -53,7 +53,7 @@
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.gbTestType.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
@@ -65,7 +65,7 @@
             // 
             // gbTestType
             // 
-            this.gbTestType.Controls.Add(this.bpTestTypeImage);
+            this.gbTestType.Controls.Add(this.pbTestTypeImage);
             this.gbTestType.Controls.Add(this.lblTestID);
             this.gbTestType.Controls.Add(this.label4);
             this.gbTestType.Controls.Add(this.pictureBox5);
@@ -97,16 +97,16 @@
             this.gbTestType.TabStop = false;
             this.gbTestType.Text = "Test Type";
             // 
-            // bpTestTypeImage
+            // pbTestTypeImage
             // 
-            this.bpTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.bpTestTypeImage.Image = global::DVLD.Properties.Resources.driving_test_5121;
-            this.bpTestTypeImage.Location = new System.Drawing.Point(193, 38);
-            this.bpTestTypeImage.Name = "bpTestTypeImage";
-            this.bpTestTypeImage.Size = new System.Drawing.Size(153, 140);
-            this.bpTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.bpTestTypeImage.TabIndex = 192;
-            this.bpTestTypeImage.TabStop = false;
+            this.pbTestTypeImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbTestTypeImage.Image = global::DVLD.Properties.Resources.driving_test_5121;
+            this.pbTestTypeImage.Location = new System.Drawing.Point(193, 38);
+            this.pbTestTypeImage.Name = "pbTestTypeImage";
+            this.pbTestTypeImage.Size = new System.Drawing.Size(153, 140);
+            this.pbTestTypeImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbTestTypeImage.TabIndex = 192;
+            this.pbTestTypeImage.TabStop = false;
             // 
             // lblTestID
             // 
@@ -351,16 +351,16 @@
             this.lblTitle.Text = "Scheduled Test";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // ctrlSecheduledTest
+            // ctrlScheduledTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.gbTestType);
-            this.Name = "ctrlSecheduledTest";
+            this.Name = "ctrlScheduledTest";
             this.Size = new System.Drawing.Size(582, 554);
             this.gbTestType.ResumeLayout(false);
             this.gbTestType.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bpTestTypeImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTestTypeImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
@@ -397,6 +397,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.PictureBox bpTestTypeImage;
+        private System.Windows.Forms.PictureBox pbTestTypeImage;
     }
 }
