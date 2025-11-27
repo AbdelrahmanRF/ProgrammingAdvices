@@ -44,17 +44,21 @@ namespace DVLD.License.Local_Licenses
 
         private void btnIssue_Click(object sender, EventArgs e)
         {
-            clsDriver Driver = new clsDriver();
-            Driver.PersonID = _LDLApplication.ApplicantPersonID;
-            Driver.CreatedByUserID = clsGlobal.CurrentUser.UserID;
+            clsDriver Driver = clsDriver.FindByPersonID(_LDLApplication.ApplicantPersonID);
 
-            if (!Driver.Save())
+            if (Driver == null)
             {
-                MessageBox.Show("Failed to Create Driver Record.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                Driver = new clsDriver();
+                Driver.PersonID = _LDLApplication.ApplicantPersonID;
+                Driver.CreatedByUserID = clsGlobal.CurrentUser.UserID;
 
+                if (!Driver.Save())
+                {
+                    MessageBox.Show("Failed to Create Driver Record.", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
             clsLicense License = new clsLicense();
 
             License.ApplicationID = _LDLApplication.ApplicationID;

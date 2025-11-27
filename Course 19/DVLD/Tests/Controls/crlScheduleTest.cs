@@ -97,7 +97,7 @@ namespace DVLD.Tests.Controls
                 RetakeTestApplication.ApplicantPersonID = _LDLApplication.ApplicantPersonID;
                 RetakeTestApplication.ApplicationTypeID = (int)enApplicationType.RetakeTest;
                 RetakeTestApplication.ApplicationDate = DateTime.Now;
-                RetakeTestApplication.ApplicationStatus = enApplicationStatus.New;
+                RetakeTestApplication.ApplicationStatus = enApplicationStatus.Completed;
                 RetakeTestApplication.LastStatusDate = DateTime.Now;
                 RetakeTestApplication.PaidFees = Convert.ToSingle(lblRetakeAppFees.Text);
                 RetakeTestApplication.CreatedByUserID = clsGlobal.CurrentUser.UserID;
