@@ -133,6 +133,8 @@ namespace DVLD.Applications.Local_Driving_License
             {
                 MessageBox.Show("Person already have a license with the same applied driving class, Choose different driving class",
                     "Not allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                return;
             }
 
             _LDLApplication.ApplicantPersonID = _SelectedPersonID;

@@ -133,6 +133,7 @@
             this.dgvApplicationsList.ReadOnly = true;
             this.dgvApplicationsList.Size = new System.Drawing.Size(1119, 278);
             this.dgvApplicationsList.TabIndex = 27;
+            this.dgvApplicationsList.SelectionChanged += new System.EventHandler(this.dgvApplicationsList_SelectionChanged);
             // 
             // cmsRecordOptions
             // 

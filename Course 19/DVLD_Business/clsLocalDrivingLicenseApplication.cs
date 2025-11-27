@@ -149,22 +149,15 @@ namespace DVLD_Business
             return clsLocalDrivingLicenseApplicationData.DoesPassTestType(this.LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
 
-        public bool DoesPassPrevTestType(clsTestType.enTestType TestTypeID)
+        public static Dictionary<clsTestType.enTestType, bool> GetAllTestStatuses(int LDLApplicationID)
         {
-            switch(TestTypeID)
-            {
-                case clsTestType.enTestType.StreetTest:
-                    return DoesPassTestType(clsTestType.enTestType.WrittenTest);
+            var Results = clsLocalDrivingLicenseApplicationData.GetAllTestStatuses(LDLApplicationID);
 
-                case clsTestType.enTestType.WrittenTest:
-                    return DoesPassTestType(clsTestType.enTestType.VisionTest);
-
-                case clsTestType.enTestType.VisionTest:
-                    return true;
-
-                default:
-                    return false;
-            }
+            return Results.ToDictionary
+                (
+                    r => (clsTestType.enTestType)r.Key,
+                    r => r.Value
+                );
         }
     }
 }

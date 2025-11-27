@@ -1,4 +1,5 @@
-﻿using DVLD.License;
+﻿using DVLD.Global_Classes;
+using DVLD.License;
 using DVLD.License.Local_Licenses;
 using DVLD.Tests;
 using DVLD_Business;
@@ -17,7 +18,8 @@ namespace DVLD.Applications.Local_Driving_License
     public partial class frmListLocalDrivingLicenseApplications : Form
     {
         DataTable _LDLAppsList;
-
+        clsLocalDrivingLicenseApplication _CurrentApplication;
+        Dictionary<clsTestType.enTestType, bool> _CurrentTestStatuses;
         public frmListLocalDrivingLicenseApplications()
         {
             InitializeComponent();
@@ -131,10 +133,22 @@ namespace DVLD.Applications.Local_Driving_License
             lblTotalRecords.Text = BS.List.Count.ToString();
         }
 
+        private void dgvApplicationsList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvApplicationsList.CurrentRow == null) return;
+
+            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
+            _CurrentApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
+
+            if (_CurrentApplication != null)
+            {
+                _CurrentTestStatuses = clsLocalDrivingLicenseApplication.GetAllTestStatuses(LDLApplicationID);
+            }
+        }
+
         private void tsmiEditApplication_Click(object sender, EventArgs e)
         {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(LDLApplicationID);
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(_CurrentApplication.LocalDrivingLicenseApplicationID);
             frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
@@ -142,7 +156,7 @@ namespace DVLD.Applications.Local_Driving_License
         private void tsmiCancelApplication_Click(object sender, EventArgs e)
         {
             int ApplicationID = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(
-                (int)dgvApplicationsList.CurrentRow.Cells[0].Value).ApplicationID;
+                _CurrentApplication.LocalDrivingLicenseApplicationID).ApplicationID;
 
             clsApplication Application = clsApplication.FindBaseApplication(ApplicationID);
 
@@ -166,8 +180,6 @@ namespace DVLD.Applications.Local_Driving_License
         private void cmsRecordOptions_Opening(object sender, CancelEventArgs e)
         {
             string ApplicationStatus = dgvApplicationsList.CurrentRow.Cells["Status"].Value.ToString();
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-            clsLocalDrivingLicenseApplication LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
 
             foreach (ToolStripMenuItem item in cmsRecordOptions.Items.OfType<ToolStripMenuItem>())
             {
@@ -175,26 +187,29 @@ namespace DVLD.Applications.Local_Driving_License
             }
 
             tsmiScheduleTests.Enabled = false;
+            bool passedAllTests = _CurrentTestStatuses.Values.All(Passed => Passed);
 
-            if (!clsTest.PassedAllTests(LDLApplication.LocalDrivingLicenseApplicationID))
+            if (!passedAllTests)
             {
                 tsmiScheduleTests.Enabled = true;
 
-                foreach (ToolStripMenuItem item in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
+                foreach(ToolStripMenuItem item in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
                 {
-                    if (item.Tag is clsTestType.enTestType testType)
+                    if (item.Tag is clsTestType.enTestType TestType)
                     {
-                        item.Enabled =
-                            !LDLApplication.DoesPassTestType(testType) &&
-                             LDLApplication.DoesPassPrevTestType(testType);
+                        bool PassedThisTest = _CurrentTestStatuses[TestType];
+                        bool PassedPrevTest = Util.DoesPassPrevTestType(_CurrentTestStatuses, TestType);
+
+                        item.Enabled = !PassedThisTest && PassedPrevTest;
                     }
                 }
+
             }
 
             if (ApplicationStatus == "New")
             {
                 tsmiShowLicense.Enabled = false;
-                tsmiIssueDrivingLicenseFirstTime.Enabled = clsTest.PassedAllTests(LDLApplication.LocalDrivingLicenseApplicationID);
+                tsmiIssueDrivingLicenseFirstTime.Enabled = passedAllTests;
             }
             else if (ApplicationStatus == "Cancelled")
             {
@@ -216,12 +231,10 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void tsmiDeleteApplication_Click(object sender, EventArgs e)
         {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-
             if (MessageBox.Show("Are You Sure You Want To Delete This Application?", "Confirm",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             {
-                if (clsLocalDrivingLicenseApplication.DeleteLDLApplication(LDLApplicationID))
+                if (clsLocalDrivingLicenseApplication.DeleteLDLApplication(_CurrentApplication.LocalDrivingLicenseApplicationID))
                 {
                     MessageBox.Show("Application Deleted Successfully", "Cancelled",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -237,8 +250,7 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void tsmiShowApplicationDetails_Click(object sender, EventArgs e)
         {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-            frmLocalDrivingLicenseApplicationInfo frm = new frmLocalDrivingLicenseApplicationInfo(LDLApplicationID);
+            frmLocalDrivingLicenseApplicationInfo frm = new frmLocalDrivingLicenseApplicationInfo(_CurrentApplication.LocalDrivingLicenseApplicationID);
             frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
@@ -257,9 +269,7 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void _OpenTestAppointmentsForm(clsTestType.enTestType TestTypeID)
         {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
-
-            frmListTestAppointments frm = new frmListTestAppointments(LDLApplicationID, TestTypeID);
+            frmListTestAppointments frm = new frmListTestAppointments(_CurrentApplication.LocalDrivingLicenseApplicationID, TestTypeID);
             frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
@@ -288,7 +298,7 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void tsmiIssueDrivingLicenseFirstTime_Click(object sender, EventArgs e)
         {
-            int LDLApplicationID = (int)dgvApplicationsList.CurrentRow.Cells[0].Value;
+            int LDLApplicationID = _CurrentApplication.LocalDrivingLicenseApplicationID;
             clsLocalDrivingLicenseApplication LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
 
             frmIssueDriverLicenseFirstTime frm = new frmIssueDriverLicenseFirstTime(LDLApplicationID);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DVLD_Business;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -66,6 +68,21 @@ namespace DVLD.Global_Classes
 
             SourceFile = DestinationFile;
             return true;    
+        }
+
+        public static bool DoesPassPrevTestType(Dictionary<clsTestType.enTestType, bool> CurrentTestStatuses, clsTestType.enTestType TestType)
+        {
+            switch (TestType)
+            {
+                case clsTestType.enTestType.StreetTest:
+                    return CurrentTestStatuses[clsTestType.enTestType.WrittenTest];
+                case clsTestType.enTestType.WrittenTest:
+                    return CurrentTestStatuses[clsTestType.enTestType.VisionTest];
+                case clsTestType.enTestType.VisionTest:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

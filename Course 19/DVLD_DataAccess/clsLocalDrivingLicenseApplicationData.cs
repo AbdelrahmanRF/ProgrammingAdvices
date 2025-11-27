@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -267,6 +268,53 @@ namespace DVLD_DataAccess
             }
 
             return isPassed;
+        }
+
+        public static Dictionary<int, bool> GetAllTestStatuses(int LDLApplicationID)
+        {
+            var Results = new Dictionary<int, bool>();
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT 
+                                TT.TestTypeID,
+                                CASE WHEN EXISTS 
+                                (
+                                    SELECT 1 
+                                    FROM TestAppointments TA 
+                                    JOIN Tests T ON TA.TestAppointmentID = T.TestAppointmentID
+                                    WHERE TA.LocalDrivingLicenseApplicationID = @LDLApplicationID
+                                      AND TA.TestTypeID = TT.TestTypeID
+                                      AND T.TestResult = 1
+                                )
+                                THEN CAST(1 AS BIT)
+                                ELSE CAST(0 AS BIT)
+                                END AS IsPassed
+                            FROM TestTypes TT;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+
+            try
+            {
+                Connection.Open();
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                while(Reader.Read())
+                {
+                    Results[Reader.GetInt32(0)] = Reader.GetBoolean(1);
+                }
+
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return Results;
         }
     }
 }
