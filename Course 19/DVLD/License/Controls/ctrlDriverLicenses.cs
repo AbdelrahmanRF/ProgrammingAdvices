@@ -1,4 +1,6 @@
-﻿using DVLD_Business;
+﻿using DVLD.License.International_Licenses;
+using DVLD.License.Local_Licenses;
+using DVLD_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,6 +50,20 @@ namespace DVLD.License.Controls
                 dgvInternationalLicensesHistory.Columns[4].HeaderText = "Expiration Date";
                 dgvInternationalLicensesHistory.Columns[5].HeaderText = "Is Active";
             }
+        }
+
+        private void tsmiShowLocalLicenseInfo_Click(object sender, EventArgs e)
+        {
+            int LocalLicenseID = (int)dgvLocalLicensesHistory.CurrentRow.Cells[0].Value;
+            frmShowLicenseInfo frm = new frmShowLicenseInfo(LocalLicenseID);
+            frm.ShowDialog();
+        }
+
+        private void tsmiShowIntLicenseInfo_Click(object sender, EventArgs e)
+        {
+            int InternationalLicenseID = (int)dgvInternationalLicensesHistory.CurrentRow.Cells[0].Value;
+            frmShowInternationalLicenseInfo frm = new frmShowInternationalLicenseInfo(InternationalLicenseID);
+            frm.ShowDialog();
         }
     }
 }
