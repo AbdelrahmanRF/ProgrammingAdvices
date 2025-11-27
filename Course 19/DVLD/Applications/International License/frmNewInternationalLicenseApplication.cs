@@ -106,6 +106,7 @@ namespace DVLD.Applications.International_License
         private void btnIssue_Click(object sender, EventArgs e)
         {
             _InternationalLicense.ApplicantPersonID = _LocalLicense.DriveInfo.PersonID;
+            _InternationalLicense.PaidFees = Convert.ToSingle(lblFees.Text);
             _InternationalLicense.DriverID = _LocalLicense.DriverID;
             _InternationalLicense.IssuedUsingLocalLicenseID = _LocalLicense.LicenseID;
             _InternationalLicense.IssueDate = DateTime.Now;

@@ -100,7 +100,7 @@
             this.gbApplicationBasicInfo.Size = new System.Drawing.Size(887, 177);
             this.gbApplicationBasicInfo.TabIndex = 134;
             this.gbApplicationBasicInfo.TabStop = false;
-            this.gbApplicationBasicInfo.Text = "Application Basic Info";
+            this.gbApplicationBasicInfo.Text = "Application Info";
             // 
             // lblIntLicenseID
             // 

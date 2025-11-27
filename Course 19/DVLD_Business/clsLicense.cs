@@ -144,7 +144,7 @@ namespace DVLD_Business
 
         private bool _UpdateLicense()
         {
-            return clsLicenseData.UpdateLicense(this.ApplicationID, this.LicenseID, this.DriverID, this.LicenseClass,
+            return clsLicenseData.UpdateLicense(this.LicenseID, this.ApplicationID, this.DriverID, this.LicenseClass,
                this.IssueDate, this.ExpirationDate, this.Notes, this.PaidFees,
                this.IsActive, (byte)this.IssueReason, this.CreatedByUserID);
         }
@@ -169,6 +169,45 @@ namespace DVLD_Business
             }
 
             return false;
+        }
+
+        public bool IsLicenseExpired()
+        {
+            return this.ExpirationDate < DateTime.Now;
+        }
+
+        public clsLicense Renew(string Notes, int CreatedByUserID)
+        {
+            clsApplication RenewApplication = new clsApplication();
+
+            RenewApplication.ApplicantPersonID = this.DriveInfo.PersonID;
+            RenewApplication.ApplicationTypeID = (int)clsApplication.enApplicationType.RenewDrivingLicenseService;
+            RenewApplication.PaidFees = clsApplicationType.Find(RenewApplication.ApplicationTypeID).ApplicationTypeFees;
+            RenewApplication.CreatedByUserID = CreatedByUserID;
+
+            if (!RenewApplication.Save())
+                return null;
+
+            clsLicense RenewedLicense = new clsLicense();
+
+            RenewedLicense.ApplicationID = RenewApplication.ApplicationID;
+            RenewedLicense.DriverID = this.DriverID;
+            RenewedLicense.LicenseClass = this.LicenseClass;
+            RenewedLicense.IssueDate = DateTime.Now;
+            RenewedLicense.ExpirationDate = DateTime.Now.AddYears(this.LicenseClassInfo.DefaultValidityLength);
+            RenewedLicense.Notes = Notes;
+            RenewedLicense.PaidFees = this.PaidFees;
+            RenewedLicense.IsActive = true;
+            RenewedLicense.IssueReason = enIssueReason.Renew;
+            RenewedLicense.CreatedByUserID = CreatedByUserID;
+
+            if (!RenewedLicense.Save())
+                return null;
+
+            this.IsActive = false;
+            this.Save();
+
+            return RenewedLicense;
         }
     }
 }

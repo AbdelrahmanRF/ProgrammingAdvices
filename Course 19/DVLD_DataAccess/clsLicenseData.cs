@@ -63,7 +63,9 @@ namespace DVLD_DataAccess
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
             string Query = @"SELECT L.LicenseID FROM Licenses AS L
                                 JOIN Drivers AS D ON L.DriverID = D.DriverID
-                                WHERE D.PersonID = @PersonID AND L.LicenseClass = @LicenseClassID;";
+                                WHERE D.PersonID = @PersonID 
+                                    AND L.LicenseClass = @LicenseClassID
+                                    And IsActive = 1;";
 
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@PersonID", PersonID);
@@ -200,7 +202,7 @@ namespace DVLD_DataAccess
                                     Notes = @Notes,
                                     PaidFees = @PaidFees,
                                     IsActive = @IsActive,
-                                    IssueReason = @IssueReason,
+                                    IssueReason = @IssueReason
     
                                 WHERE LicenseID = @LicenseID;";
 
