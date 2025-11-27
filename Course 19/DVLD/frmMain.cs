@@ -96,13 +96,13 @@ namespace DVLD
 
         private void internationalLicenseApplicationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmNewInternationalLicenseApplication frm = new frmNewInternationalLicenseApplication();
+            frmListInternationalLicenseApplications frm = new frmListInternationalLicenseApplications();
             frm.ShowDialog();
         }
 
         private void internationalLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmListInternationalLicesnseApplications frm = new frmListInternationalLicesnseApplications();
+            frmNewInternationalLicenseApplication frm = new frmNewInternationalLicenseApplication();
             frm.ShowDialog();
         }
     }

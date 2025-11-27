@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DVLD_Business
 {
@@ -60,6 +61,78 @@ namespace DVLD_Business
         public static DataTable GetAllDriverInternationalLicenses(int DriverID)
         {
             return clsInternationalLicenseData.GetAllDriverInternationalLicenses(DriverID);
+        }
+
+        public static DataTable GetAllInternationalLicenses()
+        {
+            return clsInternationalLicenseData.GetAllInternationalLicenses();
+        }
+
+        public static clsInternationalLicense Find(int InternationalLicenseID)
+        {
+            int ApplicationID = -1, DriverID = -1, IssuedUsingLocalLicenseID = -1;
+            DateTime IssueDate = DateTime.Now, ExpirationDate = DateTime.Now;
+            bool IsActive = true;
+
+            bool isFound = clsInternationalLicenseData.GetInternationalLicenseInfoByID(InternationalLicenseID, ref ApplicationID,
+                ref DriverID, ref IssuedUsingLocalLicenseID, ref IssueDate, ref ExpirationDate, ref IsActive);
+
+            if (!isFound)
+                return null;
+
+            clsApplication BaseApplication = clsApplication.FindBaseApplication(ApplicationID);
+
+            return new clsInternationalLicense(InternationalLicenseID, BaseApplication.ApplicationID, BaseApplication.ApplicantPersonID,
+                BaseApplication.ApplicationDate, BaseApplication.ApplicationStatus, BaseApplication.LastStatusDate,
+                BaseApplication.PaidFees, BaseApplication.CreatedByUserID, DriverID, IssuedUsingLocalLicenseID, IssueDate,
+                ExpirationDate, IsActive);
+
+        }
+
+        public static int FindActiveInternationalLicenseIDByLocalLicenseID(int LocalLicenseID)
+        {
+            return clsInternationalLicenseData.FindActiveInternationalLicenseIDByLocalLicenseID(LocalLicenseID);
+        }
+
+        private bool _AddNewInternationalLicense()
+        {
+            this.InternationalLicenseID = clsInternationalLicenseData.AddNewInternationalLicense(this.ApplicationID, this.DriverID,
+                this.IssuedUsingLocalLicenseID, this.IssueDate, this.ExpirationDate, this.IsActive, this.CreatedByUserID);
+
+            return (this.InternationalLicenseID != -1);
+        }
+
+        private bool _UpdateInternationalLicense()
+        {
+            return clsInternationalLicenseData.UpdateInternationalLicense(this.InternationalLicenseID, this.ApplicationID, this.DriverID,
+                this.IssuedUsingLocalLicenseID, this.IssueDate, this.ExpirationDate, this.IsActive, this.CreatedByUserID);
+        }
+
+        public bool Save()
+        {
+            base.Mode = (clsApplication.enMode)Mode;
+
+            if (!base.Save())
+                return false;
+
+            switch (Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewInternationalLicense())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case enMode.Update:
+                    return _UpdateInternationalLicense();
+            }
+
+            return false;
         }
     }
 }

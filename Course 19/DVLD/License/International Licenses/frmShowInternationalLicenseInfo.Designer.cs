@@ -69,6 +69,7 @@
             this.btnClose.Text = "Close";
             this.btnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // ctrlDriverInternationalLicenseInfo1
             // 
@@ -88,6 +89,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Name = "frmShowInternationalLicenseInfo";
             this.Text = "Show International License Info";
+            this.Load += new System.EventHandler(this.frmShowInternationalLicenseInfo_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

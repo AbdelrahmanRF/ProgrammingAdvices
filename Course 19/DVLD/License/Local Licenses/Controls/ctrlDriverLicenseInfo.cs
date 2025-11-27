@@ -52,5 +52,30 @@ namespace DVLD.License.Controls
             lblExpirationDate.Text = clsFormat.DateToShort(_License.ExpirationDate);
             lblIsDetained.Text = _License.IsDetained ? "Yes" : "No";
         }
+
+        public void Clear()
+        {
+            _License = null;
+            _PersonInfo = null;
+
+            lblLicenseClass.Text = "???";
+            lblLicenseID.Text = "???";
+            lblIssueDate.Text = "???";
+            lblIssueReason.Text = "???";
+            lblNotes.Text = "???";
+            lblIsActive.Text = "???";
+            lblDriverID.Text = "???";
+            lblExpirationDate.Text = "???";
+            lblIsDetained.Text = "???";
+
+            lblName.Text = "???";
+            lblNationalNo.Text = "???";
+            lblGendor.Text = "???";
+            lblDOB.Text = "???";
+
+            pbImage.Image = Resources.Male_512;
+
+            pbGendor.Image = Resources.Man_32;
+        }
     }
 }

@@ -18,6 +18,10 @@ namespace DVLD.License
         public frmShowPersonLicenseHistory(int PersonID)
         {
             InitializeComponent();
+
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+
             _PersonID = PersonID;
 
             _Driver = clsDriver.FindByPersonID(PersonID);

@@ -30,7 +30,8 @@ namespace DVLD_DataAccess
 							P.Email 
 							FROM People AS P
 							JOIN Countries AS C
-							ON P.NationalityCountryID = C.CountryID;";
+							ON P.NationalityCountryID = C.CountryID
+							ORDER BY P.FirstName;";
 			SqlCommand Command = new SqlCommand(Query, Connection);
 
 			try

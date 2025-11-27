@@ -87,7 +87,7 @@ namespace DVLD.Tests.Controls
             _TestAppointment.TestTypeID = _TestTypeID;
             _TestAppointment.LocalDrivingLicenseApplicationID = _LDLApplication.LocalDrivingLicenseApplicationID;
             _TestAppointment.AppointmentDate = dtpTestDate.Value;
-            _TestAppointment.PaidFees = Convert.ToSingle(lblTotalFees.Text);
+            _TestAppointment.PaidFees = Convert.ToSingle(lblFees.Text);
             _TestAppointment.CreatedByUserID = clsGlobal.CurrentUser.UserID;
             _TestAppointment.IsLocked = false;
 

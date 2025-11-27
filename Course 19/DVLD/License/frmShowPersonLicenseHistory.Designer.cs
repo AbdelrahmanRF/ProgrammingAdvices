@@ -41,7 +41,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(402, 23);
+            this.label1.Location = new System.Drawing.Point(457, 23);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(176, 26);
             this.label1.TabIndex = 25;
@@ -78,7 +78,7 @@
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnClose.Location = new System.Drawing.Point(992, 835);
+            this.btnClose.Location = new System.Drawing.Point(992, 842);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(82, 38);
             this.btnClose.TabIndex = 142;
@@ -90,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1086, 878);
+            this.ClientSize = new System.Drawing.Size(1086, 886);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.ctrlDriverLicenses1);
             this.Controls.Add(this.bpFormImage);

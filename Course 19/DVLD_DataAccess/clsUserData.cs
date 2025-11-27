@@ -100,7 +100,8 @@ namespace DVLD_DataAccess
                             U.IsActive
                             FROM Users AS U
                             JOIN People AS P
-                            ON U.PersonID = P.PersonID;";
+                            ON U.PersonID = P.PersonID
+                            ORDER BY FullName;";
             SqlCommand Command = new SqlCommand(Query, Connection);
 
             try

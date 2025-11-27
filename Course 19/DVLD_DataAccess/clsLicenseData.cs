@@ -104,7 +104,8 @@ namespace DVLD_DataAccess
                             FROM Licenses AS L
                             JOIN LicenseClasses AS LC
                             ON L.LicenseClass = LC.LicenseClassID
-                            WHERE DriverID = @DriverID;";
+                            WHERE DriverID = @DriverID
+                            ORDER BY L.LicenseID DESC;";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@DriverID", DriverID);
 
