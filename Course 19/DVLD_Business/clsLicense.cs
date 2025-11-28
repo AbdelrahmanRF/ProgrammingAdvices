@@ -209,5 +209,40 @@ namespace DVLD_Business
 
             return RenewedLicense;
         }
+
+        public clsLicense Replace(enIssueReason IssueReason, clsApplication.enApplicationType ApplicationType,
+            int CreatedByUserID)
+        {
+            clsApplication ReplaceLicenseApplication = new clsApplication();
+
+            ReplaceLicenseApplication.ApplicantPersonID = this.DriveInfo.PersonID;
+            ReplaceLicenseApplication.ApplicationTypeID = (int)ApplicationType;
+            ReplaceLicenseApplication.PaidFees = clsApplicationType.Find((int)ApplicationType).ApplicationTypeFees;
+            ReplaceLicenseApplication.CreatedByUserID = CreatedByUserID;
+
+            if (!ReplaceLicenseApplication.Save())
+                return null;
+
+            clsLicense ReplacedLicense = new clsLicense();
+
+            ReplacedLicense.ApplicationID = ReplaceLicenseApplication.ApplicationID;
+            ReplacedLicense.DriverID = this.DriverID;
+            ReplacedLicense.LicenseClass = this.LicenseClass;
+            ReplacedLicense.IssueDate = DateTime.Now;
+            ReplacedLicense.ExpirationDate = DateTime.Now.AddYears(this.LicenseClassInfo.DefaultValidityLength);
+            ReplacedLicense.Notes = Notes;
+            ReplacedLicense.PaidFees = this.PaidFees;
+            ReplacedLicense.IsActive = true;
+            ReplacedLicense.IssueReason = IssueReason;
+            ReplacedLicense.CreatedByUserID = CreatedByUserID;
+
+            if (!ReplacedLicense.Save())
+                return null;
+
+            this.IsActive = false;
+            this.Save();
+
+            return ReplacedLicense;
+        }
     }
 }
