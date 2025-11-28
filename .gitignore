@@ -36,3 +36,7 @@ Course 09
 
 # Keep Files 
 !Course 14/**/*.sln
+!Course 19/DVLD Project/**/*.sln
+!Course 19/DVLD Project/**/*.csproj
+!Course 19/DVLD Project/**/*.resx
+!Course 19/DVLD Project/**/app.config
