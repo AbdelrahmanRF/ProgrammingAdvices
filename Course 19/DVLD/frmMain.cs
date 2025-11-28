@@ -1,10 +1,12 @@
 ﻿using DVLD.Applications.Application_Types;
 using DVLD.Applications.International_License;
 using DVLD.Applications.Local_Driving_License;
+using DVLD.Applications.Release_Detained_License;
 using DVLD.Applications.Renew_Local_License;
 using DVLD.Applications.Replace_for_Lost_or_Damaged_License;
 using DVLD.Drivers;
 using DVLD.Global_Classes;
+using DVLD.License.Detain_License;
 using DVLD.People;
 using DVLD.Tests.Test_Types;
 using DVLD.User;
@@ -90,6 +92,11 @@ namespace DVLD
             frm.ShowDialog();
         }
 
+        private void retakeTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmListLocalDrivingLicenseApplications frm = new frmListLocalDrivingLicenseApplications();
+            frm.ShowDialog();
+        }
         private void driversToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmListDrivers frm = new frmListDrivers();
@@ -117,6 +124,30 @@ namespace DVLD
         private void replacementForLostOrDamagedLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmReplaceLostOrDamagedLicenseApplication frm = new frmReplaceLostOrDamagedLicenseApplication();
+            frm.ShowDialog();
+        }
+
+        private void releaseDetainedDrivingLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmReleaseDetainedLicenseApplication frm = new frmReleaseDetainedLicenseApplication();
+            frm.ShowDialog();
+        }
+
+        private void manageDetainedLicensesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmListDetainedLicenses frm = new frmListDetainedLicenses();
+            frm.ShowDialog();
+        }
+
+        private void detainLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmDetainLicenseApplication frm = new frmDetainLicenseApplication();
+            frm.ShowDialog();
+        }
+
+        private void releaseDetainedLicenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmReleaseDetainedLicenseApplication frm = new frmReleaseDetainedLicenseApplication();
             frm.ShowDialog();
         }
     }

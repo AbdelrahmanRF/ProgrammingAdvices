@@ -47,7 +47,7 @@ namespace DVLD.Applications.Local_Driving_License
         private void frmListLocalDrivingLicenseApplications_Load(object sender, EventArgs e)
         {
             cbFilterBy.SelectedIndex = 0;
-            cbIsStatus.SelectedIndex = 0;
+            cbStatus.SelectedIndex = 0;
             _RefreshLDLApplicationsList();
 
             if (dgvApplicationsList.Rows.Count > 0)
@@ -68,7 +68,7 @@ namespace DVLD.Applications.Local_Driving_License
         private void cbFilterBy_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtFilter.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex != 4;
-            cbIsStatus.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex == 4;
+            cbStatus.Visible = cbFilterBy.SelectedIndex != 0 && cbFilterBy.SelectedIndex == 4;
         }
 
         private void txtFilter_KeyPress(object sender, KeyPressEventArgs e)
@@ -116,7 +116,7 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void cbIsStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string Status = cbIsStatus.Text;
+            string Status = cbStatus.Text;
             BindingSource BS = new BindingSource();
             BS.DataSource = _LDLAppsList;
 

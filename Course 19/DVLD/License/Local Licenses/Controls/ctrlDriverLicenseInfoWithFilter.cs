@@ -54,5 +54,12 @@ namespace DVLD.License.International_Licenses.Controls
         {
             gbFilter.Enabled = false;
         }
+
+        public void DisplayLicenseInfo(int LocalLicenseID)
+        {
+            txtFilter.Text = LocalLicenseID.ToString();
+            btnSearchLicense.PerformClick();
+            DisableSearch();
+        }
     }
 }

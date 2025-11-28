@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.cbIsStatus = new System.Windows.Forms.ComboBox();
+            this.cbStatus = new System.Windows.Forms.ComboBox();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.cbFilterBy = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -65,22 +65,22 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // cbIsStatus
+            // cbStatus
             // 
-            this.cbIsStatus.BackColor = System.Drawing.SystemColors.Control;
-            this.cbIsStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbIsStatus.FormattingEnabled = true;
-            this.cbIsStatus.Items.AddRange(new object[] {
+            this.cbStatus.BackColor = System.Drawing.SystemColors.Control;
+            this.cbStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStatus.FormattingEnabled = true;
+            this.cbStatus.Items.AddRange(new object[] {
             "All",
             "New",
             "Cancelled",
             "Completed"});
-            this.cbIsStatus.Location = new System.Drawing.Point(296, 256);
-            this.cbIsStatus.Name = "cbIsStatus";
-            this.cbIsStatus.Size = new System.Drawing.Size(101, 21);
-            this.cbIsStatus.TabIndex = 31;
-            this.cbIsStatus.Visible = false;
-            this.cbIsStatus.SelectedIndexChanged += new System.EventHandler(this.cbIsStatus_SelectedIndexChanged);
+            this.cbStatus.Location = new System.Drawing.Point(296, 256);
+            this.cbStatus.Name = "cbStatus";
+            this.cbStatus.Size = new System.Drawing.Size(101, 21);
+            this.cbStatus.TabIndex = 31;
+            this.cbStatus.Visible = false;
+            this.cbStatus.SelectedIndexChanged += new System.EventHandler(this.cbIsStatus_SelectedIndexChanged);
             // 
             // txtFilter
             // 
@@ -375,7 +375,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1152, 620);
             this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.cbIsStatus);
+            this.Controls.Add(this.cbStatus);
             this.Controls.Add(this.txtFilter);
             this.Controls.Add(this.cbFilterBy);
             this.Controls.Add(this.label3);
@@ -400,7 +400,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox cbIsStatus;
+        private System.Windows.Forms.ComboBox cbStatus;
         private System.Windows.Forms.TextBox txtFilter;
         private System.Windows.Forms.ComboBox cbFilterBy;
         private System.Windows.Forms.Label label3;

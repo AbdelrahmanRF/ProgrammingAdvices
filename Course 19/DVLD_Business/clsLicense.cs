@@ -244,5 +244,43 @@ namespace DVLD_Business
 
             return ReplacedLicense;
         }
+
+        public int Detain(float FineFees, int CreatedByUserID)
+        {
+            clsDetainedLicense DetainedLicense = new clsDetainedLicense();
+            DetainedLicense.LicenseID = this.LicenseID;
+            DetainedLicense.FineFees = FineFees;
+            DetainedLicense.CreatedByUserID = CreatedByUserID;
+
+            if (!DetainedLicense.Save())
+                return -1;
+
+            return DetainedLicense.DetainID;
+        }
+
+        public int Release(int CreatedByUserID)
+        {
+            clsApplication ReleaseLicenseApplication = new clsApplication();
+
+            ReleaseLicenseApplication.ApplicantPersonID = this.DriveInfo.PersonID;
+            ReleaseLicenseApplication.ApplicationTypeID = (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense;
+            ReleaseLicenseApplication.PaidFees = clsApplicationType.Find((int)ReleaseLicenseApplication.ApplicationTypeID).ApplicationTypeFees;
+            ReleaseLicenseApplication.CreatedByUserID = CreatedByUserID;
+
+            if (!ReleaseLicenseApplication.Save())
+                return -1;
+
+            clsDetainedLicense DetainedLicense = clsDetainedLicense.FindByLicenseID(this.LicenseID);
+
+            DetainedLicense.IsReleased = true;
+            DetainedLicense.ReleaseDate = DateTime.Now;
+            DetainedLicense.ReleasedByUserID = CreatedByUserID;
+            DetainedLicense.ReleaseApplicationID = ReleaseLicenseApplication.ApplicationID;
+
+            if(!DetainedLicense.Save())
+                return -1;
+
+            return ReleaseLicenseApplication.ApplicationID;
+        }
     }
 }

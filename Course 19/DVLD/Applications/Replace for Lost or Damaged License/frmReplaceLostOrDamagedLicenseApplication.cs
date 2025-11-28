@@ -70,10 +70,13 @@ namespace DVLD.Applications.Replace_for_Lost_or_Damaged_License
 
         private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
         {
+            btnIssue.Enabled = false;
+            linkShowLicenseHistory.Enabled = false;
+            _OldLicense = null;
+            lblOldLicenseID.Text = "???";
+
             if (LocalLicenseID == -1)
             {
-                linkShowLicenseHistory.Enabled = false;
-                _OldLicense = null;
                 return;
             }
 

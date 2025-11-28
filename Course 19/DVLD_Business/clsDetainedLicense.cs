@@ -1,6 +1,7 @@
 ﻿using DVLD_DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,8 +22,8 @@ namespace DVLD_Business
         public int ReleasedByUserID { get; set; }
         public int ReleaseApplicationID { get; set; }
 
-        clsUser CreatedByUserInfo { get; set; }
-        clsUser ReleasedByUserInfo { get; set; }
+        public clsUser CreatedByUserInfo { get; set; }
+        public clsUser ReleasedByUserInfo { get; set; }
 
         public clsDetainedLicense()
         {
@@ -78,6 +79,47 @@ namespace DVLD_Business
         public static bool IsLicenseDetained(int LicenseID)
         {
             return clsDetainedLicenseData.IsLicenseDetained(LicenseID);
+        }
+
+        private bool _AddNewDetainedLicense()
+        {
+            this.DetainID = clsDetainedLicenseData.AddNewDetainedLicense(this.LicenseID, this.DetainDate, this.FineFees, 
+                this.CreatedByUserID, this.IsReleased, this.ReleaseDate, this.ReleasedByUserID, this.ReleaseApplicationID);
+
+            return (this.DetainID != -1);
+        }
+
+        private bool _UpdateDetainedLicense()
+        {
+            return clsDetainedLicenseData.UpdateDetainedLicense(this.DetainID, this.LicenseID, this.DetainDate, this.FineFees,
+                this.CreatedByUserID, this.IsReleased, this.ReleaseDate, this.ReleasedByUserID, this.ReleaseApplicationID);
+        }
+
+        public bool Save()
+        {
+            switch (Mode)
+            {
+                case enMode.AddNew:
+                    if (_AddNewDetainedLicense())
+                    {
+                        Mode = enMode.Update;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case enMode.Update:
+                    return _UpdateDetainedLicense();
+            }
+
+            return false;
+        }
+
+        public static DataTable GetAllDetainedLicenses()
+        {
+            return clsDetainedLicenseData.GetAllDetainedLicenses();
         }
     }
 }

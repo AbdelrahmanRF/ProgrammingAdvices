@@ -73,10 +73,13 @@ namespace DVLD.Applications.International_License
 
         private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
         {
+            btnIssue.Enabled = false;
+            linkShowLicenseHistory.Enabled = false;
+            _LocalLicense = null;
+            lblLocalLicenseID.Text = "???";
+
             if (LocalLicenseID == -1)
             {
-                linkShowLicenseHistory.Enabled = false;
-                _LocalLicense = null;
                 return;
             }
 
