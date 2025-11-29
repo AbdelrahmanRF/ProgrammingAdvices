@@ -57,7 +57,6 @@ namespace DVLD.User
                 this.Text = "Add New User";
                 lblFormTitle.Text = "Add New User";
 
-                ctrlPersonCardWithFilter1.FocusFilter();
             }
             else
             {
@@ -203,6 +202,11 @@ namespace DVLD.User
                 lblFormTitle.Text = "Update User";
                 this.Text = "Update User";
             }
+        }
+
+        private void frmAddUpdateUser_Activated(object sender, EventArgs e)
+        {
+            ctrlPersonCardWithFilter1.FocusFilter();
         }
     }
 }

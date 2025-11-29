@@ -38,8 +38,7 @@ namespace DVLD.License.Local_Licenses
 
         private void frmIssueDriverLicenseFirstTime_Load(object sender, EventArgs e)
         {
-            ctrlDrivingLicenseApplicationInfo1
-                .FillDrivingApplicationData(_LDLApplicationID, _LDLApplication.ApplicationID);
+            ctrlDrivingLicenseApplicationInfo1.FillDrivingApplicationData(_LDLApplicationID);
         }
 
         private void btnIssue_Click(object sender, EventArgs e)

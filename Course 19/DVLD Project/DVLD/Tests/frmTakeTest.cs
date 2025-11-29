@@ -17,20 +17,13 @@ namespace DVLD.Tests
         clsTest _Test;
         int _TestAppointmentID = -1;
         clsTestAppointment _TestAppointment;
-        public frmTakeTest(int TestAppointmentID)
+        clsTestType.enTestType _TestTypeID;
+        public frmTakeTest(int TestAppointmentID, clsTestType.enTestType TestTypeID)
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             this._TestAppointmentID = TestAppointmentID;
-            _TestAppointment = clsTestAppointment.Find(TestAppointmentID);
-
-            if (_TestAppointment.TestID != -1)
-                _Test = clsTest.Find(_TestAppointment.TestID);
-            else
-                _Test = new clsTest();
+            this._TestTypeID = TestTypeID;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -40,23 +33,37 @@ namespace DVLD.Tests
 
         private void frmTakeTest_Load(object sender, EventArgs e)
         {
+            ctrlSecheduledTest1.TestTypeID = _TestTypeID;
             ctrlSecheduledTest1.FillScheduledTestInfo(_TestAppointmentID);
 
-            if (_Test.TestID != -1)
-            {
-                lblUserMessage.Visible = true;
+            if (ctrlSecheduledTest1.TestAppointmentID == -1)
                 btnSave.Enabled = false;
+            else
+                btnSave.Enabled = true;
+
+            int TestID = ctrlSecheduledTest1.TestID;
+
+            if (TestID != -1)
+            {
+                _Test = clsTest.Find(TestID);
+
+                lblUserMessage.Visible = true;
                 rbPass.Enabled = false;
                 rbFail.Enabled = false;
                 txtNotes.Enabled = false;
+                btnSave.Enabled = false;
 
-                if(_Test.TestResult == true)
+
+                if (_Test.TestResult == true)
                     rbPass.Checked = true;
                 else
                     rbFail.Checked = true;
 
-                    txtNotes.Text = _Test.Notes;
+                txtNotes.Text = _Test.Notes;
+
             }
+            else
+                _Test = new clsTest();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -74,8 +81,6 @@ namespace DVLD.Tests
                     if (MessageBox.Show("Data Saved Successfully", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information) 
                         == DialogResult.OK)
                     {
-                        _TestAppointment.IsLocked = true;
-                        _TestAppointment.Save();
                         this.Close();
                     }
                     else

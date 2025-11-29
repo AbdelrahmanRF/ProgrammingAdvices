@@ -167,11 +167,14 @@
             this.ctrlSecheduledTest1.Name = "ctrlSecheduledTest1";
             this.ctrlSecheduledTest1.Size = new System.Drawing.Size(582, 556);
             this.ctrlSecheduledTest1.TabIndex = 0;
+            this.ctrlSecheduledTest1.TestTypeID = DVLD_Business.clsTestType.enTestType.StreetTest;
             // 
             // frmTakeTest
             // 
+            this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(605, 764);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
@@ -184,6 +187,8 @@
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.ctrlSecheduledTest1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmTakeTest";
             this.Text = "Take Test";
             this.Load += new System.EventHandler(this.frmTakeTest_Load);

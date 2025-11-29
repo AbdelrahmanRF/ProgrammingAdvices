@@ -232,6 +232,37 @@ namespace DVLD_DataAccess
             return TotalTrials;
         }
 
+        public static bool DoesAttendTestType(int LDLApplicationID, int TestTypeID)
+        {
+            bool isFound = false;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT CAST(CASE WHEN EXISTS (
+                                SELECT 1 FROM TestAppointments
+                                WHERE TestTypeID = @TestTypeID
+                                  AND LocalDrivingLicenseApplicationID = @LDLApplicationID
+                            ) THEN 1 ELSE 0 END AS BIT) AS DoesAttendTestType;
+                            ";
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@LDLApplicationID", LDLApplicationID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                isFound = Convert.ToBoolean(Command.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return false;
+        }
+
         public static bool DoesPassTestType(int LDLApplicationID, int TestTypeID)
         {
             bool isPassed = false;

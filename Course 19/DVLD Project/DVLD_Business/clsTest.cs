@@ -62,7 +62,18 @@ namespace DVLD_Business
 
             return null;
         }
+        public static clsTest FindLatestTestPerPersonAndLicenseClass(int ApplicantPersonID, int LicenseClassID, 
+            clsTestType.enTestType TestTypeID)
+        {
+            int TestID = -1, TestAppointmentID = -1, CreatedByUserID = -1;
+            bool TestResult = false;
+            string Notes = "";
 
+            if (clsTestData.GetLatestTestPerPersonAndLicenseClass(ApplicantPersonID, LicenseClassID, (int)TestTypeID, ref TestID, ref TestAppointmentID, ref TestResult, ref Notes, ref CreatedByUserID))
+                return new clsTest(TestID, TestAppointmentID, TestResult, Notes, CreatedByUserID);
+
+            return null;
+        }
         private bool _AddNewTest()
         {
             this.TestID = clsTestData.AddNewTest(this.TestAppointmentID, this.TestResult, this.Notes, this.CreatedByUserID);

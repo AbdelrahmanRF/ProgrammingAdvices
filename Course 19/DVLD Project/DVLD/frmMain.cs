@@ -82,7 +82,7 @@ namespace DVLD
 
         private void localLicenseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(-1);
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication();
             frm.ShowDialog();
         }
 

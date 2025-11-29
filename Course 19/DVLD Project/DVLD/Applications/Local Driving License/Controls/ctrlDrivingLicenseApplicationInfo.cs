@@ -15,30 +15,60 @@ namespace DVLD.Applications.Local_Driving_License.Controls
     public partial class ctrlDrivingLicenseApplicationInfo : UserControl
     {
         clsLocalDrivingLicenseApplication _LDLApp;
+        int _LDLApplicationID = -1;
+        int _LicenseID = -1;
+
+        public int LDLApplicationID
+        {
+            get {  return _LDLApplicationID; }
+        }
+
         public ctrlDrivingLicenseApplicationInfo()
         {
             InitializeComponent();
         }
 
-        public void FillDrivingApplicationData(int LDLApplicationID, int ApplicationID)
+        private void _ResetLocalDrivingLicenseApplicationInfo()
         {
-            ctrlApplicationBasicInfo1.FillApplicationData(ApplicationID);
-            _LDLApp = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
+            _LDLApplicationID = -1;
+            ctrlApplicationBasicInfo1.ResetApplicationInfo();
+            lblID.Text = "???";
+            lblLicenseClass.Text = "???";
+        }
+
+        private void _LoadDrivingApplicationDataToControl()
+        {
+            _LDLApplicationID = _LDLApp.LocalDrivingLicenseApplicationID;
+
+            ctrlApplicationBasicInfo1.FillApplicationData(_LDLApp.ApplicationID);
+            _LicenseID = _LDLApp.GetActiveLicenseID();
             bool hasActiveLicense = clsLicense.IsLicenseExistByPersonID(_LDLApp.ApplicantPersonID, _LDLApp.LicenseClassID);
 
-            lblID.Text = _LDLApp.LocalDrivingLicenseApplicationID.ToString();
+            lblID.Text = _LDLApplicationID.ToString();
             lblLicenseClass.Text = _LDLApp.LicenseClassInfo.ClassName;
-            lblPassedTests.Text = $"{clsTest.GetPassedTestCount(LDLApplicationID)}/3";
+            lblPassedTests.Text = $"{clsTest.GetPassedTestCount(_LDLApplicationID)}/3";
 
             linkViewLicenseInfo.Enabled = hasActiveLicense;
             pbLicenseInfoFormIcon.Enabled = hasActiveLicense;
         }
 
+        public void FillDrivingApplicationData(int LDLApplicationID)
+        {
+            _LDLApp = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
+
+            if (_LDLApp == null)
+            {
+                _ResetLocalDrivingLicenseApplicationInfo();
+                MessageBox.Show($"No Application with ApplicationID = {LDLApplicationID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _LoadDrivingApplicationDataToControl();
+        }
+
         private void linkViewLicenseInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            int LicenseID = _LDLApp.GetActiveLicenseID();
-
-            frmShowLicenseInfo frm = new frmShowLicenseInfo(LicenseID);
+            frmShowLicenseInfo frm = new frmShowLicenseInfo(_LicenseID);
             frm.ShowDialog();
         }
     }

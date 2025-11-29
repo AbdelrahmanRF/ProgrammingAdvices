@@ -19,7 +19,7 @@ namespace DVLD_Business
         {
             get
             {
-                return clsPerson.Find(ApplicantPersonID).FullName;
+                return base.PersonInfo.FullName;
             }
         }
 
@@ -48,6 +48,7 @@ namespace DVLD_Business
             this.CreatedByUserID = CreatedByUserID;
             this.LicenseClassID = LicenseClassID;
 
+            this.PersonInfo = clsPerson.Find(ApplicantPersonID);
             this.LicenseClassInfo = clsLicenseClass.Find(LicenseClassID);
             this.CreatedByUserInfo = clsUser.FindUserByUserID(CreatedByUserID);
         }
@@ -128,6 +129,12 @@ namespace DVLD_Business
                 .IsThereAnActiveScheduledTest(LocalDrivingLicenseApplicationID, (int)TestTypeID);
         }
 
+        public bool IsThereAnActiveScheduledTest(clsTestType.enTestType TestTypeID)
+        {
+            return clsLocalDrivingLicenseApplicationData
+                .IsThereAnActiveScheduledTest(this.LocalDrivingLicenseApplicationID, (int)TestTypeID);
+        }
+
         public static byte TotalTrialsPerTest(int LocalDrivingLicenseApplicationID, clsTestType.enTestType TestTypeID)
         {
             return clsLocalDrivingLicenseApplicationData.TotalTrialsPerTest(LocalDrivingLicenseApplicationID, (int)TestTypeID);
@@ -144,6 +151,10 @@ namespace DVLD_Business
             return clsLicense.GetActiveLicenseIDByPersonID(this.ApplicantPersonID, this.LicenseClassID);
         }
 
+        public bool DoesAttendTestType(clsTestType.enTestType TestTypeID)
+        {
+            return clsLocalDrivingLicenseApplicationData.DoesAttendTestType(this.LocalDrivingLicenseApplicationID, (int)TestTypeID);
+        }
         public bool DoesPassTestType(clsTestType.enTestType TestTypeID)
         {
             return clsLocalDrivingLicenseApplicationData.DoesPassTestType(this.LocalDrivingLicenseApplicationID, (int)TestTypeID);
@@ -158,6 +169,11 @@ namespace DVLD_Business
                     r => (clsTestType.enTestType)r.Key,
                     r => r.Value
                 );
+        }
+
+        public clsTest GetLatestTestPerTestType(clsTestType.enTestType TestTypeID)
+        {
+            return clsTest.FindLatestTestPerPersonAndLicenseClass(this.ApplicantPersonID, this.LicenseClassID, TestTypeID);
         }
     }
 }

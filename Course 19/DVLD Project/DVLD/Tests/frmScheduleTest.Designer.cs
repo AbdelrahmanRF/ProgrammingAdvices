@@ -34,6 +34,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -52,14 +53,18 @@
             this.crlScheduleTest1.Name = "crlScheduleTest1";
             this.crlScheduleTest1.Size = new System.Drawing.Size(530, 713);
             this.crlScheduleTest1.TabIndex = 0;
+            this.crlScheduleTest1.TestTypeID = DVLD_Business.clsTestType.enTestType.VisionTest;
             // 
             // frmScheduleTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(545, 782);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.crlScheduleTest1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmScheduleTest";
             this.Text = "Schedule Test";
             this.Load += new System.EventHandler(this.frmScheduleTest_Load);

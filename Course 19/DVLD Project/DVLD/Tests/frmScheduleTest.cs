@@ -1,4 +1,5 @@
-﻿using DVLD_Business;
+﻿using DVLD.Tests.Controls;
+using DVLD_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,23 +14,15 @@ namespace DVLD.Tests
 {
     public partial class frmScheduleTest : Form
     {
-        int _LDLApplicationID;
-        int _TestAppointmentID;
-        clsTestType.enTestType _TestTypeID;
-        public frmScheduleTest(int LDLApplicationID, clsTestType.enTestType TestTypeID)
+        int _LDLApplicationID = -1;
+        int _TestAppointmentID = -1;
+        clsTestType.enTestType _TestTypeID = clsTestType.enTestType.VisionTest;
+        public frmScheduleTest(int LDLApplicationID, clsTestType.enTestType TestTypeID, int TestAppointmentID = -1)
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             this._LDLApplicationID = LDLApplicationID;
             this._TestTypeID = TestTypeID;
-        }
-
-        public frmScheduleTest(int LDLApplicationID, clsTestType.enTestType TestTypeID, int TestAppointmentID)
-                : this(LDLApplicationID, TestTypeID)
-        {
             this._TestAppointmentID = TestAppointmentID;
         }
 
@@ -40,7 +33,8 @@ namespace DVLD.Tests
 
         private void frmScheduleTest_Load(object sender, EventArgs e)
         {
-            crlScheduleTest1.FillTestInfo(_LDLApplicationID, _TestTypeID, _TestAppointmentID);
+            crlScheduleTest1.TestTypeID = _TestTypeID;
+            crlScheduleTest1.FillTestInfo(_LDLApplicationID, _TestAppointmentID);
         }
     }
 }

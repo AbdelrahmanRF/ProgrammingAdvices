@@ -260,9 +260,9 @@
             this.lblUserMessage.Location = new System.Drawing.Point(45, 234);
             this.lblUserMessage.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lblUserMessage.Name = "lblUserMessage";
-            this.lblUserMessage.Size = new System.Drawing.Size(407, 18);
+            this.lblUserMessage.Size = new System.Drawing.Size(398, 18);
             this.lblUserMessage.TabIndex = 188;
-            this.lblUserMessage.Text = "Person already sat for the test, appointment loacked.";
+            this.lblUserMessage.Text = "Person already sat for the test, appointment locked.";
             this.lblUserMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblUserMessage.Visible = false;
             // 

@@ -17,8 +17,54 @@ namespace DVLD.Tests.Controls
     public partial class ctrlScheduledTest : UserControl
     {
         clsTestAppointment _TestAppointment;
-        clsTestType.enTestType _TestTypeID;
+        int _TestAppointmentID = -1;
         clsLocalDrivingLicenseApplication _LDLApplication;
+        int _LDLApplicationID = -1;
+        clsTestType.enTestType _TestTypeID = enTestType.VisionTest;
+        int _TestID = -1;
+
+        public int TestID
+        {
+            get
+            {
+                return _TestID;
+            }
+        }
+        public int TestAppointmentID
+        {
+            get
+            {
+                return _TestAppointmentID;
+            }
+        }
+        public clsTestType.enTestType TestTypeID
+        {
+            get { return _TestTypeID; }
+
+            set
+            {
+                _TestTypeID = value;
+
+                switch (_TestTypeID)
+                {
+                    case clsTestType.enTestType.VisionTest:
+                        pbTestTypeImage.Image = Resources.Vision_512;
+                        gbTestType.Text = "Vision Test";
+                        break;
+
+                    case clsTestType.enTestType.WrittenTest:
+                        pbTestTypeImage.Image = Resources.Written_Test_512;
+                        gbTestType.Text = "Written Test";
+                        break;
+
+                    case clsTestType.enTestType.StreetTest:
+                        pbTestTypeImage.Image = Resources.driving_test_512;
+                        gbTestType.Text = "Street Test";
+                        break;
+                }
+            }
+        }
+
         public ctrlScheduledTest()
         {
             InitializeComponent();
@@ -26,28 +72,26 @@ namespace DVLD.Tests.Controls
 
         public void FillScheduledTestInfo(int TestAppointmentID)
         {
-            _TestAppointment = clsTestAppointment.Find(TestAppointmentID);
-            _TestTypeID = _TestAppointment.TestTypeID;
-            _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_TestAppointment.LocalDrivingLicenseApplicationID);
+            _TestAppointmentID = TestAppointmentID;
+            _TestAppointment = clsTestAppointment.Find(_TestAppointmentID);
 
-            if (_TestTypeID == clsTestType.enTestType.VisionTest)
+            if (_TestAppointment == null)
             {
-                pbTestTypeImage.Image = Resources.Vision_512;
-                gbTestType.Text = "Vision Test";
-            }
-            if (_TestTypeID == clsTestType.enTestType.WrittenTest)
-            {
-                pbTestTypeImage.Image = Resources.Written_Test_512;
-                gbTestType.Text = "Written Test";
-            }
-            else
-            {
-                gbTestType.Text = "Street Test";
+                MessageBox.Show($"Error: No  Appointment ID = {_TestAppointmentID}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                _TestAppointmentID = -1;
+                return;
             }
 
-            if (_TestAppointment.RetakeTestApplicationID != -1)
+            _TestID = _TestAppointment.TestID;
+            _LDLApplicationID = _TestAppointment.LocalDrivingLicenseApplicationID;
+            _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_LDLApplicationID);
+
+            if (_LDLApplication == null)
             {
-                lblTitle.Text = "Schedule Retake Test";
+                MessageBox.Show($"Error: No Local Driving License Application with ID = {_LDLApplicationID}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             lblLocalDrivingLicenseAppID.Text = _LDLApplication.LocalDrivingLicenseApplicationID.ToString();

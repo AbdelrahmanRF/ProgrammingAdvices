@@ -75,6 +75,55 @@ namespace DVLD_DataAccess
             return isFound;
         }
 
+        public static bool GetLatestTestPerPersonAndLicenseClass(int ApplicantPersonID, int LicenseClassID, int TestTypeID, 
+            ref int TestID, ref int TestAppointmentID, ref bool TestResult, ref string Notes, ref int CreatedByUserID)
+        {
+            bool isFound = false;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"SELECT TOP 1 T.* FROM Tests AS T
+                                JOIN TestAppointments AS TA ON T.TestAppointmentID = TA.TestAppointmentID
+                                JOIN LocalDrivingLicenseApplications AS LDL 
+                                    ON TA.LocalDrivingLicenseApplicationID = LDL.LocalDrivingLicenseApplicationID
+                                JOIN Applications AS A ON LDL.ApplicationID = A.ApplicationID
+
+                             WHERE TA.TestTypeID = @TestTypeID AND LDL.LicenseClassID = @LicenseClassID 
+                                AND A.ApplicantPersonID = @ApplicantPersonID
+                             ORDER BY T.TestAppointmentID DESC;";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@ApplicantPersonID", ApplicantPersonID);
+            Command.Parameters.AddWithValue("@LicenseClassID", LicenseClassID);
+            Command.Parameters.AddWithValue("@TestTypeID", TestTypeID);
+
+            try
+            {
+                Connection.Open();
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                if (Reader.Read())
+                {
+                    isFound = true;
+
+                    TestID = Convert.ToInt32(Reader["TestID"]);
+                    TestAppointmentID = Convert.ToInt32(Reader["TestAppointmentID"]);
+                    TestResult = Convert.ToBoolean(Reader["TestResult"]);
+                    Notes = Reader["Notes"] == System.DBNull.Value ? "" : Reader["Notes"].ToString();
+                    CreatedByUserID = Convert.ToInt32(Reader["CreatedByUserID"]);
+                }
+
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return isFound;
+        }
         public static int AddNewTest(int TestAppointmentID, bool TestResult, string Notes, int CreatedByUserID)
         {
             int TestID = -1;
@@ -83,6 +132,9 @@ namespace DVLD_DataAccess
                                 (TestAppointmentID, TestResult, Notes, CreatedByUserID)
                             VALUES
                                 (@TestAppointmentID, @TestResult, @Notes, @CreatedByUserID);
+                            UPDATE TestAppointments 
+                                SET IsLocked = 1
+                            WHERE TestAppointmentID = @TestAppointmentID
                             SELECT SCOPE_IDENTITY();";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@TestAppointmentID", TestAppointmentID);

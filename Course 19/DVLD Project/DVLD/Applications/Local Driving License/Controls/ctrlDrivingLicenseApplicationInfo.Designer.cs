@@ -188,7 +188,6 @@
             // 
             // ctrlApplicationBasicInfo1
             // 
-            this.ctrlApplicationBasicInfo1.ApplicationID = 0;
             this.ctrlApplicationBasicInfo1.Location = new System.Drawing.Point(-4, 124);
             this.ctrlApplicationBasicInfo1.Name = "ctrlApplicationBasicInfo1";
             this.ctrlApplicationBasicInfo1.Size = new System.Drawing.Size(935, 218);

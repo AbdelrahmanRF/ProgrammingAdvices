@@ -147,6 +147,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -190,8 +191,10 @@
             // 
             // frmListTestAppointments
             // 
+            this.AcceptButton = this.btnAddNewAppointment;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(947, 816);
             this.Controls.Add(this.lblTotalRecords);
             this.Controls.Add(this.label3);
@@ -202,6 +205,8 @@
             this.Controls.Add(this.ctrlDrivingLicenseApplicationInfo1);
             this.Controls.Add(this.lblTestType);
             this.Controls.Add(this.pbTestTypeImage);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListTestAppointments";
             this.Text = "Vision Test Appointments";
             this.Load += new System.EventHandler(this.frmListTestAppointments_Load);

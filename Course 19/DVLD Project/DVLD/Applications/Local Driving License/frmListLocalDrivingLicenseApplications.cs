@@ -39,7 +39,7 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void btnAddNewApplication_Click(object sender, EventArgs e)
         {
-            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication(-1);
+            frmAddUpdateLocalDrivingLicenseApplication frm = new frmAddUpdateLocalDrivingLicenseApplication();
             frm.ShowDialog();
             _RefreshLDLApplicationsList();
         }
@@ -193,7 +193,7 @@ namespace DVLD.Applications.Local_Driving_License
             {
                 tsmiScheduleTests.Enabled = true;
 
-                foreach(ToolStripMenuItem item in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
+                foreach (ToolStripMenuItem item in tsmiScheduleTests.DropDownItems.OfType<ToolStripMenuItem>())
                 {
                     if (item.Tag is clsTestType.enTestType TestType)
                     {

@@ -333,6 +333,7 @@
             this.MinimizeBox = false;
             this.Name = "frmAddUpdateUser";
             this.Text = "Add New User";
+            this.Activated += new System.EventHandler(this.frmAddUpdateUser_Activated);
             this.Load += new System.EventHandler(this.frmAddUpdateUser_Load);
             this.tcUseAddUpdateTabs.ResumeLayout(false);
             this.tpPersonalInfo.ResumeLayout(false);

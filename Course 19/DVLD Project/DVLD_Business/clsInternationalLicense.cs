@@ -55,6 +55,7 @@ namespace DVLD_Business
             this.ExpirationDate = ExpirationDate;
             this.IsActive = IsActive;
 
+            this.PersonInfo = clsPerson.Find(ApplicantPersonID);
             this.DriveInfo = clsDriver.FindByDriverID(this.DriverID);
         }
 

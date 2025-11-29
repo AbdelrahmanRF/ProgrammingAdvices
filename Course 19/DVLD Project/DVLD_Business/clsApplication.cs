@@ -42,11 +42,13 @@ namespace DVLD_Business
         public int ApplicationTypeID { get; set; }
         public clsApplicationType ApplicationTypeInfo;
         public int ApplicantPersonID { get; set; }
+        public clsPerson PersonInfo { get; set; }
+
         public string ApplicantFullName
         {
             get
             {
-                return clsPerson.Find(ApplicantPersonID).FullName;
+                return PersonInfo.FullName;
             }
         }
         public DateTime ApplicationDate { get; set; }
@@ -86,8 +88,9 @@ namespace DVLD_Business
             this.PaidFees = PaidFees;
             this.CreatedByUserID = CreatedByUserID;
 
-            CreatedByUserInfo = clsUser.FindUserByUserID(CreatedByUserID);
-            ApplicationTypeInfo = clsApplicationType.Find(ApplicationTypeID);
+            this.PersonInfo = clsPerson.Find(ApplicantPersonID);
+            this.CreatedByUserInfo = clsUser.FindUserByUserID(CreatedByUserID);
+            this.ApplicationTypeInfo = clsApplicationType.Find(ApplicationTypeID);
         }
 
         public static clsApplication FindBaseApplication(int ApplicationID)
