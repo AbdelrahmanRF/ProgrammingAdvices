@@ -242,6 +242,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(1157, 581);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.cbIsActive);
@@ -255,6 +256,8 @@
             this.Controls.Add(this.btnAddNewApplication);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListInternationalLicenseApplications";
             this.Text = "International Licesnse Applications";
             this.Load += new System.EventHandler(this.frmListInternationalLicenseApplications_Load);

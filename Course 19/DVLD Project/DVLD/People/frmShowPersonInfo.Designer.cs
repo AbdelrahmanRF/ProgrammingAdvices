@@ -53,6 +53,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -69,13 +70,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(916, 473);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.ctrlPersonCard1);
             this.Controls.Add(this.label19);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmShowPersonInfo";
             this.Text = "Person Details";
-            this.Load += new System.EventHandler(this.frmShowPersonInfo_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

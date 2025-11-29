@@ -28,15 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.cbFindBy = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnAddPerson = new System.Windows.Forms.Button();
             this.btnSearchUser = new System.Windows.Forms.Button();
             this.gbFilter = new System.Windows.Forms.GroupBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.ctrlPersonCard1 = new DVLD.People.Controls.ctrlPersonCard();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.gbFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // txtFilter
@@ -45,6 +48,8 @@
             this.txtFilter.Name = "txtFilter";
             this.txtFilter.Size = new System.Drawing.Size(200, 20);
             this.txtFilter.TabIndex = 22;
+            this.txtFilter.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFilter_KeyPress);
+            this.txtFilter.Validating += new System.ComponentModel.CancelEventHandler(this.txtFilter_Validating);
             // 
             // cbFindBy
             // 
@@ -58,6 +63,7 @@
             this.cbFindBy.Name = "cbFindBy";
             this.cbFindBy.Size = new System.Drawing.Size(181, 21);
             this.cbFindBy.TabIndex = 21;
+            this.cbFindBy.SelectedIndexChanged += new System.EventHandler(this.cbFindBy_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -112,9 +118,12 @@
             // 
             this.ctrlPersonCard1.Location = new System.Drawing.Point(0, 82);
             this.ctrlPersonCard1.Name = "ctrlPersonCard1";
-            this.ctrlPersonCard1.PersonID = 0;
             this.ctrlPersonCard1.Size = new System.Drawing.Size(886, 331);
             this.ctrlPersonCard1.TabIndex = 0;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // ctrlPersonCardWithFilter
             // 
@@ -124,8 +133,10 @@
             this.Controls.Add(this.ctrlPersonCard1);
             this.Name = "ctrlPersonCardWithFilter";
             this.Size = new System.Drawing.Size(883, 411);
+            this.Load += new System.EventHandler(this.ctrlPersonCardWithFilter_Load);
             this.gbFilter.ResumeLayout(false);
             this.gbFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -139,6 +150,7 @@
         private System.Windows.Forms.Button btnSearchUser;
         private System.Windows.Forms.Button btnAddPerson;
         private System.Windows.Forms.GroupBox gbFilter;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

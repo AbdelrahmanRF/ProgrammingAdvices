@@ -3,7 +3,6 @@ using DVLD.Properties;
 using DVLD_Business;
 using System;
 using System.Data;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Windows.Forms;
 
@@ -16,25 +15,24 @@ namespace DVLD.People
         enMode _Mode = enMode.AddNew;
         clsPerson _Person;
 
-        public delegate void DataBackEventHandler(clsPerson Person);
+        public delegate void DataBackEventHandler(int PersonID);
         public event DataBackEventHandler DataBack;
+
+        public frmAddUpdatePerson()
+        {
+            InitializeComponent();
+            _Mode = enMode.AddNew;
+        }
 
         public frmAddUpdatePerson(int PersonID)
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             _PersonID = PersonID;
-
-            if (PersonID == -1)
-                _Mode = enMode.AddNew;
-            else
-                _Mode = enMode.Update;
+            _Mode = enMode.Update;
         }
 
-        private void FillCountriesInComboBox()
+        private void _FillCountriesInComboBox()
         {
             DataTable DT = clsCountry.GetAllCountries();
 
@@ -44,21 +42,45 @@ namespace DVLD.People
             }
         }
 
-        private void _LoadData()
+        private void _ResetDefaultValues()
         {
-            FillCountriesInComboBox();
-            dtpDOB.MaxDate = DateTime.Now.AddYears(-18);
+            _FillCountriesInComboBox();
 
             if (_Mode == enMode.AddNew)
             {
-                cbCountry.SelectedIndex = cbCountry.FindString("Jordan");
+                lblFormTitle.Text = "Add New Person";
                 _Person = new clsPerson();
-                return;
+            }
+            else
+            {
+                lblFormTitle.Text = "Update Person";
             }
 
+            if (rbMale.Checked)
+                pbImage.Image = Resources.Male_512;
+            else
+                pbImage.Image = Resources.Female_512;
+
+            dtpDOB.MaxDate = DateTime.Now.AddYears(-18);
+            dtpDOB.MinDate = DateTime.Now.AddYears(-100);
+            cbCountry.SelectedIndex = cbCountry.FindString("Jordan");
+
+            txtFirstName.Text = "";
+            txtSecondName.Text = "";
+            txtThirdName.Text = "";
+            txtLastName.Text = "";
+            txtNationalNo.Text = "";
+            rbMale.Checked = true;
+            txtPhone.Text = "";
+            txtEmail.Text = "";
+            txtAddress.Text = "";
+        }
+
+        private void _LoadData()
+        {
             _Person = clsPerson.Find(_PersonID);
+
             lblPersonID.Text = _PersonID.ToString();
-            lblFormTitle.Text = "Update Person";
             txtFirstName.Text = _Person.FirstName;
             txtSecondName.Text = _Person.SecondName;
             txtThirdName.Text = _Person.ThirdName;
@@ -78,7 +100,7 @@ namespace DVLD.People
 
             if (_Person.ImagePath != "")
             {
-                pbImage.Load(_Person.ImagePath);
+                pbImage.ImageLocation = _Person.ImagePath;
             }
             lblRemoveImage.Visible = _Person.ImagePath != "";
         }
@@ -151,7 +173,10 @@ namespace DVLD.People
 
         private void frmAddUpdatePerson_Load(object sender, EventArgs e)
         {
-            _LoadData();
+            _ResetDefaultValues();
+
+            if (_Mode == enMode.Update)
+                _LoadData();
         }
 
         private void lblSetImage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -162,23 +187,9 @@ namespace DVLD.People
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    if (File.Exists(_Person.ImagePath))
-                        File.Delete(_Person.ImagePath);
-                }
-                catch (IOException)
-                {
-   
-                }
-
                 string selectedFilePath = openFileDialog1.FileName;
                 lblRemoveImage.Visible = true;
-
-                Util.CopyImageToProjectImagesFolder(ref selectedFilePath);
-
                 pbImage.Load(selectedFilePath);
-
             }
         }
 
@@ -194,6 +205,41 @@ namespace DVLD.People
             this.Close();
         }
 
+        private bool _HandlePersonImage()
+        {
+            if (_Person.ImagePath != pbImage.ImageLocation)
+            {
+                if (_Person.ImagePath != "")
+                {
+                    try
+                    {
+                        File.Delete(_Person.ImagePath);
+                    }
+                    catch (IOException)
+                    {
+ 
+                    }
+                }
+
+                if (pbImage.ImageLocation != null)
+                {
+                    string SourceImageFile = pbImage.ImageLocation.ToString();
+
+                    if (Util.CopyImageToProjectImagesFolder(ref SourceImageFile))
+                    {
+                        pbImage.ImageLocation = SourceImageFile;
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error Copying Image File", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false;
+                    }
+                }
+
+            }
+            return true;
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (!ValidateChildren())
@@ -203,26 +249,21 @@ namespace DVLD.People
                 return;
             }
 
-            _Person.FirstName = txtFirstName.Text;
-            _Person.SecondName = txtSecondName.Text;
+            if (!_HandlePersonImage())
+                return;
 
-            if (txtThirdName.Text != null)
-                _Person.ThirdName = txtThirdName.Text;
-            else
-                _Person.ThirdName = "";
+            _Person.FirstName = txtFirstName.Text.Trim();
+            _Person.SecondName = txtSecondName.Text.Trim();
+            _Person.ThirdName = txtThirdName.Text.Trim();
+            _Person.LastName = txtLastName.Text.Trim();
 
-            _Person.LastName = txtLastName.Text;
-            _Person.NationalNo = txtNationalNo.Text;
+            _Person.NationalNo = txtNationalNo.Text.Trim();
             _Person.Gendor = (short)(rbMale.Checked ? 0 : 1);
             _Person.DateOfBirth = dtpDOB.Value;
-            _Person.Address = txtAddress.Text;
+            _Person.Address = txtAddress.Text.Trim();
+            _Person.Email = txtEmail.Text.Trim();
+            _Person.Phone = txtPhone.Text.Trim();
 
-            if (txtEmail.Text != null)
-                _Person.Email = txtEmail.Text;
-            else
-                _Person.ThirdName = "";
-
-            _Person.Phone = txtPhone.Text;
             _Person.NationalityCountryID = clsCountry.Find(cbCountry.Text).CountryID;
 
             if (pbImage.ImageLocation != null)
@@ -236,13 +277,15 @@ namespace DVLD.People
                 _Mode = enMode.Update;
                 lblFormTitle.Text = "Update Person";
                 lblPersonID.Text = _Person.PersonID.ToString();
-                DataBack?.Invoke(_Person);
+                DataBack?.Invoke(_Person.PersonID);
             }
+            else
+                MessageBox.Show("Error: Data Is not Saved Successfully.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void rbMale_CheckedChanged(object sender, EventArgs e)
         {
-            if (_Person.ImagePath != "") return;
+            if (pbImage.ImageLocation != null) return;
 
             if (rbMale.Checked)
                 pbImage.Image = Resources.Male_512;

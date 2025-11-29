@@ -151,7 +151,7 @@ namespace DVLD.Applications.Release_Detained_License
 
         private void tsmiShowPersonDetails_Click(object sender, EventArgs e)
         {
-            frmShowPersonInfo frm = new frmShowPersonInfo(_CurrentDriver.PersonInfo.NationalNo);
+            frmShowPersonInfo frm = new frmShowPersonInfo(_CurrentDriver.PersonID);
             frm.ShowDialog();
             _RefreshDetainedLicensesList();
         }

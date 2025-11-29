@@ -20,9 +20,6 @@ namespace DVLD.User
         public frmAddUpdateUser(int UserID)
         {
             InitializeComponent();
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-
 
             this.UserID = UserID;
 
@@ -33,7 +30,7 @@ namespace DVLD.User
         }
         private bool _CanGoToNextStep()
         {
-            clsPerson SelectedPerson = ctrlPersonCardWithFilter1.Person;
+            clsPerson SelectedPerson = ctrlPersonCardWithFilter1.SelectedPerson;
 
             if (SelectedPerson == null)
             {
@@ -63,6 +60,7 @@ namespace DVLD.User
             txtConfirmPassword.Text = _User.Password;
             chkIsActive.Checked = _User.isActive;
             ctrlPersonCardWithFilter1.DisplayPersonInfo(_User.PersonID);
+            ctrlPersonCardWithFilter1.FilterEnabled = false;
             btnSave.Enabled = true;
         }
 
@@ -164,7 +162,7 @@ namespace DVLD.User
                 return;
             }
 
-            _User.PersonID = ctrlPersonCardWithFilter1.Person.PersonID;
+            _User.PersonID = ctrlPersonCardWithFilter1.PersonID;
             _User.Username = txtUserName.Text;
             _User.Password = txtPassword.Text;
             _User.isActive = chkIsActive.Checked;

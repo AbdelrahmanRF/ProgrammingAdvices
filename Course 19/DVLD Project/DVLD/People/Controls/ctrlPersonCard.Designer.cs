@@ -154,6 +154,7 @@
             this.lblEditPersonInfo.TabIndex = 83;
             this.lblEditPersonInfo.TabStop = true;
             this.lblEditPersonInfo.Text = "Edit Person Info";
+            this.lblEditPersonInfo.Visible = false;
             this.lblEditPersonInfo.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblEditPersonInfo_LinkClicked);
             // 
             // pbImage
@@ -300,9 +301,9 @@
             this.lblDOB.ForeColor = System.Drawing.Color.Black;
             this.lblDOB.Location = new System.Drawing.Point(534, 139);
             this.lblDOB.Name = "lblDOB";
-            this.lblDOB.Size = new System.Drawing.Size(32, 17);
+            this.lblDOB.Size = new System.Drawing.Size(80, 17);
             this.lblDOB.TabIndex = 93;
-            this.lblDOB.Text = "???";
+            this.lblDOB.Text = "??/??/????";
             // 
             // lblPhone
             // 

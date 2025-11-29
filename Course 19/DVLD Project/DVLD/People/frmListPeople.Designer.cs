@@ -98,6 +98,7 @@
             this.dgvPeopleList.ReadOnly = true;
             this.dgvPeopleList.Size = new System.Drawing.Size(1119, 278);
             this.dgvPeopleList.TabIndex = 6;
+            this.dgvPeopleList.SelectionChanged += new System.EventHandler(this.dgvPeopleList_SelectionChanged);
             // 
             // cmsRecordOptions
             // 
@@ -258,6 +259,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(1206, 581);
             this.Controls.Add(this.txtFilter);
             this.Controls.Add(this.cbFilterBy);
@@ -269,6 +271,8 @@
             this.Controls.Add(this.btnAddPerson);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListPeople";
             this.Text = "Manage People";
             this.Load += new System.EventHandler(this.frmListPeople_Load);

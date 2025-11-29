@@ -8,9 +8,18 @@ namespace DVLD.People
     public partial class frmListPeople : Form
     {
         DataTable _PeopleList;
+        int _CurrentPersonID;
         public frmListPeople()
         {
             InitializeComponent();
+        }
+
+        private void dgvPeopleList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvPeopleList.CurrentRow == null) 
+                return;
+
+            _CurrentPersonID = (int)dgvPeopleList.CurrentRow.Cells[0].Value;
         }
 
         private void _RefreshPeopleList()
@@ -75,16 +84,16 @@ namespace DVLD.People
             }
         }
 
-        private void _ShowAddEditForm(int PersonID)
+        private void _ShowAddEditForm(bool LoadForEdit = true)
         {
-            frmAddUpdatePerson frm = new frmAddUpdatePerson(PersonID);
+            frmAddUpdatePerson frm;
+            if (!LoadForEdit)
+                frm = new frmAddUpdatePerson();
+            else
+                frm = new frmAddUpdatePerson(_CurrentPersonID);
+
             frm.ShowDialog();
             _RefreshPeopleList();
-        }
-
-        private void btnAddPerson_Click(object sender, EventArgs e)
-        {
-            _ShowAddEditForm(-1);
         }
 
         private void tsmiShowDetails_Click(object sender, EventArgs e)
@@ -98,22 +107,22 @@ namespace DVLD.People
 
         private void tsmiAddNewPerson_Click(object sender, EventArgs e)
         {
-            _ShowAddEditForm(-1);
+            _ShowAddEditForm();
         }
-
+        private void btnAddPerson_Click(object sender, EventArgs e)
+        {
+            _ShowAddEditForm();
+        }
         private void tsmiEdit_Click(object sender, EventArgs e)
         {
-            int PersonID = (int)dgvPeopleList.CurrentRow.Cells[0].Value;
-            _ShowAddEditForm(PersonID);
+            _ShowAddEditForm(true);
         }
 
         private void tsmiDelete_Click(object sender, EventArgs e)
         {
-            int PersonID = (int)dgvPeopleList.CurrentRow.Cells[0].Value;
-
             try
             {
-                clsPerson.DeletePerson(PersonID);
+                clsPerson.DeletePerson(_CurrentPersonID);
                 _RefreshPeopleList();
             }
             catch(Exception ex)

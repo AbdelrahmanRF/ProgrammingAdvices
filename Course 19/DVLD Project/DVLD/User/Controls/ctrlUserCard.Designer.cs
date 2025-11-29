@@ -124,7 +124,6 @@
             // 
             this.ctrlPersonCard1.Location = new System.Drawing.Point(2, -3);
             this.ctrlPersonCard1.Name = "ctrlPersonCard1";
-            this.ctrlPersonCard1.PersonID = 0;
             this.ctrlPersonCard1.Size = new System.Drawing.Size(882, 325);
             this.ctrlPersonCard1.TabIndex = 25;
             // 

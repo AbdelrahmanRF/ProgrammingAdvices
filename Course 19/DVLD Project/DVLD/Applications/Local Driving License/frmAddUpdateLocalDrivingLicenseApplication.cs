@@ -50,7 +50,8 @@ namespace DVLD.Applications.Local_Driving_License
             btnSave.Enabled = true;
             _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_LDLAppID);
             ctrlPersonCardWithFilter1.DisplayPersonInfo(clsPerson.Find(_LDLApplication.ApplicantPersonID).PersonID);
-            _SelectedPersonID = ctrlPersonCardWithFilter1.Person.PersonID;
+            ctrlPersonCardWithFilter1.FilterEnabled = false;
+            _SelectedPersonID = ctrlPersonCardWithFilter1.PersonID;
 
             lblDLApplicationID.Text = _LDLApplication.LocalDrivingLicenseApplicationID.ToString();
             lblApplicationDate.Text = clsFormat.DateToShort(_LDLApplication.ApplicationDate);
@@ -73,11 +74,12 @@ namespace DVLD.Applications.Local_Driving_License
         {
             _FillLicenseClassesComboBox();
             _LoadData();
+            ctrlPersonCardWithFilter1.FocusFilter();
         }
 
         private bool _CanGoToNextStep()
         {
-            clsPerson SelectedPerson = ctrlPersonCardWithFilter1.Person;
+            clsPerson SelectedPerson = ctrlPersonCardWithFilter1.SelectedPerson;
 
             if (SelectedPerson == null)
             {
@@ -106,7 +108,7 @@ namespace DVLD.Applications.Local_Driving_License
             if (!_CanGoToNextStep()) return;
 
             tcApplicationAddUpdateTabs.SelectedTab = tpApplicationInfo;
-            _SelectedPersonID = ctrlPersonCardWithFilter1.Person.PersonID;
+            _SelectedPersonID = ctrlPersonCardWithFilter1.PersonID;
             btnSave.Enabled = true;
         }
 

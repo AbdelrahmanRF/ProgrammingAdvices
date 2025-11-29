@@ -12,7 +12,7 @@ namespace DVLD_DataAccess
             DataTable DT = new DataTable();
 
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
-            string Query = "SELECT * FROM Countries";
+            string Query = "SELECT * FROM Countries ORDER by CountryName";
 
             SqlCommand Command = new SqlCommand(Query, Connection);
 

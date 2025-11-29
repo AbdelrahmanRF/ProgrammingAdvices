@@ -39,7 +39,7 @@ namespace DVLD.Applications.Controls
 
         private void linkViewPersonInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            frmShowPersonInfo frm = new frmShowPersonInfo(clsPerson.Find(_Application.ApplicantPersonID).NationalNo);
+            frmShowPersonInfo frm = new frmShowPersonInfo(_Application.ApplicantPersonID);
             frm.ShowDialog();
             FillApplicationData(ApplicationID);
         }

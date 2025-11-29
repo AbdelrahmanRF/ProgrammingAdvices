@@ -22,7 +22,7 @@ namespace DVLD.User.Controls
 
         public void FillUserData(clsUser User)
         {
-            ctrlPersonCard1.FillPersonData(clsPerson.Find(User.PersonID));
+            ctrlPersonCard1.FillPersonData(User.PersonID);
             lblUserID.Text = User.UserID.ToString();
             lblUserName.Text = User.Username;
             lblIsActive.Text = User.isActive ? "Yes" : "No";
