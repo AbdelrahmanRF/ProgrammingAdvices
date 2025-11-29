@@ -19,9 +19,6 @@ namespace DVLD.User
         {
             InitializeComponent();
 
-            this.MaximizeBox = false;
-            this.MaximizeBox = false;
-
             this._UserID = UserID;
         }
 
@@ -32,7 +29,7 @@ namespace DVLD.User
 
         private void frmUserInfo_Load(object sender, EventArgs e)
         {
-            ctrlUserCard1.FillUserData(clsUser.FindUserByUserID(_UserID));
+            ctrlUserCard1.FillUserData(_UserID);
         }
     }
 }

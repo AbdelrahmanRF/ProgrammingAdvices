@@ -19,8 +19,6 @@ namespace DVLD.Applications.Application_Types
         public frmEditApplicationType(int ApplicationTypeID)
         {
             InitializeComponent();
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
 
             this._ApplicationTypeID = ApplicationTypeID;
         }

@@ -18,8 +18,6 @@ namespace DVLD.Tests.Test_Types
         public frmEditTestType(clsTestType.enTestType TestTypeID)
         {
             InitializeComponent();
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
 
             this._TestTypeID = TestTypeID;
         }

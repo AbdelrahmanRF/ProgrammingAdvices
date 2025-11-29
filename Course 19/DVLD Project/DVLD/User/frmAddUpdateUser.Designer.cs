@@ -74,6 +74,7 @@
             // 
             // tcUseAddUpdateTabs
             // 
+            this.tcUseAddUpdateTabs.CausesValidation = false;
             this.tcUseAddUpdateTabs.Controls.Add(this.tpPersonalInfo);
             this.tcUseAddUpdateTabs.Controls.Add(this.tpLoginInfo);
             this.tcUseAddUpdateTabs.Location = new System.Drawing.Point(12, 110);
@@ -299,6 +300,7 @@
             // btnClose
             // 
             this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnClose.CausesValidation = false;
             this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;

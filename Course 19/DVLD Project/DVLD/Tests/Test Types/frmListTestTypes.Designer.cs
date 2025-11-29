@@ -33,13 +33,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
             this.dgvTestTypes = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiEditTestType = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTestTypes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.cmsRecordOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTotalRecords
@@ -66,6 +66,7 @@
             // 
             // btnClose
             // 
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -92,6 +93,22 @@
             this.dgvTestTypes.Size = new System.Drawing.Size(865, 325);
             this.dgvTestTypes.TabIndex = 27;
             // 
+            // cmsRecordOptions
+            // 
+            this.cmsRecordOptions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiEditTestType});
+            this.cmsRecordOptions.Name = "cmsRecordOptions";
+            this.cmsRecordOptions.Size = new System.Drawing.Size(160, 28);
+            // 
+            // tsmiEditTestType
+            // 
+            this.tsmiEditTestType.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiEditTestType.Image = global::DVLD.Properties.Resources.edit_32;
+            this.tsmiEditTestType.Name = "tsmiEditTestType";
+            this.tsmiEditTestType.Size = new System.Drawing.Size(159, 24);
+            this.tsmiEditTestType.Text = "Edit Test Type";
+            this.tsmiEditTestType.Click += new System.EventHandler(this.tsmiEditTestType_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -114,26 +131,11 @@
             this.pictureBox1.TabIndex = 25;
             this.pictureBox1.TabStop = false;
             // 
-            // cmsRecordOptions
-            // 
-            this.cmsRecordOptions.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiEditTestType});
-            this.cmsRecordOptions.Name = "cmsRecordOptions";
-            this.cmsRecordOptions.Size = new System.Drawing.Size(160, 28);
-            // 
-            // tsmiEditTestType
-            // 
-            this.tsmiEditTestType.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiEditTestType.Image = global::DVLD.Properties.Resources.edit_32;
-            this.tsmiEditTestType.Name = "tsmiEditTestType";
-            this.tsmiEditTestType.Size = new System.Drawing.Size(180, 24);
-            this.tsmiEditTestType.Text = "Edit Test Type";
-            this.tsmiEditTestType.Click += new System.EventHandler(this.tsmiEditTestType_Click);
-            // 
             // frmListTestTypes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(912, 597);
             this.Controls.Add(this.lblTotalRecords);
             this.Controls.Add(this.label2);
@@ -141,12 +143,14 @@
             this.Controls.Add(this.dgvTestTypes);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListTestTypes";
             this.Text = "Manage Test Types";
             this.Load += new System.EventHandler(this.frmListTestTypes_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTestTypes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.cmsRecordOptions.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

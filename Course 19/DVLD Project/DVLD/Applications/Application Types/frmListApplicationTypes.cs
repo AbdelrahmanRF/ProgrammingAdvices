@@ -16,9 +16,6 @@ namespace DVLD.Applications.Application_Types
         public frmListApplicationTypes()
         {
             InitializeComponent();
-
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
         }
 
         private void _RefreshApplicationTypesList()

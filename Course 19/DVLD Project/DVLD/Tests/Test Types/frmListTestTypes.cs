@@ -16,9 +16,6 @@ namespace DVLD.Tests.Test_Types
         public frmListTestTypes()
         {
             InitializeComponent();
-
-            this.MaximizeBox = false;
-            this.MaximizeBox = false;
         }
 
         private void _RefreshTestTypes()

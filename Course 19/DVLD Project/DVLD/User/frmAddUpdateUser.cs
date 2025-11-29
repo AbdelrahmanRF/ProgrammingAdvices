@@ -15,29 +15,32 @@ namespace DVLD.User
     {
         public enum enMode { AddNew = 0, Update = 1 }
         enMode _Mode = enMode.AddNew;
-        int UserID = -1;
+        int _UserID = -1;
         clsUser _User;
+
+        public frmAddUpdateUser()
+        {
+            InitializeComponent();
+
+            _Mode = enMode.AddNew;
+        }
         public frmAddUpdateUser(int UserID)
         {
             InitializeComponent();
 
-            this.UserID = UserID;
-
-            if (UserID == -1)
-                _Mode = enMode.AddNew;
-            else
-                _Mode = enMode.Update;
+            this._UserID = UserID;
+            _Mode = enMode.Update;
         }
         private bool _CanGoToNextStep()
         {
-            clsPerson SelectedPerson = ctrlPersonCardWithFilter1.SelectedPerson;
+            int SelectedPersonID = ctrlPersonCardWithFilter1.PersonID;
 
-            if (SelectedPerson == null)
+            if (SelectedPersonID == -1)
             {
                 MessageBox.Show("You Have to Select Person First", "Person Must be Selected", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            else if (clsUser.isUserExistByPersonID(SelectedPerson.PersonID) && _Mode != enMode.Update)
+            else if (clsUser.isUserExistByPersonID(SelectedPersonID) && _Mode != enMode.Update)
             {
                 MessageBox.Show("Selected Person already has a user, choose another one.", "Select Another Person", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
@@ -45,25 +48,50 @@ namespace DVLD.User
             return true;
         }
 
-        private void _LoadData()
+        private void _ResetDefaultValues()
         {
             if (_Mode == enMode.AddNew)
             {
                 _User = new clsUser();
-                return;
+
+                this.Text = "Add New User";
+                lblFormTitle.Text = "Add New User";
+
+                ctrlPersonCardWithFilter1.FocusFilter();
+            }
+            else
+            {
+                lblFormTitle.Text = "Update User";
+                this.Text = "Update User";
+                btnSave.Enabled = true;
             }
 
-            _User = clsUser.FindUserByUserID(UserID);
-            lblUserID.Text = UserID.ToString();
+            txtUserName.Text = "";
+            txtPassword.Text = "";
+            txtConfirmPassword.Text = "";
+            chkIsActive.Checked = true;
+        }
+
+        private void _LoadData()
+        {
+            _User = clsUser.FindUserByUserID(_UserID);
+            ctrlPersonCardWithFilter1.DisplayPersonInfo(_User.PersonID);
+            ctrlPersonCardWithFilter1.FilterEnabled = false;
+
+            lblUserID.Text = _UserID.ToString();
             txtUserName.Text = _User.Username;
             txtPassword.Text = _User.Password;
             txtConfirmPassword.Text = _User.Password;
             chkIsActive.Checked = _User.isActive;
-            ctrlPersonCardWithFilter1.DisplayPersonInfo(_User.PersonID);
-            ctrlPersonCardWithFilter1.FilterEnabled = false;
-            btnSave.Enabled = true;
         }
 
+        private void frmAddUpdateUser_Load(object sender, EventArgs e)
+        {
+            _ResetDefaultValues();
+
+            if (_Mode == enMode.Update)
+                _LoadData();
+        }
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -175,11 +203,6 @@ namespace DVLD.User
                 lblFormTitle.Text = "Update User";
                 this.Text = "Update User";
             }
-        }
-
-        private void frmAddUpdateUser_Load(object sender, EventArgs e)
-        {
-            _LoadData();
         }
     }
 }

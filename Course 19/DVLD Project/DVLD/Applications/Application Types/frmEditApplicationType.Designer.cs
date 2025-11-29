@@ -175,6 +175,7 @@
             // btnClose
             // 
             this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -192,6 +193,7 @@
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(505, 366);
             this.Controls.Add(this.txtApplicationTypeFees);
             this.Controls.Add(this.pictureBox3);
@@ -205,6 +207,8 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.lblFormTitle);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmEditApplicationType";
             this.Text = "Update Application Type";
             this.Load += new System.EventHandler(this.frmEditApplicationType_Load);

@@ -114,6 +114,8 @@ namespace DVLD.People.Controls
             {
                 MessageBox.Show("Fix Validation Errors, and Search Again.", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                ctrlPersonCard1.ResetPersonInfo();
                 return;
             }
 

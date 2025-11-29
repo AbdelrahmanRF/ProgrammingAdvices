@@ -20,9 +20,6 @@ namespace DVLD.User
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             this._UserID = UserID;
         }
 
@@ -31,10 +28,26 @@ namespace DVLD.User
             this.Close();
         }
 
+        private void _ResetPasswordInputs()
+        {
+            txtCurrentPassword.Text = "";
+            txtNewPassword.Text = "";
+            txtConfirmPassword.Text = "";
+
+            txtCurrentPassword.Focus();
+        }
+
         private void frmChangePassword_Load(object sender, EventArgs e)
         {
+            _ResetPasswordInputs();
+
             _User = clsUser.FindUserByUserID(_UserID);
-            ctrlUserCard1.FillUserData(_User);
+            if (_User == null)
+            {
+                MessageBox.Show($"No User With UserID = {_UserID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            ctrlUserCard1.FillUserData(_UserID);
         }
 
         private void txtCurrentPassword_Validating(object sender, CancelEventArgs e)
@@ -102,9 +115,7 @@ namespace DVLD.User
             if (_User.UpdatePassword())
             {
                 MessageBox.Show("Data Saved Successfully", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtCurrentPassword.Text = "";
-                txtNewPassword.Text = "";
-                txtConfirmPassword.Text = "";
+                _ResetPasswordInputs();
 
                 if (_User.UserID == clsGlobal.CurrentUser.UserID)
                 {
@@ -113,6 +124,10 @@ namespace DVLD.User
                     clsGlobal.RememberUsernameAndPassword(_User.Username, "");
                     Application.Restart();
                 }
+            }
+            else
+            {
+                MessageBox.Show($"An Error Occurred, Password did not Change", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

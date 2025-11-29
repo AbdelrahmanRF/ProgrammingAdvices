@@ -15,6 +15,7 @@ namespace DVLD.User
     public partial class frmListUsers : Form
     {
         DataTable _UsersList;
+        int _CurrentUserID;
         public frmListUsers()
         {
             InitializeComponent();
@@ -26,6 +27,13 @@ namespace DVLD.User
             dgvUsersList.DataSource = _UsersList;
             lblTotalRecords.Text = _UsersList.Rows.Count.ToString();
         }
+        private void dgvUsersList_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvUsersList.CurrentRow == null)
+                return;
+
+            _CurrentUserID = (int)dgvUsersList.CurrentRow.Cells[0].Value;
+        }
 
         private void frmListUsers_Load(object sender, EventArgs e)
         {
@@ -36,16 +44,22 @@ namespace DVLD.User
             txtFilter.Visible = false;
         }
 
-        private void _OpenAddEditUserForm(int UserID)
+        private void _OpenAddEditUserForm(bool loadForUpdate = false)
         {
-            frmAddUpdateUser frm = new frmAddUpdateUser(UserID);
+            frmAddUpdateUser frm;
+
+            if (!loadForUpdate)
+                frm = new frmAddUpdateUser();
+            else
+                frm = new frmAddUpdateUser(_CurrentUserID);
+
             frm.ShowDialog();
             _RefreshUsers();
         }
 
         private void btnAddUser_Click(object sender, EventArgs e)
         {
-            _OpenAddEditUserForm(-1);
+            _OpenAddEditUserForm();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -117,26 +131,24 @@ namespace DVLD.User
 
         private void tsmiShowDetails_Click(object sender, EventArgs e)
         {
-            frmUserInfo frm = new frmUserInfo((int)dgvUsersList.CurrentRow.Cells[0].Value);
+            frmUserInfo frm = new frmUserInfo(_CurrentUserID);
             frm.ShowDialog();
         }
         private void tsmiAddNewUser_Click(object sender, EventArgs e)
         {
-            _OpenAddEditUserForm(-1);
+            _OpenAddEditUserForm();
         }
 
         private void tsmiEdit_Click(object sender, EventArgs e)
         {
-            _OpenAddEditUserForm((int)dgvUsersList.CurrentRow.Cells[0].Value);
+            _OpenAddEditUserForm(true);
         }
 
         private void tsmiDelete_Click(object sender, EventArgs e)
         {
-            int UserID = (int)dgvUsersList.CurrentRow.Cells[0].Value;
-
             try
             {
-                if (clsUser.DeleteUser(UserID))
+                if (clsUser.DeleteUser(_CurrentUserID))
                 {
                     MessageBox.Show("User has been Deleted Successfully", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     _RefreshUsers();
@@ -150,13 +162,13 @@ namespace DVLD.User
 
         private void tsmiChangePassword_Click(object sender, EventArgs e)
         {
-            frmChangePassword frm = new frmChangePassword((int)dgvUsersList.CurrentRow.Cells[0].Value);
+            frmChangePassword frm = new frmChangePassword(_CurrentUserID);
             frm.ShowDialog();
         }
 
         private void cmsRecordOptions_Opening(object sender, CancelEventArgs e)
         {
-            if (clsGlobal.CurrentUser.UserID == (int)dgvUsersList.CurrentRow.Cells[0].Value)
+            if (clsGlobal.CurrentUser.UserID == _CurrentUserID)
                 tsmiDelete.Enabled = false;
             else
                 tsmiDelete.Enabled = true;

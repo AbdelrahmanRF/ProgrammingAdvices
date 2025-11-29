@@ -14,18 +14,41 @@ namespace DVLD.User.Controls
 {
     public partial class ctrlUserCard : UserControl
     {
-        public int UserID { get; set; }
+        private clsUser _User;
+        int _UserID = -1;
+        public int UserID { get; }
         public ctrlUserCard()
         {
             InitializeComponent();
         }
 
-        public void FillUserData(clsUser User)
+        private void _ResetUserInfo()
         {
-            ctrlPersonCard1.FillPersonData(User.PersonID);
-            lblUserID.Text = User.UserID.ToString();
-            lblUserName.Text = User.Username;
-            lblIsActive.Text = User.isActive ? "Yes" : "No";
+            lblUserID.Text = "???";
+            lblUserName.Text = "???";
+            lblIsActive.Text = "???";
+        }
+
+        public void FillUserData(int UserID)
+        {
+            _User = clsUser.FindUserByUserID(UserID);
+
+            if (_User == null)
+            {
+                _ResetUserInfo();
+                MessageBox.Show($"No User With UserID = {UserID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _LoadUserInfoToControl();
+        }
+
+        private void _LoadUserInfoToControl()
+        {
+            ctrlPersonCard1.FillPersonData(_User.PersonID);
+            lblUserID.Text = _User.UserID.ToString();
+            lblUserName.Text = _User.Username;
+            lblIsActive.Text = _User.isActive ? "Yes" : "No";
         }
     }
 }

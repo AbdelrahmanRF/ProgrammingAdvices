@@ -32,9 +32,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.dgvApplicationTypes = new System.Windows.Forms.DataGridView();
             this.cmsRecordOptions = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiEditApplicationType = new System.Windows.Forms.ToolStripMenuItem();
             this.btnClose = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.tsmiEditApplicationType = new System.Windows.Forms.ToolStripMenuItem();
             this.lblTotalRecords = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvApplicationTypes)).BeginInit();
@@ -74,6 +74,15 @@
             this.cmsRecordOptions.Name = "cmsRecordOptions";
             this.cmsRecordOptions.Size = new System.Drawing.Size(204, 28);
             // 
+            // tsmiEditApplicationType
+            // 
+            this.tsmiEditApplicationType.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.tsmiEditApplicationType.Image = global::DVLD.Properties.Resources.edit_321;
+            this.tsmiEditApplicationType.Name = "tsmiEditApplicationType";
+            this.tsmiEditApplicationType.Size = new System.Drawing.Size(203, 24);
+            this.tsmiEditApplicationType.Text = "Edit Application Type";
+            this.tsmiEditApplicationType.Click += new System.EventHandler(this.tsmiEditApplicationType_Click);
+            // 
             // btnClose
             // 
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -98,15 +107,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
-            // 
-            // tsmiEditApplicationType
-            // 
-            this.tsmiEditApplicationType.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tsmiEditApplicationType.Image = global::DVLD.Properties.Resources.edit_321;
-            this.tsmiEditApplicationType.Name = "tsmiEditApplicationType";
-            this.tsmiEditApplicationType.Size = new System.Drawing.Size(203, 24);
-            this.tsmiEditApplicationType.Text = "Edit Application Type";
-            this.tsmiEditApplicationType.Click += new System.EventHandler(this.tsmiEditApplicationType_Click);
             // 
             // lblTotalRecords
             // 
@@ -134,6 +134,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(823, 615);
             this.Controls.Add(this.lblTotalRecords);
             this.Controls.Add(this.label2);
@@ -141,6 +142,8 @@
             this.Controls.Add(this.dgvApplicationTypes);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListApplicationTypes";
             this.Text = "Manage Application Types";
             this.Load += new System.EventHandler(this.frmListApplicationTypes_Load);

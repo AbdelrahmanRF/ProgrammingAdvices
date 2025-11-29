@@ -106,6 +106,7 @@
             this.dgvUsersList.ReadOnly = true;
             this.dgvUsersList.Size = new System.Drawing.Size(1119, 278);
             this.dgvUsersList.TabIndex = 16;
+            this.dgvUsersList.SelectionChanged += new System.EventHandler(this.dgvUsersList_SelectionChanged);
             // 
             // cmsRecordOptions
             // 
@@ -120,7 +121,7 @@
             this.tsmiSendEmail,
             this.tsmiCall});
             this.cmsRecordOptions.Name = "cmsRecordOptions";
-            this.cmsRecordOptions.Size = new System.Drawing.Size(186, 206);
+            this.cmsRecordOptions.Size = new System.Drawing.Size(186, 184);
             this.cmsRecordOptions.Opening += new System.ComponentModel.CancelEventHandler(this.cmsRecordOptions_Opening);
             // 
             // tsmiShowDetails
@@ -295,8 +296,10 @@
             this.Controls.Add(this.btnAddUser);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmListUsers";
-            this.Text = " ";
+            this.Text = "Manage Users";
             this.Load += new System.EventHandler(this.frmListUsers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsersList)).EndInit();
             this.cmsRecordOptions.ResumeLayout(false);
