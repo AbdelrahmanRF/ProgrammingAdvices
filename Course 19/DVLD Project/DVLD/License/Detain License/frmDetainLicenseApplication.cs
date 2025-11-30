@@ -19,6 +19,8 @@ namespace DVLD.License.Detain_License
     public partial class frmDetainLicenseApplication : Form
     {
         clsLicense _CurrentLicense;
+        int _DetainID = -1;
+        int _SelectedLicenseID = -1;
         public frmDetainLicenseApplication()
         {
             InitializeComponent();
@@ -35,7 +37,7 @@ namespace DVLD.License.Detain_License
             this.Close();
         }
 
-        private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
+        private void ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded(int LocalLicenseID)
         {
             btnDetain.Enabled = false;
             linkShowLicenseHistory.Enabled = false;
@@ -48,7 +50,7 @@ namespace DVLD.License.Detain_License
                 return;
             }
 
-            _CurrentLicense = clsLicense.FindByLicenseID(LocalLicenseID);
+            _CurrentLicense = ctrlDriverInternationalLicenseInfoWithFilter1.SelectedLicense;
             linkShowLicenseHistory.Enabled = true;
 
             if (!_CurrentLicense.IsActive)
@@ -66,6 +68,7 @@ namespace DVLD.License.Detain_License
             lblLicenseID.Text = LocalLicenseID.ToString();
             btnDetain.Enabled = true;
         }
+
 
         private void txtFineFees_Validating(object sender, CancelEventArgs e)
         {
@@ -137,15 +140,18 @@ namespace DVLD.License.Detain_License
 
                     if (DetainID != -1)
                     {
-                        MessageBox.Show($"Licensed Replaced Detained with Detain ID = {DetainID}",
+                        MessageBox.Show($"Licensed Detained with Detain ID = {DetainID}",
                         "License Detained", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         btnDetain.Enabled = false;
-                        ctrlDriverInternationalLicenseInfoWithFilter1.DisableSearch();
+                        ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = false;
                         linkShowLicenseInfo.Enabled = true;
 
                         lblDetainID.Text = DetainID.ToString();
                     }
+                    else
+                        MessageBox.Show("Failed Detaining License",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

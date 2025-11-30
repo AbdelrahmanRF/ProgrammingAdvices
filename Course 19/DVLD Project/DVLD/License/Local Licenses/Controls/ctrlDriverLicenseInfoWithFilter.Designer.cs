@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.gbFilter = new System.Windows.Forms.GroupBox();
             this.btnSearchLicense = new System.Windows.Forms.Button();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.ctrlDriverLicenseInfo1 = new DVLD.License.Controls.ctrlDriverLicenseInfo();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.gbFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // gbFilter
@@ -67,6 +70,7 @@
             this.txtFilter.Size = new System.Drawing.Size(317, 20);
             this.txtFilter.TabIndex = 22;
             this.txtFilter.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFilter_KeyPress);
+            this.txtFilter.Validating += new System.ComponentModel.CancelEventHandler(this.txtFilter_Validating);
             // 
             // label3
             // 
@@ -86,6 +90,10 @@
             this.ctrlDriverLicenseInfo1.Size = new System.Drawing.Size(894, 395);
             this.ctrlDriverLicenseInfo1.TabIndex = 0;
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // ctrlDriverLicenseInfoWithFilter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -96,6 +104,7 @@
             this.Size = new System.Drawing.Size(893, 473);
             this.gbFilter.ResumeLayout(false);
             this.gbFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -107,5 +116,6 @@
         private System.Windows.Forms.Button btnSearchLicense;
         private System.Windows.Forms.TextBox txtFilter;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

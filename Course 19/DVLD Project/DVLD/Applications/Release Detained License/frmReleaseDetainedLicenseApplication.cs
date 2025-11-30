@@ -19,9 +19,15 @@ namespace DVLD.Applications.Release_Detained_License
     public partial class frmReleaseDetainedLicenseApplication : Form
     {
         clsLicense _CurrentLicense;
-        clsDetainedLicense _DetainedLicense;
-        int _LicenseID;
-        public frmReleaseDetainedLicenseApplication(int LicenseID = -1)
+        clsDetainedLicense _DetainedLicenseInfo;
+        int _LicenseID = -1;
+
+        public frmReleaseDetainedLicenseApplication()
+        {
+            InitializeComponent();
+        }
+
+        public frmReleaseDetainedLicenseApplication(int LicenseID)
         {
             InitializeComponent();
 
@@ -34,6 +40,7 @@ namespace DVLD.Applications.Release_Detained_License
                 return;
 
             ctrlDriverInternationalLicenseInfoWithFilter1.DisplayLicenseInfo(_LicenseID);
+            ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = false;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -55,25 +62,25 @@ namespace DVLD.Applications.Release_Detained_License
 
         private void _FillDetainInfo()
         {
-            lblDetainID.Text = _DetainedLicense.DetainID.ToString();
-            lblLicenseID.Text = _DetainedLicense.LicenseID.ToString();
-            lblDetainDate.Text = clsFormat.DateToShort(_DetainedLicense.DetainDate);
-            lblCreatedBy.Text = _DetainedLicense.CreatedByUserInfo.Username;
+            lblDetainID.Text = _DetainedLicenseInfo.DetainID.ToString();
+            lblLicenseID.Text = _DetainedLicenseInfo.LicenseID.ToString();
+            lblDetainDate.Text = clsFormat.DateToShort(_DetainedLicenseInfo.DetainDate);
+            lblCreatedBy.Text = _DetainedLicenseInfo.CreatedByUserInfo.Username;
             lblApplicationFees.Text = clsApplicationType
                 .Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense)
                 .ApplicationTypeFees
                 .ToString();
-            lblFineFees.Text = _DetainedLicense.FineFees.ToString();
+            lblFineFees.Text = _DetainedLicenseInfo.FineFees.ToString();
             lblTotalFees.Text = $"{float.Parse(lblApplicationFees.Text) + float.Parse(lblFineFees.Text)}";
         }
 
-        private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
+        private void ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded(int LocalLicenseID)
         {
             _ClearDetainInfo();
             btnRelease.Enabled = false;
             linkShowLicenseHistory.Enabled = false;
             _CurrentLicense = null;
-            _DetainedLicense = null;
+            _DetainedLicenseInfo = null;
             lblLicenseID.Text = "???";
 
             if (LocalLicenseID == -1)
@@ -81,7 +88,7 @@ namespace DVLD.Applications.Release_Detained_License
                 return;
             }
 
-            _CurrentLicense = clsLicense.FindByLicenseID(LocalLicenseID);
+            _CurrentLicense = ctrlDriverInternationalLicenseInfoWithFilter1.SelectedLicense;
             linkShowLicenseHistory.Enabled = true;
 
             if (!_CurrentLicense.IsActive)
@@ -96,7 +103,7 @@ namespace DVLD.Applications.Release_Detained_License
                 return;
             }
 
-            _DetainedLicense = clsDetainedLicense.FindByLicenseID(LocalLicenseID);
+            _DetainedLicenseInfo = _CurrentLicense.DetainedInfo;
             _FillDetainInfo();
             btnRelease.Enabled = true;
         }
@@ -106,14 +113,16 @@ namespace DVLD.Applications.Release_Detained_License
             if (MessageBox.Show("Are you Sure you Want to Release this License?", "Confirm", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question) == DialogResult.OK)
             {
-                int ReleaseApplicationID = _CurrentLicense.Release(_DetainedLicense.CreatedByUserID);
-                if (ReleaseApplicationID != -1)
+                int ReleaseApplicationID = -1;
+                bool isReleased = _CurrentLicense.Release(_DetainedLicenseInfo.CreatedByUserID, ref ReleaseApplicationID);
+
+                if (isReleased)
                 {
                     MessageBox.Show($"Detained License Released Successfully",
                         "Detained License Released", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     btnRelease.Enabled = false;
-                    ctrlDriverInternationalLicenseInfoWithFilter1.DisableSearch();
+                    ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = false;
                     linkShowLicenseInfo.Enabled = true;
                     lblApplicationID.Text = ReleaseApplicationID.ToString();
                 }
@@ -131,5 +140,6 @@ namespace DVLD.Applications.Release_Detained_License
             frmShowLicenseInfo frm = new frmShowLicenseInfo(_CurrentLicense.LicenseID);
             frm.ShowDialog();
         }
+
     }
 }

@@ -22,38 +22,42 @@ namespace DVLD.Applications.International_License
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             _InternationalLicense = new clsInternationalLicense();
         }
 
         private bool _CheckLicenseValidity()
         {
-            string ErrorMessage = "";
-            int ActiveInternationalLicenseID = clsInternationalLicense
-                .FindActiveInternationalLicenseIDByLocalLicenseID(_LocalLicense.LicenseID);
-
-            if (ActiveInternationalLicenseID != -1)
-                ErrorMessage = $"Person already have an active international license with ID {ActiveInternationalLicenseID}";
-
-            if (_LocalLicense.LicenseClass != 3)
-                ErrorMessage = "License Class Must be Class 3 — Ordinary driving license";
-
-            if (_LocalLicense.ExpirationDate < DateTime.Now)
-                ErrorMessage = "License must not be Expired";
-
-            if (!_LocalLicense.IsActive)
-                ErrorMessage = "License must be Active";
-
-            if (ErrorMessage == "")
-                return true;
-            else
+            if (clsInternationalLicense.FindActiveInternationalLicenseIDByLocalLicenseID(_LocalLicense.LicenseID) != -1)
             {
-                MessageBox.Show(ErrorMessage, "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Person already has an active international license", "Not Allowed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
+            if (_LocalLicense.LicenseClass != 3)
+            {
+                MessageBox.Show("License Class Must be Class 3 — Ordinary driving license", "Not Allowed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (_LocalLicense.ExpirationDate < DateTime.Now)
+            {
+                MessageBox.Show("License must not be Expired", "Not Allowed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (!_LocalLicense.IsActive)
+            {
+                MessageBox.Show("License must be Active", "Not Allowed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
         }
+
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -71,7 +75,7 @@ namespace DVLD.Applications.International_License
             lblCreatedBy.Text = clsGlobal.CurrentUser.Username;
         }
 
-        private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
+        private void ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded(int LocalLicenseID)
         {
             btnIssue.Enabled = false;
             linkShowLicenseHistory.Enabled = false;
@@ -83,7 +87,7 @@ namespace DVLD.Applications.International_License
                 return;
             }
 
-            _LocalLicense = clsLicense.FindByLicenseID(LocalLicenseID);
+            _LocalLicense = ctrlDriverInternationalLicenseInfoWithFilter1.SelectedLicense;
             linkShowLicenseHistory.Enabled = true;
 
             if (!_CheckLicenseValidity())
@@ -91,7 +95,6 @@ namespace DVLD.Applications.International_License
 
             lblLocalLicenseID.Text = LocalLicenseID.ToString();
             btnIssue.Enabled = true;
-
         }
 
         private void linkShowLicenseHistory_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -115,6 +118,7 @@ namespace DVLD.Applications.International_License
             _InternationalLicense.IssueDate = DateTime.Now;
             _InternationalLicense.ExpirationDate = DateTime.Now.AddYears(1);
             _InternationalLicense.CreatedByUserID = clsGlobal.CurrentUser.UserID;
+            _InternationalLicense.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
 
             if (MessageBox.Show("Are you Sure you Want to Issue the License?", "Confirm", MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Question) == DialogResult.OK)
@@ -125,7 +129,7 @@ namespace DVLD.Applications.International_License
                         "License Issued", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     btnIssue.Enabled = false;
-                    ctrlDriverInternationalLicenseInfoWithFilter1.DisableSearch();
+                    ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = false;
                     linkShowLicenseInfo.Enabled = true;
 
                     lblIntApplicationID.Text = _InternationalLicense.ApplicationID.ToString();
@@ -133,5 +137,6 @@ namespace DVLD.Applications.International_License
                 }
             }
         }
+
     }
 }

@@ -138,9 +138,10 @@ namespace DVLD_DataAccess
         {
             int InternationalLicenseID = -1;
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
-            string Query = @"SELECT InternationalLicenseID FROM InternationalLicenses
+            string Query = @"SELECT TOP 1 InternationalLicenseID FROM InternationalLicenses
                                 WHERE IssuedUsingLocalLicenseID = @LocalLicenseID
-                                    AND IsActive = 1;";
+                                    AND IsActive = 1 AND GETDATE() BETWEEN IssueDate AND ExpirationDate
+                                 ORDER BY ExpirationDate DESC;";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@LocalLicenseID", LocalLicenseID);
 
@@ -172,7 +173,11 @@ namespace DVLD_DataAccess
         {
             int InternationalLicenseID = -1;
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
-            string Query = @"INSERT INTO InternationalLicenses 
+            string Query = @"UPDATE InternationalLicenses
+                                SET IsActive = 0
+                            WHERE DriverID = @DriverID;
+
+                            INSERT INTO InternationalLicenses 
                                 (ApplicationID, DriverID, IssuedUsingLocalLicenseID, IssueDate, ExpirationDate, 
                                     IsActive, CreatedByUserID)
                              VALUES 

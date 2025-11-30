@@ -14,24 +14,20 @@ namespace DVLD.License
     public partial class frmShowPersonLicenseHistory : Form
     {
         int _PersonID;
-        clsDriver _Driver;
         public frmShowPersonLicenseHistory(int PersonID)
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
             _PersonID = PersonID;
-
-            _Driver = clsDriver.FindByPersonID(PersonID);
         }
         private void frmShowPersonLicenseHistory_Load(object sender, EventArgs e)
         {
             ctrlPersonCardWithFilter1.DisplayPersonInfo(this._PersonID);
 
-            if (_Driver == null) return;
-                ctrlDriverLicenses1.FillDriverLicensesHistory(this._Driver.DriverID);
+            if (_PersonID == -1) 
+                return;
+
+            ctrlDriverLicenses1.FillDriverLicensesHistoryByPersonID(_PersonID);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

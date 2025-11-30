@@ -415,6 +415,7 @@
             // btnClose
             // 
             this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -429,16 +430,19 @@
             // 
             // ctrlDriverInternationalLicenseInfoWithFilter1
             // 
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = true;
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Location = new System.Drawing.Point(13, 40);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Name = "ctrlDriverInternationalLicenseInfoWithFilter1";
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Size = new System.Drawing.Size(893, 473);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.TabIndex = 232;
-            this.ctrlDriverInternationalLicenseInfoWithFilter1.SearchEnded += new DVLD.License.International_Licenses.Controls.ctrlDriverLicenseInfoWithFilter.SearchEndedEventHandler(this.ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded);
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.OnSearchEnded += new System.Action<int>(this.ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded);
             // 
             // frmReleaseDetainedLicenseApplication
             // 
+            this.AcceptButton = this.btnRelease;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(919, 757);
             this.Controls.Add(this.lblReplacementFor);
             this.Controls.Add(this.btnRelease);
@@ -447,6 +451,8 @@
             this.Controls.Add(this.linkShowLicenseHistory);
             this.Controls.Add(this.gbDetainInfo);
             this.Controls.Add(this.ctrlDriverInternationalLicenseInfoWithFilter1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmReleaseDetainedLicenseApplication";
             this.Text = "Release Detained License";
             this.Shown += new System.EventHandler(this.frmReleaseDetainedLicenseApplication_Shown);

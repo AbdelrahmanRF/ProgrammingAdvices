@@ -101,6 +101,8 @@
             this.Controls.Add(this.bpFormImage);
             this.Controls.Add(this.ctrlPersonCardWithFilter1);
             this.Controls.Add(this.label1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmShowPersonLicenseHistory";
             this.Text = "License History";
             this.Load += new System.EventHandler(this.frmShowPersonLicenseHistory_Load);

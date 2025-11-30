@@ -55,6 +55,7 @@
             // btnClose
             // 
             this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -106,8 +107,10 @@
             // 
             // frmIssueDriverLicenseFirstTime
             // 
+            this.AcceptButton = this.btnIssue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(952, 533);
             this.Controls.Add(this.btnIssue);
             this.Controls.Add(this.btnClose);
@@ -115,6 +118,8 @@
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.ctrlDrivingLicenseApplicationInfo1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmIssueDriverLicenseFirstTime";
             this.Text = "Issue Driver License For the First Time";
             this.Load += new System.EventHandler(this.frmIssueDriverLicenseFirstTime_Load);

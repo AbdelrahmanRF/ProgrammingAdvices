@@ -18,7 +18,8 @@ namespace DVLD_DataAccess
             bool isFound = false;
             SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
             string Query = @"SELECT * FROM DetainedLicenses
-                    WHERE LicenseID = @LicenseID;";
+                    WHERE LicenseID = @LicenseID
+                    ORDER BY DetainID DESC;";
             SqlCommand Command = new SqlCommand(Query, Connection);
             Command.Parameters.AddWithValue("@LicenseID", LicenseID);
 
@@ -223,6 +224,42 @@ namespace DVLD_DataAccess
             }
 
             return DT;
+        }
+
+        public static bool ReleaseDetainedLicenses(int DetainID, int ReleasedByUserID, DateTime ReleaseDate, int ReleaseApplicationID)
+        {
+            int RowsAffected = 0;
+            SqlConnection Connection = new SqlConnection(clsDataAccessingSettings.ConnectionString);
+            string Query = @"UPDATE DetainedLicenses
+                            SET
+                                IsReleased = 1, 
+                                ReleaseDate = @ReleaseDate, 
+                                ReleasedByUserID = @ReleasedByUserID, 
+                                ReleaseApplicationID = @ReleaseApplicationID
+                            WHERE DetainID = @DetainID";
+
+            SqlCommand Command = new SqlCommand(Query, Connection);
+            Command.Parameters.AddWithValue("@DetainID", DetainID);
+            Command.Parameters.AddWithValue("@ReleaseDate", ReleaseDate);
+            Command.Parameters.AddWithValue("@ReleasedByUserID", ReleasedByUserID);
+            Command.Parameters.AddWithValue("@ReleaseApplicationID", ReleaseApplicationID);
+
+            try
+            {
+                Connection.Open();
+
+                RowsAffected = Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                Connection.Close();
+            }
+
+            return RowsAffected > 0;
         }
     }
 }

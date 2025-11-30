@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,17 +16,55 @@ namespace DVLD.License.Controls
 {
     public partial class ctrlDriverLicenseInfo : UserControl
     {
+        private int _LicenseID = -1;
         clsLicense _License;
         clsPerson _PersonInfo;
+        public int LicenseID
+        {
+            get {  return _LicenseID; }
+        }
+        public clsLicense SelectedLicenseInfo
+        {
+            get { return _License; }
+        }
+
         public ctrlDriverLicenseInfo()
         {
             InitializeComponent();
         }
 
+        private void _LoadPersonImage()
+        {
+            pbImage.Image = _PersonInfo.Gendor == 0 ? Resources.Male_512 : Resources.Female_512;
+
+            string ImagePath = _PersonInfo.ImagePath;
+
+            if (ImagePath != "")
+            {
+                if (File.Exists(ImagePath)) 
+                    pbImage.ImageLocation = _PersonInfo.ImagePath;
+                else
+                    MessageBox.Show($"Could not Find this Image : {ImagePath}",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
+        }
+
         public void FillDriverLicensesData(int LicenseID)
         {
-            _License = clsLicense.FindByLicenseID(LicenseID);
+            _LicenseID = LicenseID;
+            _License = clsLicense.FindByLicenseID(_LicenseID);
+
+            if (_License == null)
+            {
+                MessageBox.Show($"Could not Find License ID = {LicenseID}",
+                    "Succeeded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _LicenseID = -1;
+                return;
+            }
+
             _PersonInfo = _License.DriveInfo.PersonInfo;
+            _LoadPersonImage();
 
             lblLicenseClass.Text = _License.LicenseClassInfo.ClassName;
             lblName.Text = _PersonInfo.FullName;
@@ -33,16 +72,6 @@ namespace DVLD.License.Controls
             lblNationalNo.Text = _PersonInfo.NationalNo;
             lblGendor.Text = _PersonInfo.Gendor == 0 ? "Male" : "Female";
             pbGendor.Image = _PersonInfo.Gendor == 0 ? Resources.Man_32 : Resources.Woman_32;
-
-            if (_PersonInfo.ImagePath != "")
-            {
-                pbImage.Load(_PersonInfo.ImagePath);
-            }
-            else
-            {
-                pbImage.Image = lblGendor.Text == "Male" ? Resources.Male_512 : Resources.Female_512;
-            }
-
             lblIssueDate.Text = clsFormat.DateToShort(_License.IssueDate);
             lblIssueReason.Text = _License.IssueReasonText;
             lblNotes.Text = _License.Notes == "" ? "No Notes" : _License.Notes;

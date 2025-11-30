@@ -23,12 +23,7 @@ namespace DVLD.License.Local_Licenses
         {
             InitializeComponent();
 
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
-            _LDLApplicationID = LDLApplicationID;
-
-            _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
+            this._LDLApplicationID = LDLApplicationID;
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -38,54 +33,52 @@ namespace DVLD.License.Local_Licenses
 
         private void frmIssueDriverLicenseFirstTime_Load(object sender, EventArgs e)
         {
+            _LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(_LDLApplicationID);
+
+            if (_LDLApplication == null)
+            {
+                MessageBox.Show($"Error: No Local Driving License Application with ID = {_LDLApplicationID}",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
+
+            if (!clsTest.PassedAllTests(_LDLApplicationID))
+            {
+                MessageBox.Show("Person Should Pass All Tests First.", "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
+
+            int LicenseID = _LDLApplication.GetActiveLicenseID();
+            if (LicenseID != -1)
+            {
+                MessageBox.Show($"Person Already has License Before with License ID = {LicenseID}", "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
+
             ctrlDrivingLicenseApplicationInfo1.FillDrivingApplicationData(_LDLApplicationID);
         }
 
         private void btnIssue_Click(object sender, EventArgs e)
         {
-            clsDriver Driver = clsDriver.FindByPersonID(_LDLApplication.ApplicantPersonID);
+            int LicenseID = _LDLApplication.IssueLicenseForTheFirstTime(txtNotes.Text.Trim(), clsGlobal.CurrentUser.UserID);
 
-            if (Driver == null)
+            if (LicenseID != -1)
             {
-                Driver = new clsDriver();
-                Driver.PersonID = _LDLApplication.ApplicantPersonID;
-                Driver.CreatedByUserID = clsGlobal.CurrentUser.UserID;
+                MessageBox.Show("License Issued Successfully with License ID = " + LicenseID.ToString(),
+                    "Succeeded", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (!Driver.Save())
-                {
-                    MessageBox.Show("Failed to Create Driver Record.", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            clsLicense License = new clsLicense();
-
-            License.ApplicationID = _LDLApplication.ApplicationID;
-            License.DriverID = Driver.DriverID;
-            License.LicenseClass = _LDLApplication.LicenseClassID;
-            License.IssueDate = DateTime.Now;
-            License.ExpirationDate = License.IssueDate.AddYears(_LDLApplication.LicenseClassInfo.DefaultValidityLength);
-            License.Notes = txtNotes.Text;
-            License.PaidFees = _LDLApplication.LicenseClassInfo.ClassFees;
-            License.IsActive = true;
-            License.IssueReason = clsLicense.enIssueReason.FirstTime;
-            License.CreatedByUserID = clsGlobal.CurrentUser.UserID;
-
-            if (License.Save())
-            {
-                LicenseCreated?.Invoke(this, License.LicenseID);
-
-                if (MessageBox.Show($"License issued successfully with ID = {License.LicenseID}", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information) == DialogResult.OK)
-                {
-                    this.Close();
-                }
+                LicenseCreated?.Invoke(this, LicenseID);
+                this.Close();
             }
             else
             {
-                MessageBox.Show("Failed to issue license.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("License Was not Issued !",
+                    "Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
         }
     }
 }

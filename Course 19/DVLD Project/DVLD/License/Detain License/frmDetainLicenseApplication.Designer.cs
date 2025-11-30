@@ -313,11 +313,12 @@
             // 
             // ctrlDriverInternationalLicenseInfoWithFilter1
             // 
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = true;
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Location = new System.Drawing.Point(8, 45);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Name = "ctrlDriverInternationalLicenseInfoWithFilter1";
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Size = new System.Drawing.Size(893, 473);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.TabIndex = 225;
-            this.ctrlDriverInternationalLicenseInfoWithFilter1.SearchEnded += new DVLD.License.International_Licenses.Controls.ctrlDriverLicenseInfoWithFilter.SearchEndedEventHandler(this.ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded);
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.OnSearchEnded += new System.Action<int>(this.ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded);
             // 
             // errorProvider1
             // 

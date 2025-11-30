@@ -298,18 +298,10 @@ namespace DVLD.Applications.Local_Driving_License
 
         private void tsmiIssueDrivingLicenseFirstTime_Click(object sender, EventArgs e)
         {
-            int LDLApplicationID = _CurrentApplication.LocalDrivingLicenseApplicationID;
-            clsLocalDrivingLicenseApplication LDLApplication = clsLocalDrivingLicenseApplication.FindByLDLApplicationID(LDLApplicationID);
-
-            frmIssueDriverLicenseFirstTime frm = new frmIssueDriverLicenseFirstTime(LDLApplicationID);
-
-            frm.LicenseCreated += (s, args) =>
-            {
-                LDLApplication.SetComplete();
-                _RefreshLDLApplicationsList();
-            };
-
+            frmIssueDriverLicenseFirstTime frm = new frmIssueDriverLicenseFirstTime(_CurrentApplication.LocalDrivingLicenseApplicationID);
             frm.ShowDialog();
+
+            _RefreshLDLApplicationsList();
         }
     }
 }

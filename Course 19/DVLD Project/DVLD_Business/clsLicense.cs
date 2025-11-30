@@ -258,29 +258,28 @@ namespace DVLD_Business
             return DetainedLicense.DetainID;
         }
 
-        public int Release(int CreatedByUserID)
+        public bool Release(int ReleasedByUserID, ref int ReleaseApplicationID)
         {
             clsApplication ReleaseLicenseApplication = new clsApplication();
 
             ReleaseLicenseApplication.ApplicantPersonID = this.DriveInfo.PersonID;
+            ReleaseLicenseApplication.ApplicationDate = DateTime.Now;
+            ReleaseLicenseApplication.LastStatusDate = DateTime.Now;
+            ReleaseLicenseApplication.ApplicationStatus = clsApplication.enApplicationStatus.Completed;
             ReleaseLicenseApplication.ApplicationTypeID = (int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense;
-            ReleaseLicenseApplication.PaidFees = clsApplicationType.Find((int)ReleaseLicenseApplication.ApplicationTypeID).ApplicationTypeFees;
-            ReleaseLicenseApplication.CreatedByUserID = CreatedByUserID;
+            ReleaseLicenseApplication.PaidFees = clsApplicationType
+                .Find((int)clsApplication.enApplicationType.ReleaseDetainedDrivingLicense).ApplicationTypeFees;
+            ReleaseLicenseApplication.CreatedByUserID = ReleasedByUserID;
 
             if (!ReleaseLicenseApplication.Save())
-                return -1;
+            {
+                ReleaseApplicationID = -1;
+                return false;
+            }
 
-            clsDetainedLicense DetainedLicense = clsDetainedLicense.FindByLicenseID(this.LicenseID);
+            ReleaseApplicationID = ReleaseLicenseApplication.ApplicationID;
 
-            DetainedLicense.IsReleased = true;
-            DetainedLicense.ReleaseDate = DateTime.Now;
-            DetainedLicense.ReleasedByUserID = CreatedByUserID;
-            DetainedLicense.ReleaseApplicationID = ReleaseLicenseApplication.ApplicationID;
-
-            if(!DetainedLicense.Save())
-                return -1;
-
-            return ReleaseLicenseApplication.ApplicationID;
+            return this.DetainedInfo.ReleaseDetainedLicenses(ReleasedByUserID, ReleaseLicenseApplication.ApplicationDate, ReleaseApplicationID);
         }
     }
 }

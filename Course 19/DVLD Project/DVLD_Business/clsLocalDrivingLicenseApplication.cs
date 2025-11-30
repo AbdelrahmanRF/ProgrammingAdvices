@@ -175,5 +175,45 @@ namespace DVLD_Business
         {
             return clsTest.FindLatestTestPerPersonAndLicenseClass(this.ApplicantPersonID, this.LicenseClassID, TestTypeID);
         }
+
+        public int IssueLicenseForTheFirstTime(string Notes, int CreatedByUserID)
+        {
+            clsDriver Driver = clsDriver.FindByPersonID(this.ApplicantPersonID);
+
+            if (Driver == null)
+            {
+                Driver = new clsDriver();
+                Driver.PersonID = this.ApplicantPersonID;
+                Driver.CreatedByUserID = CreatedByUserID;
+
+                if (!Driver.Save())
+                {
+                    return -1;
+                }
+            }
+
+            clsLicense License = new clsLicense();
+
+            License.ApplicationID = this.ApplicationID;
+            License.DriverID = Driver.DriverID;
+            License.LicenseClass = this.LicenseClassID;
+            License.IssueDate = DateTime.Now;
+            License.ExpirationDate = License.IssueDate.AddYears(this.LicenseClassInfo.DefaultValidityLength);
+            License.Notes = Notes;
+            License.PaidFees = this.LicenseClassInfo.ClassFees;
+            License.IsActive = true;
+            License.IssueReason = clsLicense.enIssueReason.FirstTime;
+            License.CreatedByUserID = CreatedByUserID;
+
+
+            if (License.Save())
+            {
+                this.SetComplete();
+                return License.LicenseID;
+            }
+                
+
+            return -1;
+        }
     }
 }

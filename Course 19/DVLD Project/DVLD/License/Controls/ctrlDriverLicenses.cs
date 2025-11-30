@@ -16,18 +16,22 @@ namespace DVLD.License.Controls
     public partial class ctrlDriverLicenses : UserControl
     {
         int _DriverID;
+        clsDriver _Driver;
+        DataTable _LocalLicenses;
+        DataTable _InternationalLicenses;
         public ctrlDriverLicenses()
         {
             InitializeComponent();
         }
 
-        public void FillDriverLicensesHistory(int DriverID)
+        private void _LoadLocalLicenses()
         {
-            DataTable DT = clsLicense.GetAllDriverLicenses(DriverID);
-            dgvLocalLicensesHistory.DataSource = DT;
-            lblTotalLocalLicensesRecords.Text = DT.Rows.Count.ToString();
+            _LocalLicenses = clsLicense.GetAllDriverLicenses(_DriverID);
+            dgvLocalLicensesHistory.DataSource = _LocalLicenses;
+            lblTotalLocalLicensesRecords.Text = dgvLocalLicensesHistory.Rows.Count.ToString();
 
-            if (dgvLocalLicensesHistory.Rows.Count > 0 )
+
+            if (dgvLocalLicensesHistory.Rows.Count > 0)
             {
                 dgvLocalLicensesHistory.Columns[0].HeaderText = "Lic.ID";
                 dgvLocalLicensesHistory.Columns[1].HeaderText = "App.ID";
@@ -36,10 +40,13 @@ namespace DVLD.License.Controls
                 dgvLocalLicensesHistory.Columns[4].HeaderText = "Expiration Date";
                 dgvLocalLicensesHistory.Columns[5].HeaderText = "Is Active";
             }
+        }
 
-            DT = clsInternationalLicense.GetAllDriverInternationalLicenses(DriverID);
-            dgvInternationalLicensesHistory.DataSource = DT;
-            lblTotalInternationalLicensesRecords.Text = DT.Rows.Count.ToString();
+        private void _LoadInternationalLicenses()
+        {
+            _InternationalLicenses = clsInternationalLicense.GetAllDriverInternationalLicenses(_DriverID);
+            dgvInternationalLicensesHistory.DataSource = _InternationalLicenses;
+            lblTotalInternationalLicensesRecords.Text = dgvInternationalLicensesHistory.Rows.Count.ToString();
 
             if (dgvInternationalLicensesHistory.Rows.Count > 0)
             {
@@ -50,6 +57,37 @@ namespace DVLD.License.Controls
                 dgvInternationalLicensesHistory.Columns[4].HeaderText = "Expiration Date";
                 dgvInternationalLicensesHistory.Columns[5].HeaderText = "Is Active";
             }
+        }
+
+        public void FillDriverLicensesHistory(int DriverID)
+        {
+            _DriverID = DriverID;
+            _Driver = clsDriver.FindByDriverID(_DriverID);
+
+            if (_Driver == null)
+            {
+                MessageBox.Show($"There is no Driver With ID = {_DriverID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _LoadLocalLicenses();
+            _LoadInternationalLicenses();
+        }
+
+        public void FillDriverLicensesHistoryByPersonID(int PersonID)
+        {
+            _Driver = clsDriver.FindByPersonID(PersonID);
+
+            if (_Driver == null)
+            {
+                MessageBox.Show($"There is no Driver Linked With Person ID = {PersonID}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _DriverID = _Driver.DriverID;
+
+            _LoadLocalLicenses();
+            _LoadInternationalLicenses();
         }
 
         private void tsmiShowLocalLicenseInfo_Click(object sender, EventArgs e)

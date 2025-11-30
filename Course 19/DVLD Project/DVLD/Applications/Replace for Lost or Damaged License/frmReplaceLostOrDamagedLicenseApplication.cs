@@ -23,10 +23,6 @@ namespace DVLD.Applications.Replace_for_Lost_or_Damaged_License
         public frmReplaceLostOrDamagedLicenseApplication()
         {
             InitializeComponent();
-
-            this.MinimizeBox = false;
-            this.MaximizeBox = false;
-
         }
 
         private void _UpdateFormApplicationType()
@@ -68,7 +64,7 @@ namespace DVLD.Applications.Replace_for_Lost_or_Damaged_License
             _UpdateFormApplicationType();
         }
 
-        private void ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded(object sender, int LocalLicenseID)
+        private void ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded(int LocalLicenseID)
         {
             btnIssue.Enabled = false;
             linkShowLicenseHistory.Enabled = false;
@@ -80,7 +76,7 @@ namespace DVLD.Applications.Replace_for_Lost_or_Damaged_License
                 return;
             }
 
-            _OldLicense = clsLicense.FindByLicenseID(LocalLicenseID);
+            _OldLicense = ctrlDriverInternationalLicenseInfoWithFilter1.SelectedLicense;
             linkShowLicenseHistory.Enabled = true;
 
             if (!_OldLicense.IsActive)
@@ -105,7 +101,7 @@ namespace DVLD.Applications.Replace_for_Lost_or_Damaged_License
                         "License Issued", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     btnIssue.Enabled = false;
-                    ctrlDriverInternationalLicenseInfoWithFilter1.DisableSearch();
+                    ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = false;
                     linkShowNewLicenseInfo.Enabled = true;
 
                     lblReplaceLicenseApplicationID.Text = _ReplacedLicense.ApplicationID.ToString();

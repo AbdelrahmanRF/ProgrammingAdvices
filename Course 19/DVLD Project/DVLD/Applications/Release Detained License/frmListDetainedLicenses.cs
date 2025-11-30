@@ -146,7 +146,7 @@ namespace DVLD.Applications.Release_Detained_License
 
         private void cmsRecordOptions_Opening(object sender, CancelEventArgs e)
         {
-            tsmiReleaseDetainedLicense.Enabled = _CurrentLicense.IsDetained;
+            tsmiReleaseDetainedLicense.Enabled = !(bool)dgvDetainedLicensesList.CurrentRow.Cells[3].Value;
         }
 
         private void tsmiShowPersonDetails_Click(object sender, EventArgs e)

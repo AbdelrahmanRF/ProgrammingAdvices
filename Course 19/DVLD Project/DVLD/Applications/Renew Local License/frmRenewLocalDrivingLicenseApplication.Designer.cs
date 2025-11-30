@@ -517,6 +517,7 @@
             // btnClose
             // 
             this.btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClose.Image = global::DVLD.Properties.Resources.Close_32;
             this.btnClose.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -531,16 +532,19 @@
             // 
             // ctrlDriverInternationalLicenseInfoWithFilter1
             // 
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.FilterEnabled = true;
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Location = new System.Drawing.Point(12, 12);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Name = "ctrlDriverInternationalLicenseInfoWithFilter1";
             this.ctrlDriverInternationalLicenseInfoWithFilter1.Size = new System.Drawing.Size(893, 473);
             this.ctrlDriverInternationalLicenseInfoWithFilter1.TabIndex = 1;
-            this.ctrlDriverInternationalLicenseInfoWithFilter1.SearchEnded += new DVLD.License.International_Licenses.Controls.ctrlDriverLicenseInfoWithFilter.SearchEndedEventHandler(this.ctrlDriverInternationalLicenseInfoWithFilter1_SearchEnded);
+            this.ctrlDriverInternationalLicenseInfoWithFilter1.OnSearchEnded += new System.Action<int>(this.ctrlDriverInternationalLicenseInfoWithFilter1_OnSearchEnded);
             // 
             // frmRenewLocalDrivingLicenseApplication
             // 
+            this.AcceptButton = this.btnRenew;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(911, 836);
             this.Controls.Add(this.btnRenew);
             this.Controls.Add(this.btnClose);
@@ -548,6 +552,8 @@
             this.Controls.Add(this.linkShowLicenseHistory);
             this.Controls.Add(this.gbApplicationInfo);
             this.Controls.Add(this.ctrlDriverInternationalLicenseInfoWithFilter1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmRenewLocalDrivingLicenseApplication";
             this.Text = "Renew Local Driving License";
             this.Load += new System.EventHandler(this.frmRenewLocalDrivingLicenseApplication_Load);
