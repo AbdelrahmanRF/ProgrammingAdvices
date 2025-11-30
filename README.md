@@ -40,6 +40,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 16         | ✅ Completed   | OOP In C#                              |
 | 17         | ✅ Completed   | Database (Projects & Practice)         |
 | 18         | ✅ Completed   | C# & Database Connectivity             |
+| 19         | ✅ Completed   | DVLD Project                           |
 | ...        | 🚧 In Progress | Continuing toward Course 23            |
 
 ---
