@@ -20,28 +20,28 @@ This repository is my personal workspace for learning and applying concepts from
 
 ## 🚀 Progress Overview
 
-| **Course** | **Status**     | **Notes**                               |
-| ---------- | --------------  | -------------------------------------- |
-| 01         | ✅ Completed   | Foundations Level 1                    |
-| 02         | ✅ Completed   | Problem Solving in theory              |
-| 03         | ✅ Completed   | C++ Level 1                            |
-| 04         | ✅ Completed   | Problem Solving #1                     |
-| 05         | ✅ Completed   | Problem Solving #2                     |
-| 06         | ✅ Completed   | C++ Level 2                            |
-| 07         | ✅ Completed   | Problem Solving #3                     |
-| 08         | ✅ Completed   | Problem Solving #4                     |
-| 09         | ✅ Completed   | Foundations Level 2                    |
-| 10         | ✅ Completed   | OOP (Concepts)                         |
-| 11         | ✅ Completed   | OOP (Applications)                     |
-| 12         | ✅ Completed   | Data Structures Level 1                |
-| 13         | ✅ Completed   | Problem Solving #5                     |
-| 14         | ✅ Completed   | C# Level 1                             |
-| 15         | ✅ Completed   | Database Level 1                       |
-| 16         | ✅ Completed   | OOP In C#                              |
-| 17         | ✅ Completed   | Database (Projects & Practice)         |
-| 18         | ✅ Completed   | C# & Database Connectivity             |
-| 19         | ✅ Completed   | DVLD Project                           |
-| ...        | 🚧 In Progress | Continuing toward Course 23            |
+| **Course** | **Status**      | **Notes**                                                                                                |
+| ---------- | --------------  | -------------------------------------------------------------------------------------------------------  |
+| 01         | ✅ Completed   | Foundations Level 1                                                                                       |
+| 02         | ✅ Completed   | Problem Solving in theory                                                                                 |
+| 03         | ✅ Completed   | C++ Level 1                                                                                               |
+| 04         | ✅ Completed   | Problem Solving #1                                                                                        |
+| 05         | ✅ Completed   | Problem Solving #2                                                                                        |
+| 06         | ✅ Completed   | C++ Level 2                                                                                               |
+| 07         | ✅ Completed   | Problem Solving #3                                                                                        |
+| 08         | ✅ Completed   | Problem Solving #4                                                                                        |
+| 09         | ✅ Completed   | Foundations Level 2                                                                                       |
+| 10         | ✅ Completed   | OOP (Concepts)                                                                                            |
+| 11         | ✅ Completed   | OOP (Applications)                                                                                        |
+| 12         | ✅ Completed   | Data Structures Level 1                                                                                   |
+| 13         | ✅ Completed   | Problem Solving #5                                                                                        |
+| 14         | ✅ Completed   | C# Level 1                                                                                                |
+| 15         | ✅ Completed   | Database Level 1                                                                                          |
+| 16         | ✅ Completed   | OOP In C#                                                                                                 |
+| 17         | ✅ Completed   | Database (Projects & Practice)                                                                            |
+| 18         | ✅ Completed   | C# & Database Connectivity                                                                                |
+| 19         | ✅ Completed   | [DVLD Project](https://github.com/AbdelrahmanRF/ProgrammingAdvices/tree/main/Course%2019/DVLD%20Project)  |
+| ...        | 🚧 In Progress | Continuing toward Course 23                                                                               |
 
 ---
 
