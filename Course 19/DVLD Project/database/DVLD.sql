@@ -38,7 +38,7 @@ CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     PersonID INT NOT NULL,
     UserName NVARCHAR(20) NOT NULL,
-    Password NVARCHAR(20) NOT NULL,
+    Password NVARCHAR(64) NOT NULL,
     IsActive BIT NOT NULL,
     FOREIGN KEY (PersonID) REFERENCES People(PersonID)
 );

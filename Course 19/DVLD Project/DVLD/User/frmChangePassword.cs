@@ -54,7 +54,7 @@ namespace DVLD.User
         {
             TextBox textBox = sender as TextBox;
 
-            if (textBox.Text != _User.Password)
+            if (clsHash.ComputeHash(textBox.Text) != _User.Password)
             {
                 e.Cancel = true;
                 textBox.Focus();

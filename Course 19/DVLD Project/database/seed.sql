@@ -62,8 +62,8 @@ SET IDENTITY_INSERT People OFF;
 -- 6. Seed Users table
 SET IDENTITY_INSERT Users ON;
 INSERT INTO Users (UserID, PersonID, UserName, Password, IsActive) VALUES
-(1, 1, 'admin', 'admin123', 1234),
-(2, 2, 'ahmedz', 'pass123', 123);
+(1, 1, 'admin', 'admin123', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'),
+(2, 2, 'ahmedz', 'pass123', '9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c');
 SET IDENTITY_INSERT Users OFF;
 
 -- 7. Seed Applications table (for initial test data)

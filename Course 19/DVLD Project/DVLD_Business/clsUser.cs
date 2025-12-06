@@ -45,7 +45,7 @@ namespace DVLD_Business
             int userID = -1, personID = -1;
             bool isActive = false;
 
-            if (clsUserData.GetUserByUsernameAndPassword(username, password, ref userID, ref personID, ref isActive))
+            if (clsUserData.GetUserByUsernameAndPassword(username, clsHash.ComputeHash(password), ref userID, ref personID, ref isActive))
                 return new clsUser(userID, personID, username, password, isActive);
 
             return null;
@@ -79,19 +79,19 @@ namespace DVLD_Business
 
         private bool _AddNewUser()
         {
-            this.UserID = clsUserData.AddNewUser(this.PersonID, this.Username, this.Password, this.isActive);
+            this.UserID = clsUserData.AddNewUser(this.PersonID, this.Username, clsHash.ComputeHash(this.Password), this.isActive);
 
             return UserID != -1;
         }
 
         private bool _UpdateUser()
         {
-            return clsUserData.UpdateUser(this.UserID, this.PersonID, this.Username, this.Password, this.isActive);
+            return clsUserData.UpdateUser(this.UserID, this.PersonID, this.Username, clsHash.ComputeHash(this.Password), this.isActive);
         }
 
         public bool UpdatePassword()
         {
-            return clsUserData.UpdatePassword(this.UserID, this.Password);
+            return clsUserData.UpdatePassword(this.UserID, clsHash.ComputeHash(this.Password));
         }
 
         public bool Save()
