@@ -301,3 +301,613 @@ WHERE CustomerID = @CustomerID;
 * They reduce hard-coded values
 * Essential for reports, logic, and stored procedures
 * Core building block for advanced T-SQL programming
+
+---
+
+## IF Statement in T-SQL
+
+---
+
+## Introduction to IF Statement in T-SQL
+
+The **IF statement** in T-SQL is a control-of-flow construct that allows SQL Server to execute different blocks of code based on whether a condition evaluates to **TRUE** or **FALSE**. It enables decision-making logic similar to `if-then-else` in traditional programming languages.
+
+---
+
+## IF Statement Syntax
+
+```sql
+IF condition
+BEGIN
+    -- Executed when condition is TRUE
+END
+ELSE
+BEGIN
+    -- Executed when condition is FALSE
+END
+```
+
+* **condition**: Boolean expression
+* **BEGIN / END**: Used when executing multiple statements
+
+---
+
+## Simple IF (Without ELSE) – Example
+
+### Scenario: Salary Adjustment Check
+
+```sql
+DECLARE @MonthlySalary DECIMAL(10,2) = 4200;
+
+IF @MonthlySalary < 5000
+BEGIN
+    PRINT 'Employee qualifies for salary review';
+END
+```
+
+---
+
+## IF…ELSE Statement – Business Rule Example
+
+### Scenario: Contract Type Classification
+
+```sql
+DECLARE @YearsOfService INT = 7;
+
+IF @YearsOfService >= 5
+BEGIN
+    PRINT 'Eligible for permanent contract';
+END
+ELSE
+BEGIN
+    PRINT 'Temporary contract';
+END
+```
+
+---
+
+## Nested IF Statements
+
+### Scenario: Employee Bonus Eligibility System
+
+Rules:
+
+1. Employee must be **Active**
+2. Experience level matters
+3. Performance rating affects bonus
+
+```sql
+DECLARE @IsActive BIT = 1;
+DECLARE @YearsOfExperience INT = 6;
+DECLARE @PerformanceRating INT = 4; -- Scale 1–5
+DECLARE @Bonus DECIMAL(5,2);
+
+IF @IsActive = 1
+BEGIN
+    IF @YearsOfExperience >= 5
+    BEGIN
+        IF @PerformanceRating >= 4
+        BEGIN
+            SET @Bonus = 0.20;
+            PRINT 'Excellent employee – 20% bonus';
+        END
+        ELSE
+        BEGIN
+            SET @Bonus = 0.10;
+            PRINT 'Experienced employee – 10% bonus';
+        END
+    END
+    ELSE
+    BEGIN
+        IF @PerformanceRating >= 4
+        BEGIN
+            SET @Bonus = 0.05;
+            PRINT 'High performer with low experience – 5% bonus';
+        END
+        ELSE
+        BEGIN
+            SET @Bonus = 0.00;
+            PRINT 'No bonus eligibility';
+        END
+    END
+END
+ELSE
+BEGIN
+    SET @Bonus = 0.00;
+    PRINT 'Inactive employee – no bonus';
+END
+```
+
+---
+
+## Using IF with Variables
+
+### Scenario: Access Control by Age
+
+```sql
+DECLARE @Age INT = 19;
+
+IF @Age >= 18
+BEGIN
+    PRINT 'Access granted';
+END
+ELSE
+BEGIN
+    PRINT 'Access denied';
+END
+```
+
+---
+
+## Conditional Assignment Using IF
+
+### Scenario: Selecting Maximum Value
+
+```sql
+DECLARE @A INT = 15;
+DECLARE @B INT = 22;
+DECLARE @MaxValue INT;
+
+IF @A > @B
+    SET @MaxValue = @A;
+ELSE
+    SET @MaxValue = @B;
+
+PRINT @MaxValue;
+```
+
+---
+
+## IF with Logical Operators (AND / OR / NOT)
+
+### Scenario 1: Loan Eligibility
+
+```sql
+DECLARE @Age INT = 30;
+DECLARE @Salary DECIMAL(10,2) = 5200;
+
+IF @Age >= 21 AND @Salary >= 5000
+BEGIN
+    PRINT 'Eligible for loan';
+END
+ELSE
+BEGIN
+    PRINT 'Not eligible for loan';
+END
+```
+
+---
+
+### Scenario 2: Student Activity Qualification
+
+```sql
+DECLARE @Grade CHAR(1) = 'B';
+DECLARE @AttendancePercentage INT = 75;
+
+IF @Grade = 'A' OR @AttendancePercentage >= 70
+BEGIN
+    PRINT 'Qualified for extra activities';
+END
+ELSE
+BEGIN
+    PRINT 'Not qualified';
+END
+```
+
+---
+
+### Scenario 3: Customer Status Check
+
+```sql
+DECLARE @CustomerStatus NVARCHAR(10) = 'Inactive';
+
+IF NOT (@CustomerStatus = 'Active')
+BEGIN
+    PRINT 'Send re-engagement email';
+END
+ELSE
+BEGIN
+    PRINT 'Customer is active';
+END
+```
+
+---
+
+## Error Handling Using IF and @@ERROR (Legacy)
+
+```sql
+UPDATE Employees
+SET MonthlySalary = MonthlySalary * 1.1
+WHERE DepartmentID = 5;
+
+IF @@ERROR <> 0
+BEGIN
+    PRINT 'An error occurred during update';
+END
+```
+
+### Key Notes about @@ERROR
+
+* Holds the error number of the **last executed statement**
+* Resets after every statement
+* Must be checked immediately
+* Largely replaced by `TRY...CATCH`
+
+---
+
+## IF with EXISTS (Recommended Pattern)
+
+### Scenario: Employee Existence Check
+
+```sql
+IF EXISTS (SELECT 1 FROM Employees WHERE Name = 'John Smith')
+BEGIN
+    PRINT 'Employee exists';
+END
+ELSE
+BEGIN
+    PRINT 'Employee does not exist';
+END
+```
+
+---
+
+## Best Practices
+
+* Keep IF logic **clear and readable**
+* Avoid deep nesting when possible
+* Use `CASE` for value mapping
+* Prefer `TRY...CATCH` over `@@ERROR`
+* Use `EXISTS` instead of `COUNT(*)` for existence checks
+
+---
+
+## Summary
+
+* IF statements control execution flow in T-SQL
+* Suitable for business rules, validations, and decision-making
+* Can be nested for complex logic
+* Must be used carefully to maintain readability and performance
+* Fundamental for stored procedures and enterprise SQL logic
+
+---
+
+## CROSS APPLY
+
+### What is CROSS APPLY?
+
+`CROSS APPLY` is a SQL Server–specific operator used to join each row from an outer query with the result of a table-valued expression (subquery or function) that **depends on that row**.
+
+You can think of it as:
+
+* A **row-by-row execution**
+* Similar to a **correlated subquery**, but more powerful and readable
+
+If the subquery returns **no rows**, the outer row is **excluded** (like an INNER JOIN).
+
+### Why CROSS APPLY Exists
+
+Standard JOINs work when both sides are independent sets.
+`CROSS APPLY` is used when:
+
+* The right-side query **needs values from the left row**
+* You need **TOP, ORDER BY, calculations, or filters per row**
+
+### Mental Model
+
+> "For each row on the left, run the query on the right."
+
+### Typical Use Cases
+
+* TOP N per group (latest employee per department)
+* Per-row calculations (annual salary, serving time)
+* Calling table-valued functions
+
+### Example
+
+```sql
+SELECT
+    D.Name AS DepartmentName,
+    E.FullName,
+    E.HireDate
+FROM Departments D
+CROSS APPLY (
+    SELECT TOP 1
+        CONCAT(FirstName, ' ', LastName) AS FullName,
+        HireDate
+    FROM Employees
+    WHERE DepartmentID = D.ID
+    ORDER BY HireDate DESC
+) E;
+```
+
+Here:
+
+* SQL loops through **each department**
+* For each one, it finds the **most recent hire**
+
+---
+
+## CTE (Common Table Expression)
+
+### What is a CTE?
+
+A CTE is a **temporary named result set** that exists only for the duration of a single query.
+
+It improves:
+
+* Readability
+* Logical separation
+* Reusability inside the same query
+
+### Syntax
+
+```sql
+WITH CTE_Name AS (
+    SELECT ...
+)
+SELECT ... FROM CTE_Name;
+```
+
+### Key Characteristics
+
+* Exists only for **one statement**
+* Cannot be indexed
+* Can be referenced multiple times in the main query
+
+### When to Use CTE
+
+* Complex calculations
+* Aggregations
+* Recursive logic
+* Replacing deeply nested subqueries
+
+### Example
+
+```sql
+WITH SalaryCTE AS (
+    SELECT
+        ID,
+        AnnualSalary = ISNULL(MonthlySalary, 0) * 12
+    FROM Employees
+)
+SELECT * FROM SalaryCTE;
+```
+
+### CTE vs CROSS APPLY
+
+| Feature   | CTE                      | CROSS APPLY          |
+| --------- | ------------------------ | -------------------- |
+| Scope     | Query-level              | Row-level            |
+| Execution | Set-based                | Per-row              |
+| Best for  | Readability, aggregation | Per-row logic, TOP N |
+
+---
+
+## CASE Statement in T-SQL
+
+### Introduction
+
+T-SQL does not have a `SWITCH` statement like C# or Java.
+
+Instead, SQL Server provides the `CASE` statement, which is the **closest equivalent**, but with an important limitation:
+
+> `CASE` works **inside queries**, not as a control-of-flow structure.
+
+You cannot use CASE to control execution like IF/ELSE — only to return values.
+
+---
+
+### Why CASE Is Not IF / SWITCH
+
+* `CASE` **returns a value**
+* `IF` **controls execution**
+
+If you need logic outside a query, use:
+
+* `IF...ELSE`
+* `WHILE`
+* `TRY...CATCH`
+
+---
+
+### Types of CASE Statements
+
+#### 1️⃣ Simple CASE (SWITCH-like)
+
+```sql
+CASE input_expression
+    WHEN value1 THEN result1
+    WHEN value2 THEN result2
+    ELSE default_result
+END
+```
+
+#### Example
+
+```sql
+SELECT
+    EmployeeID,
+    CASE DepartmentID
+        WHEN 1 THEN 'Engineering'
+        WHEN 2 THEN 'Human Resources'
+        WHEN 3 THEN 'Sales'
+        ELSE 'Other'
+    END AS DepartmentName
+FROM Employees;
+```
+
+---
+
+#### 2️⃣ Searched CASE (More Flexible)
+
+```sql
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    ELSE default_result
+END
+```
+
+---
+
+### CASE with CROSS APPLY
+
+```sql
+SELECT
+    E.ID,
+    CASE
+        WHEN A.AnnualSalary <= 12000 THEN 'Entry Level'
+        WHEN A.AnnualSalary <= 24000 THEN 'Mid Level'
+        WHEN A.AnnualSalary > 24000 THEN 'Senior Level'
+        ELSE 'Not Specified'
+    END AS EmployeeLevel
+FROM Employees E
+CROSS APPLY (
+    SELECT AnnualSalary = ISNULL(E.MonthlySalary, 0) * 12
+) A;
+```
+
+#### Why This Is Good
+
+* AnnualSalary calculated **once per row**
+* CASE logic becomes cleaner
+* Avoids repeating expressions
+
+---
+
+### CASE with CTE
+
+```sql
+WITH SalaryCTE AS (
+    SELECT
+        ID,
+        AnnualSalary = ISNULL(MonthlySalary, 0) * 12
+    FROM Employees
+)
+SELECT
+    ID,
+    CASE
+        WHEN AnnualSalary <= 12000 THEN 'Entry Level'
+        WHEN AnnualSalary <= 24000 THEN 'Mid Level'
+        WHEN AnnualSalary > 24000 THEN 'Senior Level'
+        ELSE 'Not Specified'
+    END AS EmployeeLevel
+FROM SalaryCTE;
+```
+
+#### When CTE Is Better
+
+* You need to reuse `AnnualSalary`
+* You want logical separation
+
+---
+
+### CASE in ORDER BY (Custom Sorting)
+
+```sql
+SELECT Name, Salary
+FROM Employees
+ORDER BY
+    CASE
+        WHEN Salary > 50000 THEN 1
+        ELSE 2
+    END;
+```
+
+---
+
+### CASE with GROUP BY
+
+```sql
+WITH SalaryLevelCTE AS (
+    SELECT
+        CASE
+            WHEN ISNULL(MonthlySalary, 0) * 12 < 15000 THEN 'Entry'
+            WHEN ISNULL(MonthlySalary, 0) * 12 BETWEEN 15000 AND 30000 THEN 'Mid'
+            WHEN ISNULL(MonthlySalary, 0) * 12 > 30000 THEN 'Senior'
+            ELSE 'Not Specified'
+        END AS SalaryLevel
+    FROM Employees
+)
+SELECT
+    SalaryLevel,
+    COUNT(*) AS NumberOfEmployees
+FROM SalaryLevelCTE
+GROUP BY SalaryLevel
+ORDER BY
+    CASE
+        WHEN SalaryLevel = 'Entry' THEN 1
+        WHEN SalaryLevel = 'Mid' THEN 2
+        ELSE 3
+    END;
+```
+
+---
+
+### CASE in UPDATE Statements
+
+```sql
+UPDATE Employees2
+SET Salary =
+    CASE
+        WHEN PerformanceRating > 90 THEN Salary * 1.15
+        WHEN PerformanceRating BETWEEN 75 AND 90 THEN Salary * 1.10
+        WHEN PerformanceRating BETWEEN 50 AND 74 THEN Salary * 1.05
+        ELSE Salary
+    END;
+```
+
+---
+
+### Nested CASE Statements
+
+```sql
+SELECT
+    Name,
+    Department,
+    Salary,
+    PerformanceRating,
+    Bonus = CASE
+                WHEN Department = 'Sales' THEN
+                    CASE
+                        WHEN PerformanceRating > 90 THEN Salary * 0.15
+                        WHEN PerformanceRating BETWEEN 75 AND 90 THEN Salary * 0.10
+                        ELSE Salary * 0.05
+                    END
+                WHEN Department = 'HR' THEN
+                    CASE
+                        WHEN PerformanceRating > 90 THEN Salary * 0.10
+                        WHEN PerformanceRating BETWEEN 75 AND 90 THEN Salary * 0.08
+                        ELSE Salary * 0.04
+                    END
+                ELSE
+                    CASE
+                        WHEN PerformanceRating > 90 THEN Salary * 0.08
+                        WHEN PerformanceRating BETWEEN 75 AND 90 THEN Salary * 0.06
+                        ELSE Salary * 0.03
+                    END
+            END
+FROM Employees2;
+```
+
+---
+
+### Best Practices
+
+* Prefer **Searched CASE** for complex logic
+* Avoid deep nesting when possible
+* Keep data types consistent
+* Use CTE or CROSS APPLY to simplify CASE logic
+
+---
+
+### Summary
+
+* `CROSS APPLY` → row-by-row logic
+* `CTE` → query-level structure
+* `CASE` → value-based conditional logic inside queries
+
+Used correctly, these tools make T-SQL **clean, readable, and production-ready**.
+
+---
