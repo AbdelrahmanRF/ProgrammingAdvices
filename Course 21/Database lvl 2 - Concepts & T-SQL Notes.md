@@ -911,3 +911,293 @@ FROM Employees2;
 Used correctly, these tools make T-SQL **clean, readable, and production-ready**.
 
 ---
+## Loops Statements in T-SQL
+
+### Introduction
+
+Unlike many procedural programming languages, **T-SQL is a set-based language**. This means SQL Server is optimized to work with *sets of rows* rather than iterating row by row.
+
+However, there are scenarios where **procedural logic** is required. For those cases, T-SQL provides **control-of-flow constructs**, the most important of which is the **WHILE loop**.
+
+> ⚠️ Important: Excessive use of loops usually indicates that a **set-based solution should be considered first**.
+
+---
+
+### Looping Capabilities in T-SQL
+
+T-SQL supports:
+
+* ✅ `WHILE` loop
+* ✅ `BREAK` and `CONTINUE`
+* ⚠️ `CURSOR` (row-by-row, generally discouraged)
+
+T-SQL **does NOT support**:
+
+* ❌ `FOR` loop
+* ❌ `DO...WHILE` loop
+
+Therefore:
+
+> **WHILE is the only native looping construct in T-SQL**
+
+---
+
+### WHILE Loop
+
+#### Conceptual Understanding
+
+A `WHILE` loop repeatedly executes a block of statements **as long as a condition evaluates to TRUE**.
+
+Execution model:
+
+1. Evaluate condition
+2. If TRUE → execute block
+3. Re-evaluate condition
+4. If FALSE → exit loop
+
+---
+
+#### Basic Syntax
+
+```sql
+WHILE <condition>
+BEGIN
+    -- statements
+END
+```
+
+* `<condition>` must be a Boolean expression
+* `BEGIN...END` groups multiple statements
+
+---
+
+### BEGIN...END Blocks
+
+#### Purpose
+
+`BEGIN...END` defines a **logical scope** for multiple statements.
+
+Similar to `{ }` in C-like languages.
+
+Used with:
+
+* `IF...ELSE`
+* `WHILE`
+* Stored procedures
+* Triggers
+
+---
+
+#### Example: BEGIN...END
+
+```sql
+BEGIN
+    PRINT 'Start';
+    SELECT COUNT(*) FROM Employees;
+    PRINT 'End';
+END
+```
+
+---
+
+### BREAK and CONTINUE
+
+#### BREAK
+
+* Immediately exits the loop
+* Control jumps **outside** the loop
+
+#### CONTINUE
+
+* Skips remaining statements in the loop body
+* Jumps to **next iteration**
+
+| Statement | Effect                 |
+| --------- | ---------------------- |
+| BREAK     | Exit loop completely   |
+| CONTINUE  | Skip current iteration |
+
+---
+
+### Examples
+
+---
+
+#### Example 1: Simple Counter
+
+```sql
+DECLARE @Counter INT = 1;
+
+WHILE @Counter <= 5
+BEGIN
+    PRINT 'Counter = ' + CAST(@Counter AS VARCHAR);
+    SET @Counter += 1;
+END
+```
+
+**Use Case:**
+
+* Testing logic
+* Controlled iteration
+
+---
+
+#### Example 2: Reverse Loop
+
+```sql
+DECLARE @Counter INT = 5;
+
+WHILE @Counter > 0
+BEGIN
+    PRINT 'Counter = ' + CAST(@Counter AS VARCHAR);
+    SET @Counter -= 1;
+END
+```
+
+---
+
+#### Example 3: Iterating Through a Table (ID-based)
+
+```sql
+DECLARE @EmployeeID INT;
+DECLARE @MaxID INT;
+DECLARE @EmployeeName NVARCHAR(100);
+
+SELECT @EmployeeID = MIN(ID), @MaxID = MAX(ID)
+FROM Employees;
+
+WHILE @EmployeeID IS NOT NULL AND @EmployeeID <= @MaxID
+BEGIN
+    SELECT @EmployeeName = FirstName + ' ' + LastName
+    FROM Employees
+    WHERE ID = @EmployeeID;
+
+    PRINT @EmployeeName;
+
+    SELECT @EmployeeID = MIN(ID)
+    FROM Employees
+    WHERE ID > @EmployeeID;
+END
+```
+
+**Senior Note:**
+
+> This pattern works but should be avoided for large tables.
+> Prefer **set-based SELECT** unless row-by-row processing is mandatory.
+
+---
+
+#### Example 4: Conditional Exit with BREAK
+
+```sql
+DECLARE @Balance DECIMAL(10,2) = 950;
+DECLARE @Withdrawal DECIMAL(10,2) = 100;
+
+WHILE @Balance > 0
+BEGIN
+    IF @Withdrawal > @Balance
+    BEGIN
+        PRINT 'Insufficient funds';
+        BREAK;
+    END
+
+    SET @Balance -= @Withdrawal;
+    PRINT 'Remaining Balance: ' + CAST(@Balance AS VARCHAR);
+END
+```
+
+**Concepts Covered:**
+
+* Business rule enforcement
+* Immediate termination
+
+---
+
+#### Example 5: Nested WHILE Loops (Multiplication Table)
+
+```sql
+DECLARE @Row INT = 1;
+DECLARE @Col INT;
+
+WHILE @Row <= 10
+BEGIN
+    SET @Col = 1;
+
+    WHILE @Col <= 10
+    BEGIN
+        PRINT CAST(@Row AS VARCHAR) + ' x ' + CAST(@Col AS VARCHAR) + ' = ' + CAST(@Row * @Col AS VARCHAR);
+        SET @Col += 1;
+    END
+
+    PRINT '';
+    SET @Row += 1;
+END
+```
+
+---
+
+#### Example 6: CONTINUE Usage (Skip Even Numbers)
+
+```sql
+DECLARE @Counter INT = 0;
+
+WHILE @Counter < 10
+BEGIN
+    SET @Counter += 1;
+
+    IF @Counter % 2 = 0
+        CONTINUE;
+
+    PRINT 'Odd Number: ' + CAST(@Counter AS VARCHAR);
+END
+```
+
+---
+
+### Performance & Best Practices
+
+#### ⚠️ Important Guidelines
+
+1. **Avoid loops for data processing**
+
+   * SQL Server is optimized for sets
+   * Loops scale poorly
+
+2. **Use loops for:**
+
+   * Administrative scripts
+   * Batch processing
+   * Retry logic
+   * Controlled simulations
+
+3. **Never loop when a SELECT can do the job**
+
+4. **Always guarantee loop termination**
+
+   * Infinite loops can lock sessions
+
+---
+
+### WHILE vs CURSOR
+
+| Feature     | WHILE        | CURSOR                |
+| ----------- | ------------ | --------------------- |
+| Complexity  | Low          | High                  |
+| Performance | Better       | Worse                 |
+| Use case    | Simple logic | Legacy row processing |
+
+> Prefer **WHILE over CURSOR**, but prefer **SET-BASED over WHILE**.
+
+---
+
+### Summary
+
+* T-SQL supports **only WHILE loops** for iteration
+* `BEGIN...END` defines execution scope
+* `BREAK` exits loops immediately
+* `CONTINUE` skips iterations
+* Loops should be used **sparingly and deliberately**
+
+> **Senior Rule:** If you can solve it with a SELECT, don’t use a loop.
+
+---
