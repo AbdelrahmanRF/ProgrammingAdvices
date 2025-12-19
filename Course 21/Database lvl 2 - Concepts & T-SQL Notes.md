@@ -1201,3 +1201,962 @@ END
 > **Senior Rule:** If you can solve it with a SELECT, don’t use a loop.
 
 ---
+
+## Error Handling in T-SQL
+
+### Introduction
+
+Error handling in T-SQL is a critical part of writing reliable and production-ready SQL code. Databases are responsible for **data integrity**, **consistency**, and **transaction safety**, so errors must be handled explicitly and correctly.
+
+Unlike application languages, SQL Server executes statements in a **set-based and transactional environment**, which makes proper error handling essential—especially when data is being modified.
+
+---
+
+### Why Error Handling Is Important
+
+#### 1. Prevents Data Corruption
+
+Without proper error handling, part of a transaction may succeed while another part fails, leaving the database in an inconsistent state.
+
+#### 2. Transaction Safety
+
+TRY...CATCH allows you to **commit or rollback** changes safely.
+
+#### 3. Debugging & Diagnostics
+
+SQL Server provides detailed error metadata that helps identify *what failed*, *where*, and *why*.
+
+#### 4. Professional-Grade SQL Code
+
+Production systems, batch jobs, ETL pipelines, and critical domains (finance, healthcare, HR) **must** have predictable error behavior.
+
+---
+
+### TRY...CATCH in T-SQL
+
+#### Concept
+
+T-SQL uses the **TRY...CATCH** construct for structured error handling.
+
+* **TRY block**: Contains statements that might fail
+* **CATCH block**: Executes when an error occurs in TRY
+
+#### Syntax
+
+```sql
+BEGIN TRY
+    -- Statements that may cause an error
+END TRY
+BEGIN CATCH
+    -- Error handling logic
+END CATCH
+```
+
+Once an error occurs inside the TRY block:
+
+* Execution immediately jumps to the CATCH block
+* Remaining statements inside TRY are skipped
+
+---
+
+### Simple Example: Duplicate Key Error
+
+```sql
+CREATE TABLE Employees3 (
+    EmployeeID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Position NVARCHAR(100)
+);
+
+BEGIN TRY
+    INSERT INTO Employees3 VALUES (1, 'John Doe', 'Sales Manager');
+    INSERT INTO Employees3 VALUES (1, 'Jane Smith', 'Marketing Manager');
+END TRY
+BEGIN CATCH
+    PRINT 'An error occurred: ' + ERROR_MESSAGE();
+END CATCH
+```
+
+#### What Happens
+
+* First INSERT succeeds
+* Second INSERT violates PRIMARY KEY
+* Control moves to CATCH block
+* Error message is printed
+
+---
+
+### Error Information Functions
+
+Inside a CATCH block, SQL Server exposes detailed error metadata.
+
+| Function            | Description                      |
+| ------------------- | -------------------------------- |
+| `ERROR_NUMBER()`    | Error code                       |
+| `ERROR_SEVERITY()`  | Error severity level             |
+| `ERROR_STATE()`     | Internal state code              |
+| `ERROR_PROCEDURE()` | Procedure or trigger name        |
+| `ERROR_LINE()`      | Line number where error occurred |
+| `ERROR_MESSAGE()`   | Full error message               |
+
+#### Example
+
+```sql
+BEGIN TRY
+    SELECT 1 / 0;
+END TRY
+BEGIN CATCH
+    SELECT
+        ERROR_NUMBER()    AS ErrorNumber,
+        ERROR_SEVERITY()  AS ErrorSeverity,
+        ERROR_STATE()     AS ErrorState,
+        ERROR_PROCEDURE() AS ErrorProcedure,
+        ERROR_LINE()      AS ErrorLine,
+        ERROR_MESSAGE()   AS ErrorMessage;
+END CATCH
+```
+
+---
+
+### TRY...CATCH with Transactions (Critical Pattern)
+
+```sql
+BEGIN TRY
+    BEGIN TRAN;
+
+    UPDATE Accounts SET Balance = Balance - 100 WHERE AccountID = 1;
+    UPDATE Accounts SET Balance = Balance + 100 WHERE AccountID = 2;
+
+    COMMIT;
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+    PRINT ERROR_MESSAGE();
+END CATCH
+```
+
+#### Why This Matters
+
+* Prevents partial updates
+* Ensures atomic operations
+* Mandatory in financial or sensitive systems
+
+---
+
+### THROW Statement
+
+#### What Is THROW?
+
+`THROW` is used to:
+
+* Raise **custom errors**
+* Re-throw the original error to the calling layer
+
+#### Syntax
+
+```sql
+THROW error_number, message, state;
+```
+
+#### Rules
+
+* Error number must be **>= 50000**
+* Message length < 2048 characters
+* State between 0 and 255
+
+---
+
+### THROW Without Parameters (Re-Throw Error)
+
+```sql
+BEGIN TRY
+    SELECT 1 / 0;
+END TRY
+BEGIN CATCH
+    PRINT 'Logging error...';
+    THROW;
+END CATCH
+```
+
+✔ Preserves original error number and line
+✔ Best practice for real systems
+
+---
+
+### THROW Example Without Stored Procedures
+
+```sql
+DECLARE @NewStockQty INT = -5;
+
+BEGIN TRY
+    IF @NewStockQty < 0
+        THROW 51000, 'Stock quantity cannot be negative.', 1;
+
+    UPDATE Products
+    SET StockQuantity = @NewStockQty
+    WHERE ProductID = 1;
+END TRY
+BEGIN CATCH
+    SELECT
+        ERROR_NUMBER() AS ErrorNumber,
+        ERROR_MESSAGE() AS ErrorMessage;
+END CATCH
+```
+
+#### Why THROW Is Useful
+
+* Enforces business rules
+* Produces predictable errors
+* Communicates failure clearly to application
+
+---
+
+### @@ERROR (Legacy Error Handling)
+
+#### What Is @@ERROR?
+
+`@@ERROR` returns the error number of the **last executed statement**.
+
+```sql
+INSERT INTO Employees3 VALUES (1, 'Ali', 'HR');
+IF @@ERROR <> 0
+    PRINT 'Error occurred';
+```
+
+#### Limitations
+
+* Must be checked immediately
+* Only returns error number
+* No line, message, or severity
+* Poor readability
+
+#### Recommendation
+
+🚫 Avoid in new code
+✅ Use TRY...CATCH instead
+
+---
+
+### TRY...CATCH vs @@ERROR
+
+| Feature             | TRY...CATCH | @@ERROR |
+| ------------------- | ----------- | ------- |
+| Structured handling | ✅           | ❌       |
+| Full error info     | ✅           | ❌       |
+| Transaction safe    | ✅           | ❌       |
+| Readability         | High        | Low     |
+| Modern standard     | ✅           | ❌       |
+
+---
+
+### Best Practices
+
+✔ Always wrap transactions in TRY...CATCH
+✔ Rollback explicitly on error
+✔ Use THROW instead of RAISERROR (deprecated)
+✔ Keep error handling logic simple and predictable
+
+---
+
+### Final Note
+
+Error handling in T-SQL is **not optional** in serious systems. While application frameworks handle user-facing errors, **SQL Server is responsible for data correctness**.
+
+---
+
+## Transactions in T-SQL
+
+### Introduction to Transactions
+
+A **transaction** in SQL Server is a sequence of one or more operations executed as a **single logical unit of work**. Transactions ensure that either **all operations succeed** or **none of them are applied**.
+
+Transactions are essential whenever data consistency matters, especially in financial, inventory, or multi-step business processes.
+
+---
+
+### ACID Properties
+
+Transactions in SQL Server follow the **ACID** principles:
+
+#### 1. Atomicity
+
+All operations inside a transaction are treated as one unit.
+
+* Either **everything succeeds**
+* Or **everything is rolled back**
+
+Example: Money should not be deducted from one account unless it is added to another.
+
+---
+
+#### 2. Consistency
+
+A transaction moves the database from one **valid state** to another.
+
+* Constraints
+* Triggers
+* Business rules
+
+are all preserved before and after the transaction.
+
+---
+
+#### 3. Isolation
+
+Concurrent transactions do not interfere with each other.
+Each transaction behaves **as if it were executed alone**.
+
+Isolation prevents:
+
+* Dirty reads
+* Non-repeatable reads
+* Phantom reads
+
+---
+
+#### 4. Durability
+
+Once a transaction is committed, its changes are **permanent**, even if:
+
+* SQL Server crashes
+* Power is lost
+
+SQL Server guarantees this using the **transaction log**.
+
+---
+
+### Why Use Transactions?
+
+* Prevent partial updates
+* Maintain data integrity
+* Ensure business rules are enforced
+* Safely handle errors
+* Protect against unexpected failures
+
+If your operation touches **more than one table or row**, you almost always need a transaction.
+
+---
+
+### Basic Transaction Syntax
+
+```sql
+BEGIN TRANSACTION;
+
+-- SQL statements
+
+COMMIT;   -- make changes permanent
+-- OR
+ROLLBACK; -- undo changes
+```
+
+---
+
+### Transactions with TRY...CATCH (Best Practice)
+
+Transactions should **always** be paired with error handling.
+
+```sql
+BEGIN TRAN;
+
+BEGIN TRY
+    -- Statements
+    COMMIT;
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+    THROW; -- rethrow error to caller
+END CATCH;
+```
+
+This ensures:
+
+* Successful operations are committed
+* Failed operations are fully rolled back
+
+---
+
+### Real-World Example: Bank Transfer
+
+#### Setup
+
+```sql
+CREATE TABLE Accounts (
+    AccountID INT PRIMARY KEY,
+    Balance DECIMAL(10,2)
+);
+
+CREATE TABLE Transactions (
+    TransactionID INT IDENTITY PRIMARY KEY,
+    FromAccount INT,
+    ToAccount INT,
+    Amount DECIMAL(10,2),
+    CreatedAt DATETIME
+);
+
+INSERT INTO Accounts VALUES (1, 500.00), (2, 300.00);
+```
+
+---
+
+#### Transfer Logic
+
+```sql
+BEGIN TRAN;
+
+BEGIN TRY
+    -- Validate balance
+    IF (SELECT Balance FROM Accounts WHERE AccountID = 1) < 100
+        THROW 51000, 'Insufficient balance.', 1;
+
+    -- Debit
+    UPDATE Accounts
+    SET Balance = Balance - 100
+    WHERE AccountID = 1;
+
+    -- Credit
+    UPDATE Accounts
+    SET Balance = Balance + 100
+    WHERE AccountID = 2;
+
+    -- Log transaction
+    INSERT INTO Transactions (FromAccount, ToAccount, Amount, CreatedAt)
+    VALUES (1, 2, 100, GETDATE());
+
+    COMMIT;
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+
+    SELECT
+        ERROR_NUMBER() AS ErrorNumber,
+        ERROR_MESSAGE() AS ErrorMessage;
+END CATCH;
+```
+
+#### Why This Is Correct
+
+* Balance is validated **before** updates
+* All changes are atomic
+* Logging happens inside the transaction
+* Failure at any point rolls back everything
+
+---
+
+### Nested Transactions (Important Concept)
+
+SQL Server does **not** truly support nested transactions.
+
+```sql
+BEGIN TRAN;
+    BEGIN TRAN;
+    COMMIT;
+ROLLBACK;
+```
+
+Only the **outermost transaction** controls the final commit.
+`@@TRANCOUNT` tracks nesting level.
+
+---
+
+### Checking Transaction State
+
+```sql
+SELECT @@TRANCOUNT;
+```
+
+* `0` → No active transaction
+* `>0` → Active transaction(s)
+
+Always check before committing or rolling back.
+
+---
+
+### Common Mistakes
+
+❌ Forgetting to COMMIT or ROLLBACK
+
+❌ Long-running transactions (locks tables)
+
+❌ Mixing UI logic with transaction logic
+
+❌ Using transactions for read-only queries
+
+---
+
+### Best Practices
+
+✔ Keep transactions **short**
+
+✔ Use TRY...CATCH always
+
+✔ Validate data before starting transaction when possible
+
+✔ Never leave transactions open
+
+✔ Log meaningful failures
+
+---
+
+### When NOT to Use Transactions
+
+* Simple SELECT queries
+* Read-only reporting
+* Long-running batch jobs (unless absolutely required)
+
+---
+
+### Summary
+
+* Transactions guarantee **data integrity**
+* ACID properties define transaction reliability
+* TRY...CATCH + TRANSACTION is the professional standard
+* Transactions are critical in financial and business systems
+* Poor transaction design causes locking and performance issues
+
+---
+
+## Variable Tables (Table Variables)
+
+### Introduction to Table Variables
+Table variables in T-SQL are used to store a set of records temporarily. They are similar in concept to temporary tables, but they have **distinct characteristics** that make them suitable for specific scenarios.
+
+Table variables are declared using the `DECLARE` statement and are **scoped to the batch, stored procedure, or function** in which they are defined.
+
+They are commonly used for:
+- Intermediate result storage
+- Small lookup datasets
+- Temporary calculations inside complex queries
+
+---
+
+### Declaring a Table Variable
+
+```sql
+DECLARE @EmployeesTable TABLE (
+    EmployeeId INT,
+    Name VARCHAR(100),
+    Department VARCHAR(50)
+);
+```
+
+Key points:
+- The table exists **only in memory scope** (conceptually)
+- No `DROP TABLE` is required
+- Automatically deallocated when execution ends
+
+---
+
+### Basic Usage Example
+
+```sql
+INSERT INTO @EmployeesTable (EmployeeId, Name, Department)
+VALUES (10, 'Mohammed', 'Marketing');
+
+INSERT INTO @EmployeesTable (EmployeeId, Name, Department)
+VALUES (11, 'Ali', 'Sales');
+
+SELECT *
+FROM @EmployeesTable
+WHERE Department = 'Sales';
+```
+
+This example demonstrates:
+- Inserting rows
+- Querying data
+- Automatic cleanup at the end of execution
+
+---
+
+### Advantages of Table Variables
+
+#### 1. Performance (Small Datasets)
+- Ideal for **small to medium row counts**
+- Avoids tempdb overhead for simple operations
+
+#### 2. Reduced Transaction Logging
+- Generates fewer log records compared to temp tables
+- Helpful in performance-sensitive logic
+
+#### 3. Controlled Scope
+- Exists only within the current batch / procedure / function
+- Simplifies error handling and avoids naming conflicts
+
+---
+
+### Limitations of Table Variables
+
+#### 1. Indexing Limitations
+- Only **PRIMARY KEY** or **UNIQUE** constraints can be defined at declaration
+- No ability to create additional indexes later
+
+```sql
+DECLARE @Orders TABLE (
+    OrderId INT PRIMARY KEY,
+    Amount DECIMAL(10,2)
+);
+```
+
+#### 2. No Statistics
+- SQL Server does **not generate statistics** for table variables
+- Query optimizer assumes very small row counts
+- Can cause **poor execution plans** for larger datasets
+
+---
+
+### Table Variables vs Temporary Tables
+
+| Feature | Table Variable | Temporary Table (#Temp) |
+|------|--------------|-----------------------|
+| Scope | Batch / Procedure / Function | Session or Connection |
+| Statistics | ❌ None | ✅ Yes |
+| Indexing | Limited | Full |
+| Logging | Minimal | Full |
+| Rollback on TRANSACTION | ❌ Not rolled back | ✅ Rolled back |
+
+---
+
+### Important Transaction Behavior (Critical)
+
+Table variables **do NOT fully participate in transactions**.
+
+```sql
+BEGIN TRANSACTION;
+
+INSERT INTO @EmployeesTable VALUES (20, 'Test', 'IT');
+
+ROLLBACK;
+
+SELECT * FROM @EmployeesTable;
+```
+
+🔴 The inserted row **still exists** after `ROLLBACK`.
+
+This behavior makes table variables unsuitable for:
+- Financial operations
+- Critical transactional workflows
+
+---
+
+### Example: Aggregation + Filtering
+
+```sql
+DECLARE @DepartmentSummary TABLE (
+    Department VARCHAR(50),
+    EmployeeCount INT
+);
+
+INSERT INTO @DepartmentSummary
+SELECT Department, COUNT(*)
+FROM Employees
+GROUP BY Department;
+
+SELECT *
+FROM @DepartmentSummary
+WHERE EmployeeCount > 5;
+```
+
+Use case:
+- Intermediate aggregation
+- Read-only consumption afterward
+
+---
+
+### Example: Using Table Variable with APPLY
+
+```sql
+DECLARE @RecentExits TABLE (
+    DepartmentId INT,
+    EmployeeName VARCHAR(100),
+    ExitDate DATE
+);
+
+INSERT INTO @RecentExits
+SELECT D.ID, CONCAT(E.FirstName, ' ', E.LastName), E.ExitDate
+FROM Departments D
+CROSS APPLY (
+    SELECT TOP 2 *
+    FROM Employees
+    WHERE DepartmentID = D.ID
+    ORDER BY ExitDate DESC
+) E;
+
+SELECT * FROM @RecentExits;
+```
+
+This demonstrates:
+- Using table variables as **intermediate result holders**
+- Simplifying complex multi-step queries
+
+---
+
+### Best Practices
+
+- ✅ Use table variables for **small datasets**
+- ✅ Use for **short-lived, batch-scoped logic**
+- ❌ Avoid for large row counts
+- ❌ Avoid when accurate query optimization is critical
+- ❌ Avoid for transactional financial data
+
+---
+
+### When to Prefer Table Variables
+
+✔ Small result sets
+
+✔ Lookup data
+
+✔ Intermediate transformations
+
+✔ Logic inside functions
+
+### When NOT to Use Table Variables
+
+✖ Large datasets
+
+✖ Heavy joins
+
+✖ Performance-critical queries
+
+✖ Operations requiring rollback
+
+---
+
+### Conclusion
+
+Table variables are a **powerful but specialized tool** in T-SQL. They shine in small, scoped, non-transactional operations where simplicity and performance matter. However, their limitations—especially around statistics and transactions—mean they must be used **deliberately and carefully**.
+
+---
+
+## Temporary Tables in T-SQL
+
+### Introduction to Temporary Tables
+
+Temporary tables in T-SQL are used to store and process **intermediate results** during query execution. They are physically created inside the **tempdb** system database and are automatically removed when they are no longer needed.
+
+Temporary tables are especially useful in **complex SQL operations** where:
+
+* Results must be reused multiple times
+* Queries become easier to read when broken into stages
+* Large intermediate datasets must be processed efficiently
+
+---
+
+### Advantages of Temporary Tables
+
+#### Performance
+
+Temporary tables can significantly improve performance by breaking large, complex queries into smaller, more manageable steps. SQL Server can create **statistics** and **indexes** on temp tables, allowing the optimizer to generate better execution plans.
+
+#### Complex Data Processing
+
+They are ideal for:
+
+* Multi-step transformations
+* Aggregations reused across queries
+* Staging data before final inserts or reports
+
+#### Transaction Management
+
+Temporary tables **participate in transactions**, meaning:
+
+* Changes can be committed or rolled back
+* They support ACID behavior inside a transaction
+
+This makes them suitable for scenarios where data consistency is critical.
+
+---
+
+### Types of Temporary Tables
+
+#### Local Temporary Tables (`#TempTable`)
+
+* Prefixed with a single hash `#`
+* Visible **only to the session** that created them
+* Automatically dropped when the session ends
+
+**Syntax:**
+
+```sql
+CREATE TABLE #TempTable (...)
+```
+
+#### Global Temporary Tables (`##TempTable`)
+
+* Prefixed with double hash `##`
+* Visible to **all sessions**
+* Dropped when the **last session using it closes**
+
+**Syntax:**
+
+```sql
+CREATE TABLE ##TempTable (...)
+```
+
+> ⚠️ Global temp tables are rarely recommended in production due to concurrency and naming conflicts.
+
+---
+
+### Cleaning Up Temporary Tables
+
+Temporary tables are dropped automatically when their scope ends, but **explicitly dropping them** is considered best practice:
+
+```sql
+DROP TABLE #TempTable;
+```
+
+Benefits of explicit cleanup:
+
+* Frees tempdb resources sooner
+* Improves readability
+* Avoids name collisions in long sessions
+
+---
+
+### Basic Example: Local Temporary Table
+
+```sql
+CREATE TABLE #EmployeesTemp (
+    EmployeeId INT,
+    Name VARCHAR(100),
+    Department VARCHAR(50)
+);
+
+INSERT INTO #EmployeesTemp (EmployeeId, Name, Department)
+VALUES
+(10, 'Mohammed', 'Marketing'),
+(11, 'Ali', 'Sales');
+
+SELECT *
+FROM #EmployeesTemp
+WHERE Department = 'Sales';
+
+DROP TABLE #EmployeesTemp;
+```
+
+---
+
+### Example 1: Multi-Step Data Processing
+
+#### Scenario
+
+Generate a report of departments with employee counts **greater than the company average**.
+
+```sql
+-- Step 1: Store department employee counts
+CREATE TABLE #DeptCounts (
+    DepartmentID INT,
+    EmployeeCount INT
+);
+
+INSERT INTO #DeptCounts
+SELECT DepartmentID, COUNT(*)
+FROM Employees
+GROUP BY DepartmentID;
+
+-- Step 2: Calculate company average
+DECLARE @AvgEmployees FLOAT;
+
+SELECT @AvgEmployees = AVG(EmployeeCount)
+FROM #DeptCounts;
+
+-- Step 3: Filter departments above average
+SELECT d.Name, dc.EmployeeCount
+FROM #DeptCounts dc
+JOIN Departments d ON d.ID = dc.DepartmentID
+WHERE dc.EmployeeCount > @AvgEmployees;
+
+DROP TABLE #DeptCounts;
+```
+
+**Why temp tables here?**
+
+* Data reused multiple times
+* Optimizer benefits from statistics
+* Cleaner than nested subqueries
+
+---
+
+### Example 2: Temp Tables with Transactions
+
+#### Scenario
+
+Update salaries in bulk, but ensure rollback on error.
+
+```sql
+BEGIN TRANSACTION;
+
+BEGIN TRY
+    CREATE TABLE #SalaryUpdates (
+        EmployeeID INT,
+        NewSalary DECIMAL(10,2)
+    );
+
+    INSERT INTO #SalaryUpdates
+    SELECT EmployeeID, Salary * 1.1
+    FROM Employees
+    WHERE PerformanceRating = 'Excellent';
+
+    UPDATE e
+    SET Salary = s.NewSalary
+    FROM Employees e
+    JOIN #SalaryUpdates s ON s.EmployeeID = e.EmployeeID;
+
+    COMMIT;
+END TRY
+BEGIN CATCH
+    ROLLBACK;
+END CATCH;
+
+DROP TABLE #SalaryUpdates;
+```
+
+**Key Point:**
+Unlike table variables, temp table changes are fully rolled back.
+
+---
+
+### Temporary Tables vs Table Variables
+
+| Aspect       | Temporary Tables         | Table Variables |
+| ------------ | ------------------------ | --------------- |
+| Storage      | tempdb                   | Memory / tempdb |
+| Statistics   | Yes                      | No              |
+| Indexing     | Full support             | Limited         |
+| Transactions | Fully supported          | Limited         |
+| Best for     | Large & complex datasets | Small datasets  |
+
+---
+
+### Temporary Tables vs Permanent Tables
+
+#### Temporary Tables
+
+* Short-lived
+* Stored in tempdb
+* Not backed up
+* Session or connection scoped
+
+#### Permanent Tables
+
+* Persist until dropped
+* Stored in user databases
+* Included in backups
+* Shared across users
+
+---
+
+### Best Practices
+
+* Use temp tables for **large or complex datasets**
+* Drop temp tables explicitly
+* Avoid global temp tables unless absolutely necessary
+* Index temp tables when reused heavily
+
+---
+
+### Conclusion
+
+Temporary tables are a **core tool** in professional T-SQL development. They provide flexibility, performance benefits, and transactional safety when handling complex logic and large intermediate datasets. Knowing when to use temp tables versus table variables or permanent tables is essential for writing efficient, scalable SQL code.
+
+---
+
