@@ -2160,3 +2160,1591 @@ Temporary tables are a **core tool** in professional T-SQL development. They pro
 
 ---
 
+## Stored Procedures (T-SQL)
+
+### Introduction to Stored Procedures
+
+Stored procedures in **T-SQL** are one of the most important building blocks in SQL Server–based systems. A stored procedure is a named, precompiled collection of SQL statements stored in the database and executed as a single unit.
+
+They are widely used in **real-world systems** to encapsulate business logic, enforce rules, improve performance, and provide a clean contract between the database and application layers.
+
+#### Why Stored Procedures Matter
+
+**Performance**
+
+* Stored procedures are compiled once and reused.
+* Execution plans are cached, reducing repeated parsing and optimization.
+
+**Security**
+
+* Applications can be granted permission to execute procedures without direct access to tables.
+* Prevents accidental or malicious data manipulation.
+
+**Maintainability**
+
+* Business logic is centralized inside the database.
+* Changes can be made without modifying application code.
+
+**Consistency**
+
+* All applications use the same logic for data access and validation.
+
+---
+
+### What Can Be Written Inside a Stored Procedure
+
+A T-SQL stored procedure can contain almost everything needed to implement business logic:
+
+#### SQL Statements (DML)
+
+* `SELECT`
+* `INSERT`
+* `UPDATE`
+* `DELETE`
+* `MERGE`
+
+#### Variable Declarations
+
+```sql
+DECLARE @Total INT;
+SET @Total = 10;
+```
+
+#### Control Flow
+
+* `IF ... ELSE`
+* `WHILE`
+* `BEGIN ... END`
+* `RETURN`
+
+#### Transactions
+
+```sql
+BEGIN TRAN;
+COMMIT;
+ROLLBACK;
+```
+
+#### Error Handling
+
+```sql
+BEGIN TRY
+    -- logic
+END TRY
+BEGIN CATCH
+    THROW;
+END CATCH
+```
+
+#### Calling Other Objects
+
+* Stored procedures
+* Scalar functions
+* Table-valued functions
+
+#### Temporary Storage
+
+* Temporary tables (`#TempTable`)
+* Table variables (`@TableVar`)
+
+#### Advanced Features
+
+* Dynamic SQL (`sp_executesql`)
+* CTEs
+* Cursors (rare, but supported)
+* XML processing
+
+---
+
+### Understanding Return Values in Stored Procedures
+
+#### What Is a Return Value?
+
+* A **single integer** value returned using `RETURN`.
+* Commonly used to indicate **status**, not data.
+
+Typical conventions:
+
+* `1` → Success
+* `0` → Not found / false
+* `-1` → Invalid input
+
+> ⚠ A stored procedure can return **only one integer value**.
+
+---
+
+### Example: Checking If a Person Exists
+
+#### Stored Procedure
+
+```sql
+CREATE PROCEDURE SP_IsPersonExists
+    @PersonID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @PersonID IS NULL OR @PersonID <= 0
+        RETURN 0;
+
+    IF NOT EXISTS (SELECT 1 FROM People WHERE PersonID = @PersonID)
+        RETURN 0;
+
+    RETURN 1;
+END;
+```
+
+#### Usage
+
+```sql
+DECLARE @Result INT;
+EXEC @Result = SP_IsPersonExists @PersonID = 5;
+
+IF @Result = 1
+    PRINT 'Person exists';
+ELSE
+    PRINT 'Person not found';
+```
+
+This pattern is **very common in real systems** for validation before UPDATE or DELETE operations.
+
+---
+
+### CRUD Stored Procedures – Real-World Design
+
+#### Add New Person
+
+```sql
+CREATE PROCEDURE SP_AddNewPerson
+    @FirstName NVARCHAR(100),
+    @LastName NVARCHAR(100),
+    @Email NVARCHAR(255),
+    @NewPersonID INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @FirstName IS NULL OR @LastName IS NULL
+        RETURN -1;
+
+    INSERT INTO People (FirstName, LastName, Email)
+    VALUES (@FirstName, @LastName, @Email);
+
+    SET @NewPersonID = SCOPE_IDENTITY();
+    RETURN 1;
+END;
+```
+
+---
+
+#### Get All People
+
+```sql
+CREATE PROCEDURE SP_GetAllPeople
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT * FROM People;
+END;
+```
+
+---
+
+#### Get Person by ID (Result Set)
+
+```sql
+ALTER PROCEDURE SP_GetPersonByID
+    @PersonID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @PersonID IS NULL OR @PersonID <= 0
+        RETURN -1;
+
+    SELECT * FROM People WHERE PersonID = @PersonID;
+
+    IF @@ROWCOUNT = 0
+        RETURN 0;
+
+    RETURN 1;
+END;
+```
+
+---
+
+#### Get Person Info Using OUTPUT Parameters
+
+```sql
+CREATE PROCEDURE SP_GetPersonInfoByID
+    @PersonID INT,
+    @FirstName NVARCHAR(100) OUTPUT,
+    @LastName NVARCHAR(100) OUTPUT,
+    @Email NVARCHAR(255) OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @PersonID IS NULL OR @PersonID <= 0
+        RETURN -1;
+
+    SELECT
+        @FirstName = FirstName,
+        @LastName = LastName,
+        @Email = Email
+    FROM People
+    WHERE PersonID = @PersonID;
+
+    IF @@ROWCOUNT = 0
+        RETURN 0;
+
+    RETURN 1;
+END;
+```
+
+---
+
+#### Update Person (Transaction + Validation)
+
+```sql
+ALTER PROCEDURE SP_UpdatePerson
+    @PersonID INT,
+    @FirstName NVARCHAR(100),
+    @LastName NVARCHAR(100),
+    @Email NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Exists INT;
+    EXEC @Exists = SP_IsPersonExists @PersonID;
+
+    IF @Exists = 0
+        RETURN 0;
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        UPDATE People
+        SET FirstName = @FirstName,
+            LastName = @LastName,
+            Email = @Email
+        WHERE PersonID = @PersonID;
+
+        COMMIT;
+        RETURN 1;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK;
+        THROW;
+    END CATCH
+END;
+```
+
+---
+
+#### Delete Person
+
+```sql
+ALTER PROCEDURE SP_DeletePerson
+    @PersonID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Exists INT;
+    EXEC @Exists = SP_IsPersonExists @PersonID;
+
+    IF @Exists = 0
+        RETURN 0;
+
+    BEGIN TRY
+        BEGIN TRAN;
+
+        DELETE FROM People WHERE PersonID = @PersonID;
+
+        COMMIT;
+        RETURN 1;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK;
+        THROW;
+    END CATCH
+END;
+```
+
+---
+
+### Using `sp_helptext`
+
+The `sp_helptext` system stored procedure displays the definition of database objects.
+
+#### Syntax
+
+```sql
+EXEC sp_helptext 'SP_DeletePerson';
+```
+
+#### Use Cases
+
+* Code review
+* Debugging
+* Learning legacy systems
+
+> ⚠ Requires proper permissions
+
+---
+
+### Best Practices Summary
+
+✔ Use stored procedures for business logic
+
+✔ Use `RETURN` for status, not data
+
+✔ Use OUTPUT parameters for small structured outputs
+
+✔ Use transactions only for data modification
+
+✔ Avoid cursors when possible
+
+✔ Validate inputs at the database level
+
+✔ Keep procedures small and focused
+
+---
+
+### Final Notes
+
+Stored procedures are **not optional** in serious SQL Server systems.
+They form the backbone of:
+
+* APIs
+* ERP systems
+* Banking systems
+* Healthcare platforms
+
+---
+
+## Built-In Functions in T-SQL
+
+This section covers the most commonly used **built-in functions** in T-SQL, including string functions, date functions, and aggregate functions, with practical examples.
+
+---
+
+### 1. String Functions
+
+String functions are essential for manipulating text data in SQL Server.
+
+| Function    | Purpose                                                                          |
+| ----------- | -------------------------------------------------------------------------------- |
+| `LEN`       | Returns the number of characters in a string (excluding trailing spaces).        |
+| `UPPER`     | Converts all characters to uppercase.                                            |
+| `LOWER`     | Converts all characters to lowercase.                                            |
+| `SUBSTRING` | Returns part of a string from a specified start position for a specified length. |
+| `CHARINDEX` | Returns the starting position of a substring in a string.                        |
+| `REPLACE`   | Replaces occurrences of a substring with another string.                         |
+| `LTRIM`     | Removes leading spaces.                                                          |
+| `RTRIM`     | Removes trailing spaces.                                                         |
+| `CONCAT`    | Concatenates two or more strings.                                                |
+| `LEFT`      | Returns the leftmost characters of a string.                                     |
+| `RIGHT`     | Returns the rightmost characters of a string.                                    |
+| `TRIM`      | Removes leading and trailing spaces.                                             |
+
+**Example:**
+
+```sql
+DECLARE @FullName NVARCHAR(100) = '   John Doe   ';
+
+SELECT 
+    LEN(@FullName) AS LengthBeforeTrim,
+    LTRIM(@FullName) AS LeftTrimmed,
+    RTRIM(@FullName) AS RightTrimmed,
+    TRIM(@FullName) AS FullyTrimmed,
+    UPPER(@FullName) AS UpperCase,
+    LOWER(@FullName) AS LowerCase,
+    SUBSTRING(@FullName, 4, 3) AS SubStr,
+    CHARINDEX('Doe', @FullName) AS PositionOfDoe,
+    REPLACE(@FullName, 'John', 'Jane') AS ReplacedName,
+    CONCAT('Hello ', TRIM(@FullName)) AS Greeting;
+```
+
+Official Documentation: [String Functions (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/functions/string-functions-transact-sql?view=sql-server-ver16)
+
+---
+
+### 2. Date and Time Functions
+
+Date functions allow you to manipulate and query datetime data.
+
+| Function        | Purpose                                                         |
+| --------------- | --------------------------------------------------------------- |
+| `GETDATE()`     | Returns current date and time.                                  |
+| `SYSDATETIME()` | Returns system date/time with fractional seconds.               |
+| `DATEADD()`     | Adds a specified number of units to a date.                     |
+| `DATEDIFF()`    | Calculates difference between two dates in a specific unit.     |
+| `DATEPART()`    | Returns a part of the date (year, month, day, etc.).            |
+| `DATENAME()`    | Returns the name of the specified date part (e.g., month name). |
+| `DAY()`         | Returns day part of a date.                                     |
+| `MONTH()`       | Returns month part of a date.                                   |
+| `YEAR()`        | Returns year part of a date.                                    |
+| `CONVERT()`     | Converts one data type to another (often used for formatting).  |
+| `CAST()`        | Similar to CONVERT, changes the data type.                      |
+| `EOMONTH()`     | Returns the last day of the month for a given date.             |
+
+**Example:**
+
+```sql
+DECLARE @Today DATETIME = GETDATE();
+
+SELECT
+    @Today AS CurrentDateTime,
+    DATEADD(DAY, 7, @Today) AS NextWeek,
+    DATEDIFF(DAY, '2025-01-01', @Today) AS DaysSince2025,
+    DATEPART(YEAR, @Today) AS YearPart,
+    DATENAME(MONTH, @Today) AS MonthName,
+    EOMONTH(@Today) AS EndOfMonth;
+```
+
+Official Documentation: [Date and Time Functions (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/functions/date-and-time-data-types-and-functions-transact-sql?view=sql-server-ver16)
+
+---
+
+### 3. Aggregate Functions
+
+Aggregate functions are used to perform calculations on multiple rows, often with `GROUP BY`.
+
+| Function  | Purpose              |
+| --------- | -------------------- |
+| `COUNT()` | Counts rows.         |
+| `SUM()`   | Adds values.         |
+| `AVG()`   | Calculates average.  |
+| `MIN()`   | Finds minimum value. |
+| `MAX()`   | Finds maximum value. |
+
+**Example Table: Employees2**
+
+| EmployeeID | Department | Salary | PerformanceRating |
+| ---------- | ---------- | ------ | ----------------- |
+| 1          | Sales      | 5000   | 4                 |
+| 2          | Sales      | 5500   | 5                 |
+| 3          | IT         | 6000   | 4                 |
+| 4          | IT         | 6500   | 5                 |
+
+**Examples of Aggregate Functions:**
+
+```sql
+-- Count employees per department
+SELECT Department, COUNT(*) AS EmployeeCount
+FROM Employees2
+GROUP BY Department;
+
+-- Total salary per department
+SELECT Department, SUM(Salary) AS TotalSalary
+FROM Employees2
+GROUP BY Department;
+
+-- Average performance rating per department
+SELECT Department, AVG(PerformanceRating) AS AvgRating
+FROM Employees2
+GROUP BY Department;
+
+-- Minimum salary in the company
+SELECT MIN(Salary) AS LowestSalary
+FROM Employees2;
+
+-- Maximum salary in the company
+SELECT MAX(Salary) AS HighestSalary
+FROM Employees2;
+```
+
+---
+
+### Key Takeaways
+
+1. **String functions** help with cleaning, formatting, and parsing text data.
+2. **Date functions** simplify manipulation, extraction, and formatting of date/time values.
+3. **Aggregate functions** are essential for summarizing and analyzing data.
+4. Combining these functions with clauses like `WHERE`, `GROUP BY`, and `ORDER BY` allows for advanced queries and reporting.
+
+---
+
+## Window Functions in T-SQL
+
+### What Are Window Functions?
+
+Window functions (also known as **windowed** or **analytic functions**) in T-SQL allow you to perform calculations across a set of rows that are related to the current row.
+
+Unlike aggregate functions with `GROUP BY`, window functions **do not collapse rows**. Instead, they return a value for **each row**, based on a defined *window* of rows.
+
+A window is defined using the `OVER()` clause, which can include:
+
+* `PARTITION BY` (how rows are grouped)
+* `ORDER BY` (how rows are ordered)
+* Optional frame definitions (ROW/RANGE)
+
+---
+
+### Types of Window Functions in T-SQL
+
+#### 1. Aggregate Window Functions
+
+Perform calculations over a window of rows:
+
+* `SUM()`
+* `AVG()`
+* `COUNT()`
+* `MIN()`
+* `MAX()`
+
+#### 2. Ranking Functions
+
+Assign rankings or sequence numbers:
+
+* `ROW_NUMBER()`
+* `RANK()`
+* `DENSE_RANK()`
+
+#### 3. Analytic Functions
+
+Compare values between rows:
+
+* `LAG()`
+* `LEAD()`
+* `FIRST_VALUE()`
+* `LAST_VALUE()`
+
+---
+
+### Understanding ROW_NUMBER()
+
+#### Definition
+
+`ROW_NUMBER()` assigns a **unique sequential number** to each row.
+
+* Starts at 1
+* No duplicates, even if values are tied
+
+#### Example
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Subject,
+    Grade,
+    ROW_NUMBER() OVER (ORDER BY Grade DESC) AS RowNum
+FROM Students;
+```
+
+#### Key Points
+
+* Every row gets a unique number
+* Useful for **pagination**, **deduplication**, and **top-N queries**
+
+---
+
+### ROW_NUMBER() with PARTITION BY
+
+#### Scenario
+
+Assign row numbers **per subject**:
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Subject,
+    Grade,
+    ROW_NUMBER() OVER (PARTITION BY Subject ORDER BY Grade DESC) AS RowNum
+FROM Students;
+```
+
+#### Result
+
+* Numbering restarts for each subject
+* Still guarantees uniqueness within each partition
+
+---
+
+### Understanding RANK()
+
+#### Definition
+
+`RANK()` assigns the same rank to tied values, **skipping numbers** afterward.
+
+#### Example
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Grade,
+    RANK() OVER (ORDER BY Grade DESC) AS GradeRank
+FROM Students;
+```
+
+#### Behavior Example
+
+Grades: `95, 95, 90`
+Ranks:  `1, 1, 3`
+
+---
+
+### RANK() with PARTITION BY
+
+#### Rank students **within each subject**
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Subject,
+    Grade,
+    RANK() OVER (PARTITION BY Subject ORDER BY Grade DESC) AS SubjectRank
+FROM Students;
+```
+
+#### Key Benefit
+
+* Enables **category-based ranking**
+* Common in reporting and analytics
+
+---
+
+### RANK() vs DENSE_RANK()
+
+#### Key Difference
+
+| Function     | Handles Ties | Skips Numbers |
+| ------------ | ------------ | ------------- |
+| RANK()       | Yes          | Yes           |
+| DENSE_RANK() | Yes          | No            |
+
+#### Example Grades
+
+`95, 95, 90, 85`
+
+```text
+RANK():       1, 1, 3, 4
+DENSE_RANK(): 1, 1, 2, 3
+```
+
+#### Example Query
+
+```sql
+SELECT
+    Name,
+    Grade,
+    DENSE_RANK() OVER (ORDER BY Grade DESC) AS DenseRank
+FROM Students;
+```
+
+---
+
+### Aggregate Window Functions with PARTITION BY
+
+#### Scenario
+
+Calculate subject-level statistics **without grouping rows**
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Subject,
+    Grade,
+    AVG(Grade) OVER (PARTITION BY Subject) AS SubjectAvg,
+    SUM(Grade) OVER (PARTITION BY Subject) AS SubjectTotal
+FROM Students;
+```
+
+#### Why This Is Powerful
+
+* Combines **row-level detail** with **group-level insights**
+* No `GROUP BY` needed
+
+---
+
+### Example: Running Totals
+
+#### Cumulative grades per subject
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Subject,
+    Grade,
+    SUM(Grade) OVER (
+        PARTITION BY Subject
+        ORDER BY Grade DESC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS RunningTotal
+FROM Students;
+```
+
+#### Use Cases
+
+* Financial reports
+* Progress tracking
+* Cumulative analytics
+
+---
+
+### Using LAG() and LEAD()
+
+#### Purpose
+
+Compare current row values with **previous** or **next** rows
+
+#### Example (Single Query)
+
+```sql
+SELECT
+    StudentID,
+    Name,
+    Grade,
+    LAG(Grade) OVER (ORDER BY Grade DESC) AS PreviousGrade,
+    LEAD(Grade) OVER (ORDER BY Grade DESC) AS NextGrade
+FROM Students;
+```
+
+#### Interpretation
+
+* `PreviousGrade`: Grade of the row above
+* `NextGrade`: Grade of the row below
+
+---
+
+### Example: Grade Difference
+
+```sql
+SELECT
+    Name,
+    Grade,
+    Grade - LAG(Grade) OVER (ORDER BY Grade DESC) AS GradeDifference
+FROM Students;
+```
+
+#### Insight
+
+* Shows performance gaps between students
+
+---
+
+### Paging with OFFSET and FETCH NEXT
+
+#### Variables
+
+```sql
+DECLARE @PageNumber INT = 2;
+DECLARE @RowsPerPage INT = 3;
+```
+
+#### Paging Query
+
+```sql
+SELECT StudentID, Name, Subject, Grade
+FROM Students
+ORDER BY StudentID
+OFFSET (@PageNumber - 1) * @RowsPerPage ROWS
+FETCH NEXT @RowsPerPage ROWS ONLY;
+```
+
+#### How It Works
+
+* Page 1 → Rows 1–3
+* Page 2 → Rows 4–6
+* Page 3 → Rows 7–9
+
+---
+
+### When to Use Window Functions
+
+✔ Ranking and leaderboards
+
+✔ Pagination
+
+✔ Running totals
+
+✔ Comparative analysis
+
+✔ Analytics without data loss
+
+---
+
+### Summary
+
+Window functions are one of the **most powerful features in T-SQL**. They allow:
+
+* Advanced analytics
+* Clean, readable queries
+* High-performance reporting
+
+---
+
+## Scalar Functions in T-SQL
+
+### Introduction
+
+Scalar Functions in T-SQL allow you to **encapsulate reusable logic** and return **a single value**. They are useful for calculations, transformations, and enforcing business rules directly inside SQL Server.
+
+A Scalar Function:
+
+* Returns **one value**
+* Can be used **anywhere an expression is allowed** (SELECT, WHERE, JOIN, ORDER BY)
+* Helps keep SQL logic **clean, reusable, and maintainable**
+
+---
+
+### Creating a Scalar Function
+
+#### Example 1: Average Grade per Subject
+
+```sql
+CREATE FUNCTION dbo.GetAverageGrade (@Subject NVARCHAR(50))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @AverageGrade INT;
+
+    SELECT @AverageGrade = AVG(Grade)
+    FROM Students
+    WHERE Subject = @Subject;
+
+    RETURN @AverageGrade;
+END;
+```
+
+#### How It Works
+
+* Accepts a **subject name** as input
+* Calculates the average grade for that subject
+* Returns **one integer value**
+
+---
+
+### Using Scalar Functions
+
+#### In a SELECT Statement
+
+```sql
+SELECT Name, Subject, dbo.GetAverageGrade(Subject) AS AverageGrade
+FROM Teachers;
+```
+
+✔ The function runs **once per row** in the Teachers table
+
+---
+
+#### In a WHERE Clause
+
+```sql
+SELECT Name, Subject
+FROM Teachers
+WHERE dbo.GetAverageGrade(Subject) > 80;
+```
+
+✔ Filters teachers based on computed values
+
+---
+
+### Example: Salary Bonus Calculation
+
+#### Business Rule
+
+* Performance Rating ≥ 5 → 10% bonus
+* Performance Rating < 5 → 5% bonus
+
+#### Scalar Function
+
+```sql
+CREATE FUNCTION dbo.CalculateBonus
+(
+    @PerformanceRating INT,
+    @Salary INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Bonus INT;
+
+    IF @PerformanceRating >= 5
+        SET @Bonus = @Salary * 0.10;
+    ELSE
+        SET @Bonus = @Salary * 0.05;
+
+    RETURN @Bonus;
+END;
+```
+
+#### Usage Example
+
+```sql
+DECLARE @Salary INT = 2500;
+DECLARE @PerformanceRating INT = 5;
+DECLARE @Bonus INT = dbo.CalculateBonus(@PerformanceRating, @Salary);
+
+SELECT
+    @Salary AS Salary,
+    @Bonus AS Bonus,
+    @Salary + @Bonus AS UpdatedSalary;
+```
+
+✔ Encapsulates business logic cleanly
+
+---
+
+### Example: Grade Classification Function
+
+#### Business Rule
+
+| Grade | Classification |
+| ----- | -------------- |
+| ≥ 90  | Excellent      |
+| ≥ 75  | Very Good      |
+| ≥ 60  | Good           |
+| < 60  | Fail           |
+
+#### Scalar Function
+
+```sql
+CREATE FUNCTION dbo.GetGradeStatus (@Grade INT)
+RETURNS NVARCHAR(20)
+AS
+BEGIN
+    DECLARE @Status NVARCHAR(20);
+
+    SET @Status = CASE
+        WHEN @Grade >= 90 THEN 'Excellent'
+        WHEN @Grade >= 75 THEN 'Very Good'
+        WHEN @Grade >= 60 THEN 'Good'
+        ELSE 'Fail'
+    END;
+
+    RETURN @Status;
+END;
+```
+
+#### Usage
+
+```sql
+SELECT Name, Subject, Grade, dbo.GetGradeStatus(Grade) AS Status
+FROM Students;
+```
+
+✔ Converts raw data into meaningful information
+
+---
+
+### Important Notes
+
+⚠ Scalar Functions:
+
+* Are executed **row-by-row**
+* Can cause **performance issues** on large datasets
+* Should **avoid heavy logic or table scans**
+
+✔ Best Practices:
+
+* Keep logic simple
+* Avoid calling scalar functions inside large joins
+* Prefer **inline table-valued functions** for performance-critical queries
+
+---
+
+### Summary
+
+✔ Scalar Functions:
+
+* Return a single value
+* Improve code reusability
+* Encapsulate business rules
+* Can be used in SELECT, WHERE, ORDER BY
+
+---
+
+## Table-Valued Functions (TVFs)
+
+### Introduction
+
+Table-Valued Functions (TVFs) are user-defined functions in T-SQL that return **tabular data** instead of a single scalar value. They allow you to encapsulate complex queries and reusable logic into a function that behaves like a table.
+
+TVFs are commonly used to:
+
+* Simplify complex queries
+* Improve code reuse
+* Encapsulate business logic
+* Improve query readability
+
+TVFs can be used anywhere a table expression is allowed, especially in the `FROM` clause.
+
+---
+
+### Types of Table-Valued Functions
+
+SQL Server supports **two types** of TVFs:
+
+#### 1. Inline Table-Valued Functions (ITVFs)
+
+* Defined using `RETURNS TABLE`
+* Contain **one SELECT statement only**
+* No table variable
+* **Best performance** (expanded into calling query)
+* Read-only (no INSERT / UPDATE / DELETE)
+
+#### 2. Multi-Statement Table-Valued Functions (MTVFs)
+
+* Use `RETURNS @TableVariable TABLE (...)`
+* Can contain **multiple statements**
+* Allow procedural logic (IF, loops, multiple inserts)
+* Generally **slower** due to table variable usage
+
+---
+
+### Inline Table-Valued Functions (ITVFs)
+
+#### Key Characteristics
+
+* Single SELECT statement
+* Cannot modify data
+* Optimizer treats them like a view
+* Support parameters
+
+---
+
+### Scenario Setup
+
+```sql
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Subject NVARCHAR(50),
+    Grade INT
+);
+```
+
+---
+
+### Creating an Inline Table-Valued Function
+
+```sql
+CREATE FUNCTION dbo.GetStudentsBySubject
+(
+    @Subject NVARCHAR(50)
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT StudentID, Name, Subject, Grade
+    FROM Students
+    WHERE Subject = @Subject
+);
+```
+
+#### Explanation
+
+* The function accepts a subject name
+* Returns all students studying that subject
+* Output behaves like a normal table
+
+---
+
+### Using the Inline TVF
+
+#### Example 1: Simple SELECT
+
+```sql
+SELECT *
+FROM dbo.GetStudentsBySubject('Math');
+```
+
+#### Example 2: Aggregation
+
+```sql
+SELECT AVG(Grade) AS AverageGrade
+FROM dbo.GetStudentsBySubject('Science');
+```
+
+---
+
+### Using ITVFs with JOINs
+
+#### Additional Table
+
+```sql
+CREATE TABLE Teachers (
+    TeacherID INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Subject NVARCHAR(50)
+);
+```
+
+#### JOIN Example
+
+```sql
+SELECT
+    s.StudentID,
+    s.Name AS StudentName,
+    t.Name AS TeacherName,
+    s.Grade
+FROM dbo.GetStudentsBySubject('Math') s
+JOIN Teachers t
+    ON s.Subject = t.Subject;
+```
+
+#### Why This Is Powerful
+
+* ITVFs integrate seamlessly with joins
+* Optimizer can reorder joins efficiently
+* No performance penalty compared to inline SQL
+
+---
+
+### Filter TVF Example
+
+#### Filter Students by Grade Range
+
+```sql
+CREATE FUNCTION dbo.GetStudentsByGradeRange
+(
+    @MinGrade INT,
+    @MaxGrade INT
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT StudentID, Name, Subject, Grade
+    FROM Students
+    WHERE Grade BETWEEN @MinGrade AND @MaxGrade
+);
+```
+
+```sql
+SELECT *
+FROM dbo.GetStudentsByGradeRange(80, 100);
+```
+
+---
+
+### Multi-Statement Table-Valued Functions (MTVFs)
+
+#### Key Characteristics
+
+* Use table variables
+* Allow multiple statements
+* Support complex procedural logic
+* Usually slower than ITVFs
+
+---
+
+### Creating a Multi-Statement TVF
+
+```sql
+CREATE FUNCTION dbo.GetTopPerformingStudents()
+RETURNS @Result TABLE (
+    StudentID INT,
+    Name NVARCHAR(50),
+    Subject NVARCHAR(50),
+    Grade INT
+)
+AS
+BEGIN
+    INSERT INTO @Result
+    SELECT TOP 3 StudentID, Name, Subject, Grade
+    FROM Students
+    ORDER BY Grade DESC;
+
+    RETURN;
+END;
+```
+
+#### Explanation
+
+* Table variable `@Result` stores the output
+* Allows multiple statements
+* Suitable for advanced logic
+
+---
+
+### Using the MTVF
+
+```sql
+SELECT *
+FROM dbo.GetTopPerformingStudents();
+```
+
+---
+
+### MTVF with JOIN Example
+
+```sql
+SELECT
+    t.Name AS TeacherName,
+    s.Name AS StudentName,
+    s.Grade
+FROM Teachers t
+JOIN dbo.GetTopPerformingStudents() s
+    ON t.Subject = s.Subject;
+```
+
+---
+
+### MTVF Example (Business Logic)
+
+#### Top Students Per Subject
+
+```sql
+CREATE FUNCTION dbo.GetTopStudentPerSubject()
+RETURNS @Result TABLE (
+    Subject NVARCHAR(50),
+    StudentName NVARCHAR(50),
+    Grade INT
+)
+AS
+BEGIN
+    INSERT INTO @Result
+    SELECT Subject, Name, Grade
+    FROM (
+        SELECT *,
+               ROW_NUMBER() OVER (PARTITION BY Subject ORDER BY Grade DESC) AS rn
+        FROM Students
+    ) s
+    WHERE rn = 1;
+
+    RETURN;
+END;
+```
+
+```sql
+SELECT *
+FROM dbo.GetTopStudentPerSubject();
+```
+
+---
+
+### Performance Notes (Very Important)
+
+| Feature             | ITVF      | MTVF      |
+| ------------------- | --------- | --------- |
+| Optimizer-friendly  | ✅ Yes     | ❌ No      |
+| Uses table variable | ❌ No      | ✅ Yes     |
+| Performance         | 🚀 Fast   | 🐢 Slower |
+| Complex logic       | ❌ Limited | ✅ Yes     |
+
+**Best Practice:**
+
+* Use **ITVFs whenever possible**
+* Avoid MTVFs in high-traffic queries
+
+---
+
+### Summary
+
+* TVFs return tables, not scalar values
+* ITVFs are best for performance
+* MTVFs allow complex logic
+* Both can be used like tables
+* ITVFs are preferred in production systems
+
+---
+
+Below is a **NEW standalone MD section** (you can save it as
+📄 **`Dynamic_SQL_and_SQL_Injection.md`**)
+Nothing from previous sections is modified.
+
+---
+
+## Dynamic SQL and SQL Injection Attack
+
+### Dynamic SQL in SQL Server
+
+#### Introduction
+
+**Dynamic SQL** refers to SQL statements that are **constructed at runtime as strings** and then executed.
+This technique is useful when parts of the SQL query (table name, column name, sort order, filters, etc.) are not known in advance.
+
+While dynamic SQL provides **flexibility**, it introduces **serious security and performance risks** if not implemented correctly.
+
+---
+
+### Why Use Dynamic SQL?
+
+Dynamic SQL is typically used when:
+
+* Table names or column names are dynamic
+* Optional filters are applied conditionally
+* Dynamic sorting or pagination is required
+* Building reusable generic stored procedures
+
+⚠️ **Dynamic SQL should be the exception, not the default**
+
+---
+
+### Generating Dynamic SQL in Stored Procedures
+
+SQL Server provides **two main ways** to execute dynamic SQL:
+
+1. `EXEC()` / `EXECUTE`
+2. `sp_executesql` (recommended)
+
+---
+
+### Method 1: Using EXEC (Unsafe if misused)
+
+#### Example (VULNERABLE ❌)
+
+```sql
+CREATE PROCEDURE dbo.GenerateDynamicSQL_Unsafe
+    @TableName NVARCHAR(128)
+AS
+BEGIN
+    DECLARE @SQL NVARCHAR(MAX);
+
+    SET @SQL = 'SELECT * FROM ' + @TableName;
+    EXEC(@SQL);
+END;
+```
+
+#### Problems
+
+* Direct string concatenation
+* Fully vulnerable to **SQL Injection**
+* No parameter support
+* Poor execution plan reuse
+
+🚨 **Never trust input used directly in dynamic SQL**
+
+---
+
+### Method 2: Using sp_executesql (Recommended ✅)
+
+#### Safe Example Using `QUOTENAME`
+
+```sql
+CREATE PROCEDURE dbo.GenerateDynamicSQL_Safe
+    @TableName NVARCHAR(128)
+AS
+BEGIN
+    DECLARE @SQL NVARCHAR(MAX);
+
+    SET @SQL = N'SELECT * FROM ' + QUOTENAME(@TableName);
+    EXEC sp_executesql @SQL;
+END;
+```
+
+#### Why This Is Safer
+
+* `QUOTENAME()` prevents injection via object names
+* Proper Unicode handling
+* Supports parameterization
+* Better execution plan reuse
+
+---
+
+### Parameterized Dynamic SQL (BEST PRACTICE)
+
+#### Example: Dynamic WHERE Clause (Safe)
+
+```sql
+CREATE PROCEDURE dbo.GetStudentById_Dynamic
+    @StudentID INT
+AS
+BEGIN
+    DECLARE @SQL NVARCHAR(MAX);
+
+    SET @SQL = N'
+        SELECT StudentID, Name, Subject, Grade
+        FROM Students
+        WHERE StudentID = @ID';
+
+    EXEC sp_executesql
+        @SQL,
+        N'@ID INT',
+        @ID = @StudentID;
+END;
+```
+
+✅ **No concatenation**
+✅ **Injection-safe**
+✅ **Reusable execution plan**
+
+---
+
+### Dynamic SQL Example (Multiple Filters)
+
+```sql
+CREATE PROCEDURE dbo.SearchStudents
+    @Subject NVARCHAR(50) = NULL,
+    @MinGrade INT = NULL
+AS
+BEGIN
+    DECLARE @SQL NVARCHAR(MAX) = N'
+        SELECT StudentID, Name, Subject, Grade
+        FROM Students
+        WHERE 1 = 1';
+
+    IF @Subject IS NOT NULL
+        SET @SQL += N' AND Subject = @Subject';
+
+    IF @MinGrade IS NOT NULL
+        SET @SQL += N' AND Grade >= @MinGrade';
+
+    EXEC sp_executesql
+        @SQL,
+        N'@Subject NVARCHAR(50), @MinGrade INT',
+        @Subject = @Subject,
+        @MinGrade = @MinGrade;
+END;
+```
+
+💡 This pattern avoids writing **dozens of IF-based queries**
+
+---
+
+### SQL Injection Attack
+
+#### What Is SQL Injection?
+
+SQL Injection occurs when **untrusted input becomes part of SQL code**, allowing attackers to:
+
+* Bypass authentication
+* Read sensitive data
+* Modify or delete records
+* Execute administrative commands
+
+---
+
+### Classic SQL Injection Example (VULNERABLE ❌)
+
+```sql
+DECLARE @input NVARCHAR(50) = '1 OR 1=1';
+DECLARE @SQL NVARCHAR(MAX);
+
+SET @SQL = 'SELECT * FROM Students WHERE StudentID = ' + @input;
+EXEC(@SQL);
+```
+
+#### Result
+
+```sql
+SELECT * FROM Students WHERE StudentID = 1 OR 1=1
+```
+
+✔ Returns **ALL students**
+
+❌ Security breach
+
+---
+
+### SQL Injection Impact
+
+* Unauthorized data access
+* Data corruption or deletion
+* Privilege escalation
+* Full database compromise
+
+🔥 SQL Injection is one of the **top OWASP vulnerabilities**
+
+---
+
+### Preventing SQL Injection (CRITICAL)
+
+#### 1️⃣ Parameterized Queries (MOST IMPORTANT)
+
+```sql
+DECLARE @StudentID INT = 1;
+
+SELECT *
+FROM Students
+WHERE StudentID = @StudentID;
+```
+
+✔ Input is treated as **data**, not code
+
+---
+
+#### 2️⃣ Use sp_executesql Instead of EXEC
+
+```sql
+EXEC sp_executesql
+    N'SELECT * FROM Students WHERE StudentID = @ID',
+    N'@ID INT',
+    @ID = 1;
+```
+
+---
+
+#### 3️⃣ Validate Input
+
+```sql
+IF @StudentID <= 0
+BEGIN
+    THROW 50001, 'Invalid StudentID', 1;
+END;
+```
+
+---
+
+#### 4️⃣ Use QUOTENAME for Object Names
+
+```sql
+SET @SQL = 'SELECT * FROM ' + QUOTENAME(@TableName);
+```
+
+Prevents:
+
+```sql
+Students; DROP TABLE Students;
+```
+
+---
+
+#### 5️⃣ Least Privilege Principle
+
+* Avoid executing dynamic SQL as `dbo`
+* Restrict permissions
+* Never expose admin procedures to public users
+
+---
+
+### What NOT to Do ❌
+
+| Bad Practice               | Why                  |
+| -------------------------- | -------------------- |
+| String concatenation       | Injection risk       |
+| EXEC only                  | No parameterization  |
+| Accepting raw object names | DDL injection        |
+| Dynamic SQL everywhere     | Hard to debug & slow |
+
+---
+
+### Dynamic SQL: When to Use vs Avoid
+
+#### ✅ Use Dynamic SQL When
+
+* Object names are dynamic
+* Optional filters are needed
+* Generic reporting procedures
+
+#### ❌ Avoid Dynamic SQL When
+
+* Query is static
+* Can be written with normal SQL
+* Performance is critical
+
+---
+
+### Summary
+
+| Topic         | Key Takeaway                  |
+| ------------- | ----------------------------- |
+| Dynamic SQL   | Powerful but dangerous        |
+| EXEC          | Avoid when possible           |
+| sp_executesql | Preferred approach            |
+| SQL Injection | Critical security risk        |
+| Prevention    | Parameterization + validation |
+
+---
