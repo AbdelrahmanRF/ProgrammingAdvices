@@ -3748,3 +3748,485 @@ Students; DROP TABLE Students;
 | Prevention    | Parameterization + validation |
 
 ---
+
+## Triggers in T-SQL (Advanced Guide)
+
+### 1. Introduction to Triggers
+
+Triggers in T-SQL are special stored procedures that automatically execute when a specific event occurs on a table or view. These events are usually **DML operations**:
+
+* `INSERT`
+* `UPDATE`
+* `DELETE`
+
+Triggers are tightly coupled to tables and run **implicitly**, meaning the user does not call them directly.
+
+#### Common Use Cases
+
+* Enforcing complex business rules
+* Auditing and logging data changes
+* Preventing invalid data modifications
+* Synchronizing data across tables
+* Automatically updating derived data
+
+⚠️ **Important:** Triggers execute within the same transaction as the original statement. If a trigger fails, the original operation is rolled back.
+
+---
+
+### 2. Trigger Types in SQL Server
+
+#### 2.1 AFTER Triggers (FOR Triggers)
+
+Executed **after** the DML operation succeeds.
+
+* AFTER INSERT
+* AFTER UPDATE
+* AFTER DELETE
+
+Used mainly for:
+
+* Auditing
+* Logging
+* Notifications
+
+#### 2.2 INSTEAD OF Triggers
+
+Executed **instead of** the original DML operation.
+
+Commonly used for:
+
+* Views
+* Advanced validation
+* Conditional inserts/updates
+
+---
+
+### 3. Special Tables: `inserted` and `deleted`
+
+SQL Server automatically creates two **virtual tables** during trigger execution:
+
+| Operation | inserted | deleted  |
+| --------- | -------- | -------- |
+| INSERT    | New rows | ❌        |
+| DELETE    | ❌        | Old rows |
+| UPDATE    | New rows | Old rows |
+
+These tables:
+
+* Exist only during trigger execution
+* Can contain **multiple rows** (important!)
+* Have the same structure as the base table
+
+---
+
+### 4. AFTER INSERT Trigger (Auditing Example)
+
+#### Scenario
+
+Log newly added students.
+
+#### Log Table
+
+```sql
+CREATE TABLE StudentInsertLog (
+    LogID INT IDENTITY PRIMARY KEY,
+    StudentID INT,
+    Name NVARCHAR(50),
+    Subject NVARCHAR(50),
+    Grade INT,
+    InsertedDateTime DATETIME DEFAULT GETDATE()
+);
+```
+
+#### Trigger
+
+```sql
+CREATE TRIGGER trg_AfterInsertStudent
+ON Students
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO StudentInsertLog (StudentID, Name, Subject, Grade)
+    SELECT StudentID, Name, Subject, Grade
+    FROM inserted;
+END;
+```
+
+✔ Handles **single-row and multi-row inserts** correctly.
+
+---
+
+### 5. AFTER UPDATE Trigger (Change Tracking)
+
+#### Scenario
+
+Track grade changes only.
+
+#### Audit Table
+
+```sql
+CREATE TABLE StudentUpdateLog (
+    LogID INT IDENTITY PRIMARY KEY,
+    StudentID INT,
+    OldGrade INT,
+    NewGrade INT,
+    UpdatedDateTime DATETIME DEFAULT GETDATE()
+);
+```
+
+#### Trigger
+
+```sql
+CREATE TRIGGER trg_AfterUpdateStudent
+ON Students
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF UPDATE(Grade)
+    BEGIN
+        INSERT INTO StudentUpdateLog (StudentID, OldGrade, NewGrade)
+        SELECT
+            i.StudentID,
+            d.Grade AS OldGrade,
+            i.Grade AS NewGrade
+        FROM inserted i
+        JOIN deleted d ON i.StudentID = d.StudentID;
+    END
+END;
+```
+
+#### Why `UPDATE(column)` Matters
+
+* Prevents unnecessary trigger logic
+* Improves performance
+* Makes intent explicit
+
+---
+
+### 6. AFTER DELETE Trigger (Audit & Recovery)
+
+#### Scenario
+
+Store deleted student records for auditing.
+
+#### Log Table
+
+```sql
+CREATE TABLE StudentDeleteLog (
+    LogID INT IDENTITY PRIMARY KEY,
+    StudentID INT,
+    Name NVARCHAR(50),
+    Subject NVARCHAR(50),
+    Grade INT,
+    DeletedDateTime DATETIME DEFAULT GETDATE()
+);
+```
+
+#### Trigger
+
+```sql
+CREATE TRIGGER trg_AfterDeleteStudent
+ON Students
+AFTER DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO StudentDeleteLog (StudentID, Name, Subject, Grade)
+    SELECT StudentID, Name, Subject, Grade
+    FROM deleted;
+END;
+```
+
+✔ Enables **soft recovery** and forensic analysis.
+
+---
+
+### 7. Example: Prevent Invalid Updates
+
+#### Rule
+
+A student's grade **cannot be decreased by more than 20 points** in a single update.
+
+#### Trigger
+
+```sql
+CREATE TRIGGER trg_ValidateGradeChange
+ON Students
+AFTER UPDATE
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN deleted d ON i.StudentID = d.StudentID
+        WHERE d.Grade - i.Grade > 20
+    )
+    BEGIN
+        RAISERROR ('Grade decrease exceeds allowed limit.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+```
+
+🔴 This will cancel the entire update if the rule is violated.
+
+---
+
+### 8. Performance & Best Practices
+
+#### ✅ Do
+
+* Always assume **multi-row operations**
+* Keep triggers short and focused
+* Use indexes on join columns
+
+#### ❌ Avoid
+
+* Heavy logic inside triggers
+* Calling long-running procedures
+* Nested triggers unless necessary
+* Debugging logic without logging
+
+---
+
+## Instead Of Triggers in T-SQL
+
+### Introduction
+
+Instead Of Triggers are a powerful feature in SQL Server that allow you to **override the default behavior** of `INSERT`, `UPDATE`, or `DELETE` operations on **tables or views**. Unlike AFTER triggers, which run *after* the operation succeeds, Instead Of triggers **replace the operation entirely**.
+
+They are essential when:
+
+* The default operation is not possible (e.g., updating a multi-table view)
+* Complex business logic must fully control the data change
+* You want to prevent physical deletes (soft delete pattern)
+
+---
+
+### What Are Instead Of Triggers?
+
+An Instead Of Trigger executes **instead of** the triggering DML statement.
+
+If SQL Server encounters an `INSERT`, `UPDATE`, or `DELETE` on an object that has an Instead Of trigger, it:
+
+1. **Stops the default operation**
+2. Executes the trigger logic
+3. Performs only what you explicitly code inside the trigger
+
+If you do not re‑implement the operation inside the trigger, **nothing happens**.
+
+---
+
+### Key Characteristics
+
+* Overrides default DML behavior
+* Works on **tables and views**
+* Uses `inserted` and `deleted` pseudo-tables
+* Enables advanced validation, transformation, and routing of data
+* Commonly used where AFTER triggers are insufficient
+
+---
+
+### inserted and deleted Tables Recap
+
+| Operation | inserted | deleted  |
+| --------- | -------- | -------- |
+| INSERT    | New rows | ❌        |
+| DELETE    | ❌        | Old rows |
+| UPDATE    | New rows | Old rows |
+
+These tables are **set-based** and may contain multiple rows.
+
+---
+
+### Scenario 1: Soft Delete Using Instead Of DELETE Trigger
+
+#### Why Not AFTER DELETE?
+
+AFTER DELETE runs **after data is already removed**. Soft delete requires **preventing deletion**.
+
+#### Table Preparation
+
+```sql
+ALTER TABLE Students
+ADD IsActive BIT DEFAULT 1;
+```
+
+#### Trigger Implementation
+
+```sql
+CREATE TRIGGER trg_InsteadOfDeleteStudent
+ON Students
+INSTEAD OF DELETE
+AS
+BEGIN
+    UPDATE S
+    SET IsActive = 0
+    FROM Students S
+    INNER JOIN deleted D ON S.StudentID = D.StudentID;
+END;
+```
+
+#### Result
+
+* Rows are preserved
+* Deletion is logically simulated
+* Data history remains intact
+
+---
+
+### Scenario 2: Updating a Multi-Table View (Critical Use Case)
+
+#### Problem
+
+Views based on multiple tables **cannot be updated directly**.
+
+#### Tables
+
+```sql
+CREATE TABLE PersonalInfo (
+    StudentID INT PRIMARY KEY,
+    Name NVARCHAR(100),
+    Address NVARCHAR(255)
+);
+
+CREATE TABLE AcademicInfo (
+    StudentID INT PRIMARY KEY,
+    Course NVARCHAR(100),
+    Grade INT,
+    FOREIGN KEY (StudentID) REFERENCES PersonalInfo(StudentID)
+);
+```
+
+#### View
+
+```sql
+CREATE VIEW StudentView AS
+SELECT P.StudentID, P.Name, P.Address, A.Course, A.Grade
+FROM PersonalInfo P
+JOIN AcademicInfo A ON P.StudentID = A.StudentID;
+```
+
+#### Instead Of UPDATE Trigger
+
+```sql
+CREATE TRIGGER trg_UpdateStudentView
+ON StudentView
+INSTEAD OF UPDATE
+AS
+BEGIN
+    UPDATE P
+    SET Name = I.Name,
+        Address = I.Address
+    FROM PersonalInfo P
+    JOIN inserted I ON P.StudentID = I.StudentID;
+
+    UPDATE A
+    SET Course = I.Course,
+        Grade = I.Grade
+    FROM AcademicInfo A
+    JOIN inserted I ON A.StudentID = I.StudentID;
+END;
+```
+
+#### Why AFTER UPDATE Fails Here
+
+* View update fails before AFTER trigger fires
+* SQL Server cannot map columns automatically
+
+Instead Of trigger **intercepts and redirects** the update.
+
+---
+
+### Scenario 3: Instead Of INSERT on Multi-Table View
+
+#### Trigger
+
+```sql
+CREATE TRIGGER trg_InsertStudentView
+ON StudentView
+INSTEAD OF INSERT
+AS
+BEGIN
+    INSERT INTO PersonalInfo (StudentID, Name, Address)
+    SELECT StudentID, Name, Address
+    FROM inserted;
+
+    INSERT INTO AcademicInfo (StudentID, Course, Grade)
+    SELECT StudentID, Course, Grade
+    FROM inserted;
+END;
+```
+
+#### Test
+
+```sql
+INSERT INTO StudentView (StudentID, Name, Address, Course, Grade)
+VALUES (3, 'Alice Johnson', '789 Pine Rd', 'Physics', 88);
+```
+
+---
+
+### Validation Example (Business Rule Enforcement)
+
+#### Rule
+
+> A student cannot have Grade > 100
+
+```sql
+CREATE TRIGGER trg_ValidateGrade
+ON Students
+INSTEAD OF INSERT
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted WHERE Grade > 100)
+    BEGIN
+        RAISERROR ('Grade cannot exceed 100', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO Students (StudentID, Name, Subject, Grade)
+    SELECT StudentID, Name, Subject, Grade
+    FROM inserted;
+END;
+```
+
+---
+
+### AFTER vs INSTEAD OF Triggers
+
+| Feature              | AFTER      | INSTEAD OF |
+| -------------------- | ---------- | ---------- |
+| Runs after operation | ✅          | ❌          |
+| Replaces operation   | ❌          | ✅          |
+| Can block operation  | ❌          | ✅          |
+| Works on views       | ⚠️ Limited | ✅          |
+| Soft delete support  | ❌          | ✅          |
+
+---
+
+### Best Practices
+
+* Always write **set-based logic**
+* Assume multiple rows in `inserted` / `deleted`
+* Keep triggers **short and predictable**
+* Avoid recursive triggers unless necessary
+* Document trigger behavior clearly
+
+---
+
+### Conclusion
+
+Instead Of Triggers are **mandatory tools** for:
+
+* Soft deletes
+* Updatable multi-table views
+* Complex validation and routing
+* Full control over data manipulation
+
+---
