@@ -42,6 +42,7 @@ This repository is my personal workspace for learning and applying concepts from
 | 18         | ✅ Completed   | C# & Database Connectivity                                                                                |
 | 19         | ✅ Completed   | [DVLD Project](https://github.com/AbdelrahmanRF/ProgrammingAdvices/tree/main/Course%2019/DVLD%20Project)  |
 | 20         | ✅ Completed   | C# Level 2                                                                                                |
+| 21         | ✅ Completed   | Database Level 2                                                                                          |
 | ...        | 🚧 In Progress | Continuing toward Course 23                                                                               |
 
 ---

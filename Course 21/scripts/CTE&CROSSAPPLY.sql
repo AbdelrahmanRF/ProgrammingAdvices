@@ -97,7 +97,107 @@ ORDER BY
         ELSE 3
     END;
 
+-- Task 6: Recursive CTE Example 1
+USE C21_DB1;
+WITH Numbers AS
+(
+	SELECT 1 AS Number
+
+	UNION ALL
+
+	SELECT Number + 1 FROM Numbers WHERE Number < 10
+) 
+SELECT * FROM Numbers;
+
+-- Task 7: Employee Hierarchies
+WITH EmployeeTreeHierarchy AS (
+	-- Anchor member
+	SELECT EmployeeID,
+	ManagerID,
+	Name,
+	CAST (Name AS VARCHAR(MAX)) AS Hierarchy,
+	0 AS Level
+	FROM Employees7
+	WHERE ManagerID IS NULL
+
+	UNION ALL
+
+	SELECT E.EmployeeID,
+	E.ManagerID,
+	E.Name,
+	CAST (ETH.Hierarchy + ' -> ' + E.Name AS VARCHAR(MAX)),
+	ETH.Level + 1 AS Level
+	FROM Employees7 E
+	JOIN EmployeeTreeHierarchy ETH ON E.ManagerID = ETH.EmployeeID
+)
+SELECT * FROM EmployeeTreeHierarchy
+ORDER BY Hierarchy;
+
+-- Task 8: Generating a Date Series
+DECLARE @StartDate DATE = '2025-12-01';
+DECLARE @EndDate DATE = '2025-12-31';
+WITH DateSeries AS 
+(
+	SELECT @StartDate AS DateValue
+
+	UNION ALL
+
+	SELECT DATEADD(DAY, 1, DateValue)
+	FROM DateSeries
+	WHERE DateValue < @EndDate
+)
+SELECT DateValue
+FROM DateSeries;
+
+-- Task 9: Identifying Duplicate Records
+WITH DuplicateEmails AS 
+(
+	SELECT Email,
+	COUNT(*) AS DuplicateEmail
+	FROM Contacts
+	GROUP BY Email
+	HAVING COUNT(*) > 1
+)
+SELECT C.ContactID, C.Name, C.Email
+FROM Contacts C JOIN DuplicateEmails DE
+ON C.Email = DE.Email
+
+-- Task 10: Ranking Items Using CTE
+WITH SalesTotal AS
+(
+	SELECT
+	EmployeeID,
+	SUM(SaleAmount) AS TotalSales
+	FROM SalesRecords
+	GROUP BY EmployeeID
+),
+RankedSales AS 
+(
+	SELECT *,
+	DENSE_RANK() OVER (ORDER BY TotalSales DESC) AS SalesRank
+	FROM SalesTotal
+)
+SELECT * FROM RankedSales;
+
+-- Task 11: Calculating Average Sales of Top Performing Employees Using CTE
+WITH SalesTotal AS
+(
+	SELECT
+	EmployeeID,
+	SUM(SaleAmount) AS TotalSales
+	FROM SalesRecords
+	GROUP BY EmployeeID
+),
+TopSalesEmployees AS 
+(
+	SELECT TOP 3 * FROM SalesTotal
+	ORDER BY TotalSales DESC
+)
+SELECT AVG(TotalSales) AS AverageTopSales
+FROM TopSalesEmployees;
+
 -- CROSS APPLY
+Use HR_Database;
 -- Task 1: Highest Paid Employee per Country
 SELECT
     C.Name AS CountryName,
