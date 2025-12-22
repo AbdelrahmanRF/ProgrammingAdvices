@@ -4230,3 +4230,265 @@ Instead Of Triggers are **mandatory tools** for:
 * Full control over data manipulation
 
 ---
+
+## Cursors in T-SQL (Advanced)
+
+### What Are Cursors?
+
+A **cursor** in T-SQL is a database object that allows you to **process query results row by row** instead of working with the entire result set at once.
+
+SQL Server is optimized for **set-based operations**, but cursors exist for cases where **row-level control and sequential logic** are unavoidable.
+
+Think of a cursor as:
+
+* A pointer that moves over rows one at a time
+* Similar to a `for` / `while` loop in programming languages
+
+---
+
+### Why Use Cursors?
+
+Cursors should be your **last option**, but they are useful when:
+
+#### 1. Sequential Processing Is Mandatory
+
+Example:
+
+* Apply penalties **in order** of transaction time
+* Process queue-based records
+
+#### 2. Complex Per-Row Business Logic
+
+Example:
+
+* Different calculations per row
+* Conditional branching that cannot be expressed in a single SQL statement
+
+#### 3. Interactive or Navigational Scenarios
+
+Example:
+
+* Scrollable UI behavior
+* Manual review systems
+
+---
+
+### Cursor Lifecycle (Very Important)
+
+Every cursor follows **the same 5 steps**:
+
+1. **DECLARE** – define the cursor and query
+2. **OPEN** – execute query and prepare rows
+3. **FETCH** – retrieve rows one by one
+4. **CLOSE** – release row locks
+5. **DEALLOCATE** – free memory
+
+Missing `CLOSE` or `DEALLOCATE` = **memory leaks + performance issues** ❌
+
+---
+
+### Types of Cursors
+
+| Cursor Type  | Reflects Data Changes | Navigation   | Performance |
+| ------------ | --------------------- | ------------ | ----------- |
+| Static       | ❌ No                  | Scrollable   | Medium      |
+| Dynamic      | ✅ Yes                 | Scrollable   | Slowest     |
+| Forward-Only | ❌ No                  | Forward only | Fastest     |
+| Scrollable   | ❌ No                  | Full control | Slow        |
+
+---
+
+### Static Cursors
+
+#### What Is a Static Cursor?
+
+* Takes a **snapshot** of data at `OPEN`
+* Changes after opening are **NOT visible**
+
+#### When to Use
+
+* Reporting
+* Financial calculations
+* Auditing
+
+#### Example: Exam Report Generation
+
+You want consistent grades even if teachers update scores during report generation.
+
+```sql
+DECLARE Static_Cursor CURSOR STATIC FOR
+SELECT StudentID, Name, Grade FROM Students;
+
+OPEN Static_Cursor;
+
+DECLARE @ID INT, @Name NVARCHAR(50), @Grade INT;
+
+FETCH NEXT FROM Static_Cursor INTO @ID, @Name, @Grade;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Student: ' + @Name + ' | Grade: ' + CAST(@Grade AS NVARCHAR);
+    FETCH NEXT FROM Static_Cursor INTO @ID, @Name, @Grade;
+END
+
+CLOSE Static_Cursor;
+DEALLOCATE Static_Cursor;
+```
+
+✅ Data consistency guaranteed
+❌ Extra memory usage
+
+---
+
+### Dynamic Cursors
+
+#### What Is a Dynamic Cursor?
+
+* **Live view** of the data
+* Reflects **INSERT / UPDATE / DELETE** while cursor is open
+
+#### When to Use
+
+* Monitoring systems
+* Live dashboards
+* Queue processing
+
+#### Example: Live Student Monitoring
+
+Admin wants to see new students added **while scanning** the table.
+
+```sql
+DECLARE Dynamic_Cursor CURSOR DYNAMIC FOR
+SELECT StudentID, Name, Grade FROM Students;
+
+OPEN Dynamic_Cursor;
+
+DECLARE @ID INT, @Name NVARCHAR(50), @Grade INT;
+
+FETCH NEXT FROM Dynamic_Cursor INTO @ID, @Name, @Grade;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT @Name + ' | ' + CAST(@Grade AS NVARCHAR);
+    FETCH NEXT FROM Dynamic_Cursor INTO @ID, @Name, @Grade;
+END
+
+CLOSE Dynamic_Cursor;
+DEALLOCATE Dynamic_Cursor;
+```
+
+✅ Always up-to-date
+❌ Heavy locking & performance cost
+
+---
+
+### Forward-Only Cursors
+
+#### What Is a Forward-Only Cursor?
+
+* Moves **only forward**
+* No scrolling
+* Minimal overhead
+
+#### When to Use
+
+* Batch processing
+* Data migration
+* One-pass logic
+
+#### Example: Email Notification System
+
+Send emails once, in order.
+
+```sql
+DECLARE Forward_Cursor CURSOR FAST_FORWARD FOR
+SELECT Email FROM Users WHERE IsActive = 1;
+
+OPEN Forward_Cursor;
+
+DECLARE @Email NVARCHAR(100);
+
+FETCH NEXT FROM Forward_Cursor INTO @Email;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Sending email to ' + @Email;
+    FETCH NEXT FROM Forward_Cursor INTO @Email;
+END
+
+CLOSE Forward_Cursor;
+DEALLOCATE Forward_Cursor;
+```
+
+✅ Fastest cursor type
+❌ No backward movement
+
+---
+
+### Scrollable Cursors
+
+#### What Is a Scrollable Cursor?
+
+* Full navigation control
+* Fetch `NEXT`, `PRIOR`, `FIRST`, `LAST`, `ABSOLUTE`
+
+#### When to Use
+
+* Manual review
+* Auditing tools
+* Pagination-like behavior
+
+#### Example: Manual Grade Review
+
+```sql
+DECLARE Scroll_Cursor CURSOR STATIC SCROLL FOR
+SELECT StudentID, Name, Grade FROM Students ORDER BY Grade DESC;
+
+OPEN Scroll_Cursor;
+
+DECLARE @ID INT, @Name NVARCHAR(50), @Grade INT;
+
+FETCH LAST FROM Scroll_Cursor INTO @ID, @Name, @Grade;
+PRINT 'Lowest Grade: ' + @Name;
+
+FETCH FIRST FROM Scroll_Cursor INTO @ID, @Name, @Grade;
+PRINT 'Top Student: ' + @Name;
+
+CLOSE Scroll_Cursor;
+DEALLOCATE Scroll_Cursor;
+```
+
+✅ Flexible navigation
+❌ Slow and memory-heavy
+
+---
+
+### Performance Considerations (Critical)
+
+❗ **Cursors scale badly**
+
+#### Problems
+
+* Row-by-row execution (RBAR)
+* Long locks
+* High memory usage
+
+#### Rule of Thumb
+
+> If it can be done with a `JOIN`, `CTE`, `WINDOW FUNCTION`, or `MERGE` — **do not use a cursor**.
+
+---
+
+### Best Practices Summary
+
+✔ Use cursors only when unavoidable
+
+✔ Prefer `FAST_FORWARD` if possible
+
+✔ Keep cursor logic short
+
+✔ Always `CLOSE` and `DEALLOCATE`
+
+✔ Avoid cursors inside long transactions
+
+---
